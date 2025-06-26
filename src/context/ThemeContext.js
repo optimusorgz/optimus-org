@@ -6,12 +6,11 @@ export const ThemeProvider = ({ children }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   
   const theme = {
-    isDarkTheme,
-    background: isDarkTheme ? '#000000' : '#ffffff',
-    text: isDarkTheme ? '#ffffff' : '#000000',
+    background: isDarkTheme ? '#000' : '#fff',
+    text: isDarkTheme ? '#fff' : '#000',
     primary: isDarkTheme ? '#00FFFF' : '#008B8B',
     secondary: isDarkTheme ? '#008B8B' : '#006666',
-    navBackground: isDarkTheme ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+    navBackground: isDarkTheme ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)',
     cardBackground: isDarkTheme ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
     cardBorder: isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
     shadow: isDarkTheme ? '0 4px 6px rgba(0, 255, 255, 0.1)' : '0 4px 6px rgba(0, 0, 0, 0.1)',

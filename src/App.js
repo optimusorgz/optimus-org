@@ -9,15 +9,13 @@ import styled from 'styled-components';
 import Hero from './components/Hero';
 import { Highlights } from './components/Highlights';
 import Mission from './components/Mission';
-import GalleryDisplay from './components/Gallery';
+import GalleryComponent from './components/Gallery';
 import Footer from './components/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Team from './pages/Team';
 import Gallery from './pages/Gallery';
 import Events from './pages/Events';
 import ScrollToTop from './components/ScrollToTop';
-
-console.log('Triggering Vercel redeploy');
 
 function AppContent() {
   const { theme } = useTheme();
@@ -40,7 +38,7 @@ function AppContent() {
             <Hero />
             <Highlights />
             <Mission />
-            <GalleryDisplay />
+            <GalleryComponent />
           </>
         } />
         <Route path="/team" element={<Team />} />

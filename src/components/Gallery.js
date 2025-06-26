@@ -140,7 +140,7 @@ const StyledSwiper = styled(Swiper)`
 `;
 
 const Gallery = () => {
-  const { isDarkTheme } = useTheme();
+  const { theme, isDarkTheme } = useTheme();
 
   const slides = [
     {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-
+import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -21,6 +21,13 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1%;
+`;
+
+const Logo = styled(Link)`
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  color: ${props => props.theme.primary};
+  text-decoration: none;
 `;
 
 const NavLinks = styled.ul`
