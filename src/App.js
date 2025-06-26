@@ -77,7 +77,7 @@ const AppContainer = styled.div`
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter basename="/Optimus">
+      <BrowserRouter>
         <ScrollToTop />
         <AppContent />
       </BrowserRouter>

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
-import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
-import Footer from '../components/Footer';
+import { PageWrapper, Section, Header } from '../components/common/PageWrapper';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -142,17 +141,36 @@ const Gallery = () => {
     setCurrentIndex(index);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSelectedImage(null);
-  };
+  }, []);
 
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
 
-  const handleNext = () => {
+
+  const images = [
+    { src: 'IMG_0317.jpg', alt: 'Team Building Activity' },
+    { src: 'IMG_0325.jpg', alt: 'Workshop Session' },
+    { src: 'IMG_0331.jpg', alt: 'Group Discussion' },
+    { src: 'IMG_0341.jpg', alt: 'Team Presentation' },
+    { src: 'IMG_0358.jpg', alt: 'Project Review' },
+    { src: 'IMG_5760.jpeg', alt: 'Team Meeting' },
+    { src: 'IMG_5766.JPG', alt: 'Brainstorming Session' },
+    { src: 'IMG_5773.JPG', alt: 'Tech Talk' },
+    { src: 'IMG_5780.JPG', alt: 'Team Collaboration' },
+    { src: 'IMG_0314.jpg', alt: 'Innovation Workshop' },
+    { src: 'IMG_0322.jpg', alt: 'Team Event' },
+    { src: 'IMG_0333.jpg', alt: 'Project Planning' },
+    { src: 'IMG_0338.jpg', alt: 'Team Discussion' },
+    { src: 'IMG_0352.jpg', alt: 'Development Session' }
+  ];
+
+  const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
+  }, [images.length]);
+
+  const handlePrevious = useCallback(() => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  }, [images.length]);
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -176,24 +194,7 @@ const Gallery = () => {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage]);
-
-  const images = [
-    { src: 'IMG_0317.jpg', alt: 'Team Building Activity' },
-    { src: 'IMG_0325.jpg', alt: 'Workshop Session' },
-    { src: 'IMG_0331.jpg', alt: 'Group Discussion' },
-    { src: 'IMG_0341.jpg', alt: 'Team Presentation' },
-    { src: 'IMG_0358.jpg', alt: 'Project Review' },
-    { src: 'IMG_5760.jpeg', alt: 'Team Meeting' },
-    { src: 'IMG_5766.JPG', alt: 'Brainstorming Session' },
-    { src: 'IMG_5773.JPG', alt: 'Tech Talk' },
-    { src: 'IMG_5780.JPG', alt: 'Team Collaboration' },
-    { src: 'IMG_0314.jpg', alt: 'Innovation Workshop' },
-    { src: 'IMG_0322.jpg', alt: 'Team Event' },
-    { src: 'IMG_0333.jpg', alt: 'Project Planning' },
-    { src: 'IMG_0338.jpg', alt: 'Team Discussion' },
-    { src: 'IMG_0352.jpg', alt: 'Development Session' }
-  ];
+  }, [selectedImage, handleNext, handlePrevious, handleClose]);
 
   return (
     <PageWrapper theme={theme}>
