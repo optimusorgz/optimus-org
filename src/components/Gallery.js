@@ -154,19 +154,14 @@ const Gallery = () => {
       description: 'Hands-on learning sessions with industry experts'
     },
     {
-      image: require('../assets/IMG_5760.jpeg'),
-      title: 'Team Projects',
-      description: 'Collaborative projects bringing ideas to life'
+      image: require('../assets/IMG_0333.jpg'),
+      title: 'Tech Workshops',
+      description: 'Hands-on learning sessions with industry experts'
     },
     {
-      image: require('../assets/IMG_5760.jpeg'),
-      title: 'Team Projects',
-      description: 'Collaborative projects bringing ideas to life'
-    },
-    {
-      image: require('../assets/IMG_5760.jpeg'),
-      title: 'Team Projects',
-      description: 'Collaborative projects bringing ideas to life'
+      image: require('../assets/IMG_0338.jpg'),
+      title: 'Tech Workshops',
+      description: 'Hands-on learning sessions with industry experts'
     },
     {
       image: require('../assets/IMG_5760.jpeg'),
