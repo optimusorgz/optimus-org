@@ -171,7 +171,6 @@ const Events = () => {
           </Section>
         </ContentContainer>
       </PageWrapper>
-      <Footer />
     </EventsContainer>
   );
 };
