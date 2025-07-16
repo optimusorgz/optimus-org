@@ -140,7 +140,7 @@ const Footer = () => {
 
         <FooterSection theme={theme}>
           <h3>Contact Us</h3>
-          <p>Email: optimustechclub@gmail.com</p>
+          <p>optimus.orgz@gmail.com</p>
           <SocialLinks theme={theme}>
             <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faInstagram} />
