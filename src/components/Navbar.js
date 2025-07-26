@@ -168,7 +168,7 @@ const Navbar = () => {
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <JoinButton 
-            href="https://script.google.com/macros/s/AKfycbzThwyIHrH78E2XQBTz2XO1XiH-GokGjDRJ9bQR8R2risLa1T3fSQ9IlB61cab-wmUm/exec" 
+            href="https://script.google.com/macros/s/AKfycbzal-X62oMRF-VvE3KNk7fUsWuXlc_o29pzzX6aKy8hNpCsWoMv1aohOfHszGnX1S7O/exec" 
             target="_blank" 
             rel="noopener noreferrer"
             theme={theme}
@@ -191,7 +191,7 @@ const Navbar = () => {
         <li><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={toggleMenu}>TEAM</NavLink></li>
         <li><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={toggleMenu}>GALLERY</NavLink></li>
         <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={toggleMenu}>EVENTS</NavLink></li>
-        <li><a href="https://script.google.com/macros/s/AKfycbzThwyIHrH78E2XQBTz2XO1XiH-GokGjDRJ9bQR8R2risLa1T3fSQ9IlB61cab-wmUm/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={toggleMenu}>JOIN US</a></li>
+        <li><a href="https://script.google.com/macros/s/AKfycbzal-X62oMRF-VvE3KNk7fUsWuXlc_o29pzzX6aKy8hNpCsWoMv1aohOfHszGnX1S7O/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={toggleMenu}>JOIN US</a></li>
       </DropdownMenu>
     </Nav>
   );

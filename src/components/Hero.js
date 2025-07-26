@@ -267,7 +267,7 @@ const Hero = () => {
           A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.          </Description>
           <ButtonContainer>
             <StyledButton as="a"
-            href="https://script.google.com/macros/s/AKfycbzThwyIHrH78E2XQBTz2XO1XiH-GokGjDRJ9bQR8R2risLa1T3fSQ9IlB61cab-wmUm/exec" 
+            href="https://script.google.com/macros/s/AKfycbzal-X62oMRF-VvE3KNk7fUsWuXlc_o29pzzX6aKy8hNpCsWoMv1aohOfHszGnX1S7O/exec" 
             target="_blank"
             data-aos="zoom-in" 
               data-aos-delay="300"
