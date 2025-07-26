@@ -249,9 +249,6 @@ const Hero = () => {
         <a href="https://www.linkedin.com/company/optimus16/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faLinkedinIn} />
         </a>
-        <a href="https://www.linkedin.com/company/optimus16/" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faGithub} />
-        </a>
       </SocialIcons>
       <SideText></SideText> 
       <ShapesContainer>

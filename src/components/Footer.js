@@ -148,9 +148,6 @@ const Footer = () => {
             <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faLinkedinIn} />
             </a>
-            <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faGithub} />
-            </a>
           </SocialLinks>
         </FooterSection>
       </FooterContent>

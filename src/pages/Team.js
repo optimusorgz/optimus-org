@@ -94,21 +94,21 @@ const Team = () => {
       position: "CEO & Founder",
       image: require("../assets/team/charchit1.jpeg"),
       instagram: "https://www.instagram.com/charchit.singh_16/",
-      linkedin: "#"
+      linkedin: "https://www.linkedin.com/in/charchit16/"
     },
     {
       name: "Ayush Samant",
       position: "COO",
       image: require("../assets/team/ayush_samant.jpg"),
-      instagram: "#",
-      linkedin: "#"
+      instagram: "https://www.instagram.com/ayushsamant/",
+      linkedin: "https://www.linkedin.com/in/ayushsamant/"
     },
     {
       name: "Neelansh",
       position: "COO",
       image: require("../assets/team/neelansh.jpeg"),
       instagram: "https://www.instagram.com/neelansh_pratap_singh?igsh=bmRzZW5sb2w0dmRi",
-      linkedin: "https://www.linkedin.com/in/neelansh-singh-894852218?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+      linkedin: "https://www.linkedin.com/in/neelansh-singh-894852218/"
     },
     {
       name: "Mayank",
@@ -146,19 +146,17 @@ const Team = () => {
       <TeamContainer theme={theme}>
         <TeamSection>
           <Header theme={theme}>
-            <h2 style={{
-              fontSize: '2.5rem'
-            }} data-aos="fade-up">Our Team</h2>
+            <h2 style={{ fontSize: '2.5rem' }} data-aos="fade-up">Our Team</h2>
           </Header>
           <TeamGrid>
             {teamMembers.map((member, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 data-aos="fade-up"
                 data-aos-delay={100 * (index % 4)}
               >
-                <img 
-                  src={member.image} 
+                <img
+                  src={member.image}
                   alt={member.name}
                   style={{
                     width: '200px',
@@ -169,14 +167,14 @@ const Team = () => {
                   }}
                 />
                 <TeamMemberContent>
-                  <h3 style={{ 
+                  <h3 style={{
                     color: theme.primary,
                     margin: '0 0 0px 0',
                     fontSize: '1.5rem'
                   }}>
                     {member.name}
                   </h3>
-                  <p style={{ 
+                  <p style={{
                     color: theme.text,
                     margin: '0 0 0px 0',
                     fontSize: '1.1rem'
@@ -184,23 +182,23 @@ const Team = () => {
                     {member.position}
                   </p>
                   <SocialLinks theme={theme}>
-                    <a 
-                      href={member.instagram} 
-                      target="_blank" 
+                    <a
+                      href={member.instagram && member.instagram !== "#" ? member.instagram : undefined}
+                      target="_blank"
                       rel="noopener noreferrer"
                       title={`${member.name}'s Instagram`}
+                      className={(!member.instagram || member.instagram === "#") ? "disabled" : ""}
                     >
                       <FontAwesomeIcon icon={faInstagram} />
-                      {/* <span>Instagram</span> */}
                     </a>
-                    <a 
-                      href={member.linkedin} 
-                      target="_blank" 
+                    <a
+                      href={member.linkedin && member.linkedin !== "#" ? member.linkedin : undefined}
+                      target="_blank"
                       rel="noopener noreferrer"
                       title={`${member.name}'s LinkedIn`}
+                      className={(!member.linkedin || member.linkedin === "#") ? "disabled" : ""}
                     >
                       <FontAwesomeIcon icon={faLinkedinIn} />
-                      {/* <span>LinkedIn</span> */}
                     </a>
                   </SocialLinks>
                 </TeamMemberContent>
