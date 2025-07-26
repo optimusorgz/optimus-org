@@ -246,10 +246,10 @@ const Hero = () => {
         <a href="https://www.instagram.com/optimus.orgz/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faInstagram} />
         </a>
-        <a href="https://linkedin.com/company/optimus" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.linkedin.com/company/optimus16/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faLinkedinIn} />
         </a>
-        <a href="https://github.com/optimusorgz" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.linkedin.com/company/optimus16/" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faGithub} />
         </a>
       </SocialIcons>

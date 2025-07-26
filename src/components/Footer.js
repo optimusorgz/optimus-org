@@ -145,10 +145,10 @@ const Footer = () => {
             <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faInstagram} />
             </a>
-            <a href="https://linkedin.com/company/optimus" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faLinkedinIn} />
             </a>
-            <a href="https://script.google.com/macros/s/AKfycbwozfJIemTBTOZbuHJHyiv7cSqXf98k1ZHN3NtAiRpxlic_1mj6uuR4DNpInsbf5T1MHg/exec" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faGithub} />
             </a>
           </SocialLinks>
