@@ -190,8 +190,8 @@ const Team = () => {
                   src={member.image}
                   alt={member.name}
                   style={{
-                    width: '150px',
-                    height: '150px',
+                    width: '170px',
+                    height: '170px',
                     borderRadius: '50%',
                     objectFit: 'cover',
                     marginBottom: '15px'
