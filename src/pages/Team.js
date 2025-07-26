@@ -15,6 +15,14 @@ const TeamContainer = styled.div`
   background-color: rgba(12,12,29,255);
   background-position: center;
   transition: background-color 0.3s ease;
+    background: radial-gradient(
+  circle at top left,
+  rgba(255, 255, 255, 0.3) 100px,
+  rgba(255, 255, 255, 0.1) 200px,
+  rgba(12, 12, 29, 0.8) 400px,
+  rgba(12, 12, 29, 1) 500px,
+  transparent 100%
+);
 
   &::before {
     content: '';
