@@ -145,7 +145,7 @@ const Team = () => {
       position: "Media Head",
       image: require("../assets/team/bhanu_picture.jpg"),
       instagram: "#",
-      linkedin: "#"
+      linkedin: "https://www.linkedin.com/in/bhanupratap3008?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     // Add more members as needed
   ];
