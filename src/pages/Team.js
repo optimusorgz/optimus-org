@@ -138,14 +138,28 @@ const Team = () => {
       position: "Social Media Head",
       image: require("../assets/team/ayush yadav.JPEG"),
       instagram: "https://www.instagram.com/ayusx_h",
-      linkedin: "https://www.linkedin.com/me"
+      linkedin: "https://www.linkedin.com/in/ayush-kumar-5228a2298?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
-      name: "Bhanu",
+      name: "Bhanu Pratap Singh",
       position: "Media Head",
       image: require("../assets/team/bhanu_picture.jpg"),
       instagram: "#",
       linkedin: "https://www.linkedin.com/in/bhanupratap3008?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    {
+      name: "Shailaja Singh",
+      position: "Student Relation Coordinator",
+      image: require("../assets/team/bhanu_picture.jpg"),
+      instagram: "https://www.instagram.com/solely_solitude03?igsh=MTZxbmE0a202MHg1eg==",
+      linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    {
+      name: "Ayush Singh Chauchan",
+      position: "Event Management Haed",
+      image: require("../assets/team/bhanu_picture.jpg"),
+      instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
+      linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     // Add more members as needed
   ];
