@@ -11,11 +11,11 @@ import { faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 const TeamContainer = styled.div`
   min-height: 100%;
   padding-top: 20px;
-  transition: background-color 0.3s ease;
-  
-  background-color: rgba(12,12,29,255); /* Adjusted background color */
+  position: relative;
+  background-color: rgba(12,12,29,255);
   background-position: center;
- 
+  transition: background-color 0.3s ease;
+
   &::before {
     content: '';
     position: absolute;
@@ -32,9 +32,10 @@ const TeamContainer = styled.div`
   }
 `;
 
-
 const TeamSection = styled.section`
   padding: 100px 10%;
+  position: relative;
+  z-index: 1;
 `;
 
 const TeamGrid = styled.div`
@@ -54,7 +55,6 @@ const SocialLinks = styled.div`
   display: flex;
   gap: 20px;
   text-align: center;
-
   margin-top: 5px;
   justify-content: center;
 
@@ -66,10 +66,19 @@ const SocialLinks = styled.div`
     align-items: center;
     gap: 8px;
     text-decoration: none;
+    padding: 10px;
+    border-radius: 50%;
 
     &:hover {
       transform: translateY(-3px);
       color: ${props => props.theme.hoverColor};
+      background-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.4;
     }
 
     span {
@@ -115,7 +124,7 @@ const Team = () => {
       position: "Marketing Head",
       image: require("../assets/team/mayank.jpeg"),
       instagram: "https://www.instagram.com/m01ayank0?igsh=cDZvd2JncTBmam5s",
-      linkedin: "https://www.linkedin.com/in/mayank-dhusia-807b3335a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+      linkedin: "https://www.linkedin.com/in/mayank-dhusia-807b3335a"
     },
     {
       name: "Piyush Saini",
@@ -129,16 +138,16 @@ const Team = () => {
       position: "Social Media Head",
       image: require("../assets/team/ayush yadav.JPEG"),
       instagram: "https://www.instagram.com/ayusx_h",
-      linkedin: "https://www.linkedin.com/me?trk=p_mwlite_feed-secondary_nav"
+      linkedin: "https://www.linkedin.com/me"
     },
     {
       name: "Bhanu",
       position: "Media Head",
       image: require("../assets/team/bhanu_picture.jpg"),
-      instagram: "https://optimusorgz.github.io/Optimusorgz/team.html#",
-      linkedin: "https://optimusorgz.github.io/Optimusorgz/team.html#"
+      instagram: "#",
+      linkedin: "#"
     },
-    // Add more team members here
+    // Add more members as needed
   ];
 
   return (
@@ -183,20 +192,20 @@ const Team = () => {
                   </p>
                   <SocialLinks theme={theme}>
                     <a
-                      href={member.instagram && member.instagram !== "#" ? member.instagram : undefined}
+                      href={member.instagram && member.instagram !== "#" ? member.instagram : "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={`${member.name}'s Instagram`}
-                      className={(!member.instagram || member.instagram === "#") ? "disabled" : ""}
+                      className={!member.instagram || member.instagram === "#" ? "disabled" : ""}
                     >
                       <FontAwesomeIcon icon={faInstagram} />
                     </a>
                     <a
-                      href={member.linkedin && member.linkedin !== "#" ? member.linkedin : undefined}
+                      href={member.linkedin && member.linkedin !== "#" ? member.linkedin : "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={`${member.name}'s LinkedIn`}
-                      className={(!member.linkedin || member.linkedin === "#") ? "disabled" : ""}
+                      className={!member.linkedin || member.linkedin === "#" ? "disabled" : ""}
                     >
                       <FontAwesomeIcon icon={faLinkedinIn} />
                     </a>
@@ -207,6 +216,7 @@ const Team = () => {
           </TeamGrid>
         </TeamSection>
       </TeamContainer>
+      <Footer />
     </PageWrapper>
   );
 };
