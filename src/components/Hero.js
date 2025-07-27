@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,30 +7,33 @@ import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-sv
 
 // Import AVIF images
 import backgroundShapes from '../assets/linkimg.avif';
-import metallic3D from '../assets/6814a411594d8a7230486656_Color=Dark,-Variant=Metallic-(4)-p-800.avif';
 
 const HeroSection = styled.section`
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  color: white;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   min-height: 90vh;
+  width: 100%;
+  color: white;
   box-sizing: border-box;
   overflow: hidden;
   background: radial-gradient(
-  circle at top left,
-  rgba(255, 255, 255, 0.3) 10%,
-  rgba(255, 255, 255, 0.1) 20%,
-  rgba(12, 12, 29, 0.8) 30%,
-  rgba(12, 12, 29, 1) 60%,
-  transparent 90%
-);
-  background-color: rgba(12,12,29,255); /* Adjusted background color */
+    circle at top left,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
+    transparent 90%
+  );
+  background-color: rgba(12,12,29,255);
   background-position: center;
-  
+  align-items: stretch;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    min-height: 100vh;
+  }
 `;
 
 const SocialIcons = styled.div`
@@ -75,62 +78,121 @@ const SideText = styled.div`
   } */ }
 `;
 
+// HeroBg removed backgroundShapes, now just a transparent overlay if needed
 const HeroBg = styled.div`
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   padding: 0 10px;
   z-index: 1;
-  background-image: url(${backgroundShapes});
-  background-repeat: no-repeat;
-  background-size: 600px;
-  background-position: bottom right;
-  opacity: 1; /* Adjusted opacity */
-
+  pointer-events: none;
   &::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(15, 3, 38, 0.15);
-    opacity: 1; /* Adjusted opacity */
+    opacity: 1;
     z-index: -1;
     transition: opacity 0.3s ease;
+  }
+`;
+
+const HeroImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  grid-row: 1;
+  grid-column: 2;
+  @media (max-width: 900px) {
+    order: -1;
+    padding: 40px 0 0 0;
+    justify-content: center;
+    align-items: center;
+    grid-row: 1;
+    grid-column: 1;
   }
 `;
 
 const HeroContent = styled.div`
   position: relative;
   z-index: 2;
-  padding: 10% 0;
+  margin: 0 10%;
+  padding: 0 10% 0 8%;
   width: 100%;
-  height: 100%;
   text-align: left;
-  padding-left: 5%;
-  animation: zoomOut 1s ease-in backwards;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding-right: 45%;
-  
-  @media (max-width: 768px) {
-    padding-right: 10%;
+  min-height: 0;
+  height: 100%;
+  grid-row: 1;
+  grid-column: 1;
+
+  @media (max-width: 900px) {
+    margin : 0;
+    padding: 24px 5% 0 5%;
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+    height: auto;
+    grid-row: 2;
+    grid-column: 1;
+  }
+`;
+
+
+const GlobalHeroKeyframes = createGlobalStyle`
+  @keyframes rotateLeftRight {
+    0% { transform: rotate(-20deg); }
+    50% { transform: rotate(20deg); }
+    100% { transform: rotate(-20deg); }
+  }
+`;
+
+const AnimatedBgShape = styled.img`
+  width: 90%;
+  max-width: 600px;
+  min-width: 250px;
+  height: auto;
+  animation: rotateLeftRight 10s infinite ease-in-out;
+  will-change: transform;
+  display: block;
+  margin: 0 auto;
+  @media (max-width: 900px) {
+    width: 80vw;
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+`;
+
+const RotatingImage = styled.img`
+  width: 90%;
+  max-width: 600px;
+  min-width: 250px;
+  height: auto;
+  animation: rotateLeftRight 4s infinite cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+  @media (max-width: 900px) {
+    width: 80vw;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
   }
 `;
 
 const Title = styled.h1`
   font-size: 4.5rem;
   margin-bottom: 0;
-  width: 600px;
-  
   line-height: 1.2;
   color: white;
   font-weight: 700;
   text-transform: none;
   font-family: sans-serif;
   letter-spacing: -0.5px;
-
   @media (max-width: 768px) {
     font-size: 2.8rem;
   }
@@ -138,20 +200,53 @@ const Title = styled.h1`
 
 const Highlight = styled.span`
   font-size: 4.5rem;
-  font-family:
   margin-bottom: 20px;
   line-height: 1.2;
   font-weight: 400;
   font-style: normal;
-  color: rgba(255, 255, 255, 0.6); /* Adjusted color to be lighter */
+  color: rgba(255, 255, 255, 0.6);
   text-transform: none;
   position: relative;
-  display: block;
+  display: inline-block;
   font-family: sans-serif;
   letter-spacing: -0.5px;
-
+  animation: bounceOptimus 1.5s infinite;
+  animation-delay: 0s;
   @media (max-width: 768px) {
     font-size: 2.8rem;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) scaleX(1);
+    bottom: -8px;
+    width: 80%;
+    height: 5px;
+    background: linear-gradient(90deg, #00FFFF 0%, #fff 100%);
+    border-radius: 3px;
+    opacity: 0.7;
+    animation: bounceUnderline 1.5s infinite;
+    z-index: 1;
+  }
+
+  @keyframes bounceOptimus {
+    0% { transform: scale(1); }
+    10% { transform: scale(1.15, 0.85) translateY(-8px); }
+    20% { transform: scale(0.95, 1.05) translateY(0px); }
+    30% { transform: scale(1.05, 0.95) translateY(-4px); }
+    40% { transform: scale(1, 1) translateY(0px); }
+    100% { transform: scale(1); }
+  }
+  @keyframes bounceUnderline {
+    0% { transform: translateX(-50%) scaleX(1) scaleY(1); }
+    10% { transform: translateX(-50%) scaleX(1.15) scaleY(0.7); }
+    20% { transform: translateX(-50%) scaleX(0.95) scaleY(1.1); }
+    30% { transform: translateX(-50%) scaleX(1.05) scaleY(0.85); }
+    40% { transform: translateX(-50%) scaleX(1) scaleY(1); }
+    100% { transform: translateX(-50%) scaleX(1) scaleY(1); }
   }
 `;
 
@@ -180,6 +275,9 @@ const StyledButton = styled(Link)`
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
+  transform: scale(0.7);
+  opacity: 0;
+  animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.2s forwards, rotateLeftButton 3s infinite linear;
 
   &:first-child {
     background: white;
@@ -187,12 +285,42 @@ const StyledButton = styled(Link)`
     border: 1px solid white;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.2s forwards, rotateLeftButton 3s infinite linear;
   }
 
   &:hover {
-    transform: translateY(-3px);
-    background: white; /* Keep hover background white for both */
-    color: #1a0740; /* Keep hover color dark for both */
+    transform: scale(1.05) translateY(-3px);
+    background: white;
+    color: #1a0740;
+  }
+
+  &:nth-child(2) {
+    animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.4s forwards, rotateRightButton 3s infinite linear;
+  }
+
+  @keyframes buttonZoomIn {
+    0% {
+      transform: scale(0.7);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes rotateLeftButton {
+    0% { transform: scale(1) rotate(0deg); }
+    20% { transform: scale(1.03) rotate(-5deg); }
+    50% { transform: scale(1) rotate(0deg); }
+    70% { transform: scale(1.03) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes rotateRightButton {
+    0% { transform: scale(1) rotate(0deg); }
+    20% { transform: scale(1.03) rotate(5deg); }
+    50% { transform: scale(1) rotate(0deg); }
+    70% { transform: scale(1.03) rotate(-5deg); }
+    100% { transform: scale(1) rotate(0deg); }
   }
 `;
 
@@ -202,25 +330,10 @@ const ButtonContainer = styled.div`
   justify-content: flex-start;
   gap: 15px; /* Adjusted gap */
   margin-top: 40px;
+  padding: 30px 0;
 `;
 
-const ShapesContainer = styled.div`
-  position: absolute;
-  top: 10;
-  right: 0;
-  width: 70%; /* Adjusted width */
-  height: 100%;
-  z-index: 1;
-  overflow: hidden;
-  background-image: url(${metallic3D});
-  background-size: cover; /* Keep cover */
-  background-position: bottom right; /* Adjusted position */
-  opacity: 1; /* Adjusted opacity */
-  
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
+// ShapesContainer is not used and metallic3D is removed
 
 
 const Shape = styled.img`
@@ -241,47 +354,50 @@ const Hero = () => {
   const { theme, isDarkTheme } = useTheme();
 
   return (
-    <HeroSection theme={theme}>
-       <SocialIcons>
-        <a href="https://www.instagram.com/optimus.orgz/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faInstagram} />
-        </a>
-        <a href="https://www.linkedin.com/company/optimus16/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faLinkedinIn} />
-        </a>
-      </SocialIcons>
-      <SideText></SideText> 
-      <ShapesContainer>
-      </ShapesContainer>
-      <HeroBg isDarkTheme={isDarkTheme}>
-        <HeroContent 
-          data-aos="fade-right" 
+    <>
+      <GlobalHeroKeyframes />
+      <HeroSection theme={theme}>
+        <SocialIcons>
+          <a href="https://www.instagram.com/optimus.orgz/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faInstagram} />
+          </a>
+          <a href="https://www.linkedin.com/company/optimus16/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faLinkedinIn} />
+          </a>
+        </SocialIcons>
+        <SideText></SideText>
+        <HeroImageWrapper>
+          <AnimatedBgShape src={backgroundShapes} alt="OPTIMUS Shape" />
+        </HeroImageWrapper>
+        <HeroContent
+          data-aos="fade-right"
           data-aos-duration="1000"
         >
           <Title>Welcome To</Title>
           <Highlight>OPTIMUS</Highlight>
           <Description>
-          A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.          </Description>
+            A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.
+          </Description>
           <ButtonContainer>
             <StyledButton as="a"
-            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" 
-            target="_blank"
-            data-aos="zoom-in" 
+              href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
+              target="_blank"
+              data-aos="zoom-in"
               data-aos-delay="300"
             >
               LET'S CONNECT
             </StyledButton>
-            <StyledButton 
+            <StyledButton
               to="/events"
-              data-aos="zoom-in" 
+              data-aos="zoom-in"
               data-aos-delay="400"
             >
               EXPLORE EVENTS
             </StyledButton>
           </ButtonContainer>
         </HeroContent>
-      </HeroBg>
-    </HeroSection>
+      </HeroSection>
+    </>
   );
 };
 

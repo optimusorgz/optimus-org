@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext'; // Make sure the path is correct
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -14,6 +15,13 @@ import {
   faGlobeAmericas,
   faRocket
 } from '@fortawesome/free-solid-svg-icons';
+
+// Animated underline keyframes
+const underlinePulse = keyframes`
+  0% { width: 80px; }
+  50% { width: 160px; }
+  100% { width: 80px; }
+`;
 
 
 const MissionSection = styled.section`
@@ -74,12 +82,21 @@ const MissionHeader = styled.div`
   }
 `;
 
+const rotateZ = keyframes`
+  0% { transform: rotateZ(0deg); }
+  20% { transform: rotateZ(5deg); }
+  50% { transform: rotateZ(0deg); }
+  70% { transform: rotateZ(-5deg); }
+  100% { transform: rotateZ(0deg); }
+`;
+
 const HeaderTitle = styled.h2`
   font-size: 3rem;
   color: rgba(255, 255, 255, 1.6); /* Adjusted color to be lighter */
   margin-bottom: 20px;
   position: relative;
   display: inline-block;
+  animation: ${props => props.rotate ? rotateZ : 'none'} 3s infinite;
 
   &::after {
     content: '';
@@ -96,77 +113,68 @@ const HeaderTitle = styled.h2`
 `;
 
 const MissionContent = styled.div`
-  display: grid;
-  grid-template-columns: 500px 500px;
-  gap: 0px;
-  align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 70px;
   padding: 20px 10%;
-  
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 30px;
+    padding: 10px 2%;
   }
 `;
 
-const MissionCard = styled.div`
-  background: ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.03)' 
-    : 'rgba(0, 0, 0, 0.03)'};
-  backdrop-filter: blur(10px);
-  border: 1px solid ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.1)' 
-    : 'rgba(0, 0, 0, 0.1)'};
-  border-radius: 20px;
-  padding: 40px;
-  margin: 0 auto;  width: 80%;
-  height: 400px;
-  opacity: 0.95;
-  transform: rotate(45deg);
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }  &:hover {
-    transform: rotateX(20deg);
-    box-shadow: ${props => props.isDarkTheme
-      ? '0 20px 40px rgba(0, 255, 255, 0.2)'
-      : '0 20px 40px rgba(0, 139, 139, 0.2)'};
-    border-color: ${props => props.isDarkTheme
-      ? 'rgba(0, 255, 255, 0.3)'
-      : 'rgba(0, 139, 139, 0.3)'};
-    opacity: 1;
-  }
-
-  &:hover::before {
-    transform: translateX(100%);
-  }
+const MissionSectionBox = styled.div`
+  flex: 1;
+  min-width: 280px;
+  max-width: 500px;
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
 `;
 
-const CardTitle = styled.h3`
-  font-size: 2rem;
-  color: ${props => props.isDarkTheme ? '#00FFFF' : '#008B8B'};
+const CardTitle = styled.h2`
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 1.6);
   margin-bottom: 20px;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  font-weight: 700;
+  justify-content: center;
+  text-align: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 1.6);
+    border-radius: 2px;
+    animation: ${underlinePulse} 2.2s ease-in-out infinite;
+  }
 
   svg {
-    font-size: 2.5rem;
-    filter: drop-shadow(0 0 10px ${props => props.isDarkTheme 
-      ? 'rgba(0, 255, 255, 0.3)'
-      : 'rgba(0, 139, 139, 0.3)'});
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px ${props => props.isDarkTheme
+    ? 'rgba(0, 255, 255, 0.2)'
+    : 'rgba(0, 139, 139, 0.2)'});
   }
 `;
 
 const CardText = styled.p`
   font-size: 1.1rem;
-  color: ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.9)' 
+  color: ${props => props.isDarkTheme
+    ? 'rgba(255, 255, 255, 0.9)'
     : 'rgba(0, 0, 0, 0.9)'};
   line-height: 1.8;
 `;
@@ -182,17 +190,17 @@ const CoreValues = styled.div`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
 const ValueItem = styled.div`
-  background: ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.03)' 
+  background: ${props => props.isDarkTheme
+    ? 'rgba(255, 255, 255, 0.03)'
     : 'rgba(0, 0, 0, 0.03)'};
   backdrop-filter: blur(10px);
-  border: 1px solid ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.1)' 
+  border: 1px solid ${props => props.isDarkTheme
+    ? 'rgba(255, 255, 255, 0.1)'
     : 'rgba(0, 0, 0, 0.1)'};
   padding: 30px;
   border-radius: 15px;
@@ -209,8 +217,8 @@ const ValueItem = styled.div`
     width: 100%;
     height: 100%;
     background: ${props => props.isDarkTheme
-      ? 'linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent)'
-      : 'linear-gradient(45deg, transparent, rgba(0, 139, 139, 0.1), transparent)'};
+    ? 'linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent)'
+    : 'linear-gradient(45deg, transparent, rgba(0, 139, 139, 0.1), transparent)'};
     transform: translateX(-100%);
     transition: transform 0.6s ease;
   }
@@ -218,11 +226,11 @@ const ValueItem = styled.div`
   &:hover {
     transform: translateY(-10px);
     box-shadow: ${props => props.isDarkTheme
-      ? '0 15px 30px rgba(0, 255, 255, 0.1)'
-      : '0 15px 30px rgba(0, 139, 139, 0.1)'};
+    ? '0 15px 30px rgba(0, 255, 255, 0.1)'
+    : '0 15px 30px rgba(0, 139, 139, 0.1)'};
     border-color: ${props => props.isDarkTheme
-      ? 'rgba(0, 255, 255, 0.2)'
-      : 'rgba(0, 139, 139, 0.2)'};
+    ? 'rgba(0, 255, 255, 0.2)'
+    : 'rgba(0, 139, 139, 0.2)'};
   }
 
   &:hover::before {
@@ -233,9 +241,9 @@ const ValueItem = styled.div`
     font-size: 2.5rem;
     color: ${props => props.isDarkTheme ? '#00FFFF' : '#008B8B'};
     margin-bottom: 20px;
-    filter: drop-shadow(0 0 10px ${props => props.isDarkTheme 
-      ? 'rgba(0, 255, 255, 0.3)'
-      : 'rgba(0, 139, 139, 0.3)'});
+    filter: drop-shadow(0 0 10px ${props => props.isDarkTheme
+    ? 'rgba(0, 255, 255, 0.3)'
+    : 'rgba(0, 139, 139, 0.3)'});
   }
 `;
 
@@ -247,8 +255,8 @@ const ValueTitle = styled.h4`
 
 const ValueText = styled.p`
   font-size: 0.9rem;
-  color: ${props => props.isDarkTheme 
-    ? 'rgba(255, 255, 255, 0.8)' 
+  color: ${props => props.isDarkTheme
+    ? 'rgba(255, 255, 255, 0.8)'
     : 'rgba(0, 0, 0, 0.8)'};
   margin: 0;
 `;
@@ -281,67 +289,61 @@ const Mission = () => {
   return (
     <MissionSection id="mission" isDarkTheme={isDarkTheme}>
       <MissionContainer>
-        <MissionHeader>
-          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000">
-            Our Mission & Vision
-          </HeaderTitle>
-        </MissionHeader>
-
-        <MissionContent>          <MissionCard            isDarkTheme={isDarkTheme}
-            data-aos="fade-right"
-            data-aos-duration="800"
-            data-aos-delay="500"
-            data-aos-anchor-placement="center-bottom"
-            onMouseEnter={() => setIsHoveredMission(true)}
-            onMouseLeave={() => setIsHoveredMission(false)}
-            style={{
-              transform: isHoveredMission ? 'rotate(0deg)' : 'rotate(10deg)',
-              transition: 'transform 0.3s ease',
-            }}>
-            <CardTitle isDarkTheme={isDarkTheme}>
+        <MissionContent>
+          <MissionSectionBox>
+            <CardTitle
+              isDarkTheme={isDarkTheme}
+              data-aos="fade-left"
+              data-aos-duration="1000"
+            >
               <FontAwesomeIcon icon={faBullseye} />
               Our Mission
             </CardTitle>
-            <CardText isDarkTheme={isDarkTheme}>
+            <CardText
+              isDarkTheme={isDarkTheme}
+              data-aos="zoom-out"
+              data-aos-duration="1000"
+              data-aos-delay="200"
+            >
               At <strong>Optimus</strong>, we're dedicated to creating a dynamic space where innovation thrives. Our
               mission is to empower students through hands-on learning, collaborative projects, and real-world challenges.
               We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions.
             </CardText>
-          </MissionCard>          <MissionCard            isDarkTheme={isDarkTheme}
-            data-aos="fade-left"
-            data-aos-duration="800"
-            data-aos-delay="1000"
-            data-aos-anchor-placement="center-bottom"
-            onMouseEnter={() => setIsHoveredVision(true)}
-            onMouseLeave={() => setIsHoveredVision(false)}
-            style={{
-              transform: isHoveredVision ? 'rotate(0deg)' : 'rotate(-7deg)',
-              transition: 'transform 0.3s ease',
-            }}>
-            <CardTitle isDarkTheme={isDarkTheme}>
+          </MissionSectionBox>
+          <MissionSectionBox>
+            <CardTitle
+              isDarkTheme={isDarkTheme}
+              data-aos="fade-right"
+              data-aos-duration="1000"
+            >
               <FontAwesomeIcon icon={faEye} />
               Our Vision
             </CardTitle>
-            <CardText isDarkTheme={isDarkTheme}>
+            <CardText
+              isDarkTheme={isDarkTheme}
+              data-aos="zoom-out"
+              data-aos-duration="1000"
+              data-aos-delay="200"
+            >
               We envision a future where every student has the opportunity to develop their technical skills and
               leadership abilities. Our goal is to build a community that not only learns together but also creates
               lasting impact through technology and innovation.
             </CardText>
-          </MissionCard>
+          </MissionSectionBox>
         </MissionContent>
 
         <MissionHeader className="values">
-          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000">
+          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000" rotate>
             Core Values
           </HeaderTitle>
         </MissionHeader>
 
         <CoreValues>
           {coreValues.map((value, index) => (
-            <ValueItem 
-              key={index} 
+            <ValueItem
+              key={index}
               isDarkTheme={isDarkTheme}
-              data-aos="zoom-in" 
+              data-aos="zoom-in"
               data-aos-delay={100 * (index + 1)}
             >
               <FontAwesomeIcon icon={value.icon} />
