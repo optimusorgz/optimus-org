@@ -158,7 +158,7 @@ const Team = () => {
     {
       name: "Shailaja Singh",
       position: "Student Relation Coordinator",
-      image: require("../assets/shailaja.jpeg"),
+      image: require("../assets/team/shailaja.jpeg"),
       instagram: "https://www.instagram.com/solely_solitude03?igsh=MTZxbmE0a202MHg1eg==",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
@@ -172,7 +172,7 @@ const Team = () => {
     {
       name: "Basu Slathia",
       position: "Core Team Member",
-      image: require("../assets/basu.jpeg"),
+      image: require("../assets/team/basu.jpeg"),
       instagram: "insta id - https://www.instagram.com/basu_9534?igsh=NDQ2MWtvazlvYnFn&utm_source=qr",
       linkedin: "#"
     },
