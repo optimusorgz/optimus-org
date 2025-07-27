@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, Header } from '../components/common/PageWrapper';
 import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
 
 const images = [
   require('../assets/gallary/IMG_0314.jpg'),
@@ -41,6 +53,8 @@ const GalleryContainer = styled.div`
     rgba(12, 12, 29, 1) 500px,
     transparent 100%
   );
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
   &::before {
     content: '';
     position: absolute;

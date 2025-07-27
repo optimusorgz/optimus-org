@@ -10,6 +10,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '../context/ThemeContext';
 
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
+
 
 // Smoother bounce keyframes for title letters
 const bounceUp = keyframes`
@@ -45,13 +57,16 @@ const Section = styled.section`
   overflow: hidden;
 background: radial-gradient(
   circle at bottom right,
-  rgba(255, 255, 255, 0.3) 50px,
-  rgba(255, 255, 255, 0.1) 200px,
-  rgba(12, 12, 29, 0.8) 400px,
+  rgba(255, 255, 255, 0.3) 120px,
+  rgba(255, 255, 255, 0.1) 250px,
+  rgba(12, 12, 29, 0.8) 450px,
   rgba(12, 12, 29, 1) 500px,
   transparent 100%
-);  background-color: rgba(12,12,29,255); /* Adjusted background color */
-  background-position: center;
+);
+background-color: rgba(12,12,29,255); /* Adjusted background color */
+background-position: center;
+background-size: 100% 100%;
+animation: ${pulseGradient} 5s ease-in-out infinite;
 
   &::before {
     content: '';
@@ -115,7 +130,7 @@ const ScrollContainer = styled.div`
   display: flex;
   gap: 30px;
   border-radius: 15px;
-  animation: ${scrollX} 30s linear infinite;
+  animation: ${scrollX} 60s linear infinite;
   width: fit-content;
   padding-right: 30px;
 
@@ -136,9 +151,16 @@ const Card = styled.div`
   border-radius: 15px;
   padding: 30px 20px;
   text-align: center;
-  width: 20%;
-  height: 70%;
-  
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   transition: all 0.4s ease;
   position: relative;
@@ -159,10 +181,12 @@ const Card = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 50vw;
-    min-width: 50vw;
-    max-width: 50vw;
-    height: auto;
+    width: 70vw;
+    min-width: 70vw;
+    max-width: 70vw;
+    height: 110px;
+    min-height: 110px;
+    max-height: 110px;
     padding: 14px 4px;
     margin: 0 5px;
     font-size: 0.1rem;
@@ -183,58 +207,49 @@ const Card = styled.div`
   }
 
 
+
+
+
   .icon {
-    font-size: 3rem;
+    font-size: 1.6rem;
     color: rgba(255, 255, 255, 0.6); /* Adjusted color to be lighter */
     background: ${props => props.isDarkTheme
     ? 'linear-gradient(45deg, #00FFFF, #00BFFF)'
     : 'linear-gradient(45deg, #008B8B, #006666)'};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     transition: transform 0.3s ease;
   }
 
   h3 {
     color: ${props => props.theme.primary};
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
   }
 
   p {
     color: ${props => props.isDarkTheme ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'};
-    line-height: 1.6;
-    font-size: 1.1rem;
+    line-height: 1.5;
+    font-size: 0.8rem;
   }
 
   @media (max-width: 768px) {
     .icon {
-      font-size: 1.3rem;
-      margin-bottom: 8px;
-    }
-    h3 {
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       margin-bottom: 6px;
     }
+    h3 {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
     p {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
     }
   }
 
   &:hover .icon {
     transform: scale(1.1);
-  }
-
-  h3 {
-    color: ${props => props.theme.primary};
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-  }
-
-  p {
-    color: ${props => props.isDarkTheme ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)'};
-    line-height: 1.6;
-    font-size: 1.1rem;
   }
 `;
 
@@ -279,7 +294,7 @@ export const Highlights = () => {
       </Title>
       <Cards>
         <ScrollContainer className="scroll-container">
-          {[...highlights, ...highlights].map((item, index) => (
+          {Array(6).fill(null).flatMap(() => highlights).map((item, index) => (
             <Card
               key={index}
               theme={theme}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
 import Footer from '../components/Footer';
@@ -8,6 +8,18 @@ import 'aos/dist/aos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
+
 const TeamContainer = styled.div`
   min-height: 100%;
   padding-top: 20px;
@@ -15,14 +27,16 @@ const TeamContainer = styled.div`
   background-color: rgba(12,12,29,255);
   background-position: center;
   transition: background-color 0.3s ease;
-    background: radial-gradient(
-  circle at top left,
-  rgba(255, 255, 255, 0.3) 100px,
-  rgba(255, 255, 255, 0.1) 200px,
-  rgba(12, 12, 29, 0.8) 400px,
-  rgba(12, 12, 29, 1) 500px,
-  transparent 100%
-);
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 255, 255, 0.3) 100px,
+    rgba(255, 255, 255, 0.1) 200px,
+    rgba(12, 12, 29, 0.8) 400px,
+    rgba(12, 12, 29, 1) 500px,
+    transparent 100%
+  );
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
 
   &::before {
     content: '';
@@ -175,7 +189,7 @@ const Team = () => {
       image: require("../assets/avtar.jpeg"),
       instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
       linkedin: "#"
-    },  
+    },
     {
       name: "Basu Slathia",
       position: "Core Team Member",

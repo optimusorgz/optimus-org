@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
@@ -16,6 +15,18 @@ import {
   faRocket
 } from '@fortawesome/free-solid-svg-icons';
 
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
+
 // Animated underline keyframes
 const underlinePulse = keyframes`
   0% { width: 80px; }
@@ -31,9 +42,9 @@ const MissionSection = styled.section`
   overflow: hidden;
 background: radial-gradient(
   circle at top right,
-   rgba(255, 255, 255, 0.3) 50px,
-  rgba(255, 255, 255, 0.1) 200px,
-  rgba(12, 12, 29, 0.8) 400px,
+    rgba(255, 255, 255, 0.3) 120px,
+  rgba(255, 255, 255, 0.1) 250px,
+  rgba(12, 12, 29, 0.8) 450px,
   rgba(12, 12, 29, 1) 500px,
   transparent 100%
 ),
@@ -50,6 +61,8 @@ radial-gradient(
 
 background-color: rgba(12,12,29,255); /* Adjusted background color */
   background-position: center;
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
 
   &::before {
     content: '';
@@ -129,7 +142,7 @@ const MissionContent = styled.div`
 
 const MissionSectionBox = styled.div`
   flex: 1 1 0;
-  min-width: 280px;
+  min-width: 220px;
   max-width: 500px;
   min-height: 340px;
   display: flex;
@@ -137,12 +150,24 @@ const MissionSectionBox = styled.div`
   justify-content: center;
   background: ${props => props.isDarkTheme ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'};
   box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
-  border: 2px solid ${props => props.isDarkTheme ? 'rgba(0,255,255,0.25)' : 'rgba(0,139,139,0.25)'};
+  background-size: 100% 100%;
   border-radius: 18px;
   padding: 32px 24px;
   margin: 0;
   transition: border-color 0.3s;
   box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  width: 100%;
+  border: 2.5px solid ${props => props.isDarkTheme ? 'rgba(0,255,255,0.25)' : 'rgba(0,139,139,0.25)'};
+
+  @media (max-width: 1024px) {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    padding: 20px 10px;
+  }
 `;
 
 const CardTitle = styled.h2`

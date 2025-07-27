@@ -1,11 +1,23 @@
 import React from 'react';
+import styled, { keyframes } from 'styled-components';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import { useTheme } from '../context/ThemeContext';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
-import styled from 'styled-components';
+
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
 
 const Section = styled.section`
   padding: 0px 70px 100px 70px;
@@ -19,6 +31,8 @@ const Section = styled.section`
   rgba(12, 12, 29, 1) 500px,
   transparent 90%
 );
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
 
   transition: background 0.3s ease;
   background-color: rgba(12,12,29,255); /* Adjusted background color */
@@ -97,8 +111,8 @@ const StyledSwiper = styled(Swiper)`
     transition: all 0.5s ease;
     opacity: 0.6;
     box-shadow: ${props => props.isDarkTheme
-      ? '0 10px 30px rgba(0, 255, 255, 0.1)'
-      : '0 10px 30px rgba(0, 139, 139, 0.1)'};
+    ? '0 10px 30px rgba(0, 255, 255, 0.1)'
+    : '0 10px 30px rgba(0, 139, 139, 0.1)'};
     img {
       width: 100%;
       height: 100%;
@@ -134,8 +148,8 @@ const StyledSwiper = styled(Swiper)`
   .swiper-pagination-bullet-active {
     opacity: 1;
     background: ${props => props.isDarkTheme
-      ? 'linear-gradient(to right, #00FFFF, #00BFFF)'
-      : 'linear-gradient(to right, #008B8B, #006666)'};
+    ? 'linear-gradient(to right, #00FFFF, #00BFFF)'
+    : 'linear-gradient(to right, #008B8B, #006666)'};
   }
 `;
 
@@ -168,7 +182,7 @@ const Gallery = () => {
       title: 'Team Projects',
       description: 'Collaborative projects bringing ideas to life'
     },
-    
+
     {
       image: require('../assets/gallary/IMG_0338.jpg'),
       title: 'Community Events',
@@ -192,7 +206,7 @@ const Gallery = () => {
         centeredSlides={true}
         slidesPerView={"auto"}
         spaceBetween={10}
-        initialSlide={1}        coverflowEffect={{
+        initialSlide={1} coverflowEffect={{
           rotate: 35,
           stretch: 0,
           depth: 200,
@@ -208,11 +222,11 @@ const Gallery = () => {
         isDarkTheme={isDarkTheme}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={index}>            <img 
-              src={slide.image} 
-              alt={slide.title}
-              loading="lazy"
-            />
+          <SwiperSlide key={index}>            <img
+            src={slide.image}
+            alt={slide.title}
+            loading="lazy"
+          />
           </SwiperSlide>
         ))}
       </StyledSwiper>

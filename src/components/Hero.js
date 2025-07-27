@@ -1,12 +1,30 @@
 
 import React, { useState, useEffect } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-svg-icons';
 // Import AVIF images
 import backgroundShapes from '../assets/linkimg.avif';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-svg-icons';
+
+
+const SideText = styled.div`
+  display: none;
+`;
+
+
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
 
 const HeroSection = styled.section`
   position: relative;
@@ -26,7 +44,9 @@ const HeroSection = styled.section`
     transparent 90%
   );
   background-color: rgba(12,12,29,255);
-  background-position: center;
+  background-position: left top;
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
   align-items: stretch;
 
   @media (max-width: 900px) {
@@ -62,23 +82,6 @@ const SocialIcons = styled.div`
   }
 `;
 
-const SideText = styled.div`
-  { /*position: fixed;
-  right: -40px;
-  top: 50%;
-  transform: translateY(-50%) rotate(90deg);
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: white;
-  text-transform: uppercase;
-  z-index: 100;
-  
-  @media (max-width: 768px) {
-    display: none;
-  } */ }
-`;
-
-// HeroBg removed backgroundShapes, now just a transparent overlay if needed
 const HeroBg = styled.div`
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -359,22 +362,52 @@ const Hero = () => {
   const [showButtons, setShowButtons] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setShowTitle(true), 300);
-    setTimeout(() => setShowHighlight(true), 1100);
-    setTimeout(() => setShowDesc(true), 2100);
-    setTimeout(() => setShowButtons(true), 2700);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Element is in view, start animations
+            setTimeout(() => setShowTitle(true), 300);
+            setTimeout(() => setShowHighlight(true), 1100);
+            setTimeout(() => setShowDesc(true), 2100);
+            setTimeout(() => setShowButtons(true), 2700);
+          } else {
+            // Element is out of view, reset states
+            setShowTitle(false);
+            setShowHighlight(false);
+            setShowDesc(false);
+            setShowButtons(false);
+          }
+        });
+      },
+      { threshold: 0.1 } // Trigger when 10% of the element is visible
+    );
+
+    const heroSection = document.getElementById('hero-section');
+    if (heroSection) {
+      observer.observe(heroSection);
+    }
+
+    return () => {
+      if (heroSection) {
+        observer.unobserve(heroSection);
+      }
+    };
   }, []);
 
   return (
     <>
       <GlobalHeroKeyframes />
-      <HeroSection theme={theme}>
+      <HeroSection id="hero-section" theme={theme}>
         <SocialIcons>
           <a href="https://www.instagram.com/optimus.orgz/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faInstagram} />
           </a>
           <a href="https://www.linkedin.com/company/optimus16/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
             <FontAwesomeIcon icon={faLinkedinIn} />
+          </a>
+          <a href="https://github.com/Optimus-Club-LPU" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+            <FontAwesomeIcon icon={faGithub} />
           </a>
         </SocialIcons>
         <SideText></SideText>

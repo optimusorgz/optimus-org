@@ -1,9 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-svg-icons';
+
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
 
 const FooterWrapper = styled.footer`
   color: ${props => props.theme.text};
@@ -11,14 +23,17 @@ const FooterWrapper = styled.footer`
   transition: all 0.3s ease;
   
 
-  background: radial-gradient(
+background: radial-gradient(
   circle at bottom right,
   rgba(12,12,29,0.1) 8%,
   rgba(12, 12, 29, 0.8) 20%,
   rgba(12, 12, 29, 1) 60%,
   transparent 100%
-);  background-color: rgba(12,12,29,255); /* Adjusted background color */
-  background-position: center;
+);
+background-color: rgba(12,12,29,255); /* Adjusted background color */
+background-position: center;
+background-size: 100% 100%;
+animation: ${pulseGradient} 5s ease-in-out infinite;
 
   &::before {
     content: '';
