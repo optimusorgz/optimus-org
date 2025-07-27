@@ -140,42 +140,42 @@ const StyledSwiper = styled(Swiper)`
 `;
 
 const Gallery = () => {
-  const { theme, isDarkTheme } = useTheme();
+  const { isDarkTheme } = useTheme(); // Removed unused theme variable
 
   const slides = [
     {
-      image: require('../assets/IMG_0358.jpg'),
+      image: require('../assets/gallary/IMG_0358.jpg'),
       title: 'Annual Hackathon',
       description: 'Students collaborating and innovating in our biggest event of the year'
     },
     {
-      image: require('../assets/IMG_4972.jpg'),
+      image: require('../assets/gallary/IMG_4972.jpg'),
       title: 'Tech Workshops',
       description: 'Hands-on learning sessions with industry experts'
     },
     {
-      image: require('../assets/IMG_0333.jpg'),
+      image: require('../assets/gallary/IMG_0333.jpg'),
       title: 'Tech Workshops',
       description: 'Hands-on learning sessions with industry experts'
     },
     {
-      image: require('../assets/IMG_0338.jpg'),
+      image: require('../assets/gallary/IMG_0338.jpg'),
       title: 'Tech Workshops',
       description: 'Hands-on learning sessions with industry experts'
     },
     {
-      image: require('../assets/IMG_5760.jpeg'),
+      image: require('../assets/gallary/IMG_5760.jpeg'),
       title: 'Team Projects',
       description: 'Collaborative projects bringing ideas to life'
     },
     
     {
-      image: require('../assets/IMG_0338.jpg'),
+      image: require('../assets/gallary/IMG_0338.jpg'),
       title: 'Community Events',
       description: 'Building connections and sharing knowledge'
     },
     {
-      image: require('../assets/IMG_0317.jpg'),
+      image: require('../assets/gallary/IMG_0317.jpg'),
       title: 'Innovation Lab',
       description: 'Where ideas transform into reality'
     }
@@ -184,7 +184,7 @@ const Gallery = () => {
   return (
     <Section isDarkTheme={isDarkTheme}>
       <Header isDarkTheme={isDarkTheme}>
-        <h2 data-aos="fade-up"></h2>
+        <h2 data-aos="fade-up">Gallery</h2>
       </Header>      <StyledSwiper
         modules={[EffectCoverflow, Pagination, Autoplay]}
         effect="coverflow"

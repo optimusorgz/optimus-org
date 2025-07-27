@@ -168,7 +168,7 @@ const Navbar = () => {
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <JoinButton 
-            href="https://script.google.com/macros/s/AKfycbyHN7l4C1x1Fosv0GRgbsDnOYiYXYL7vOhCvV7G76fN25FIuzBwJYEFPN9srKhxLeDY/exec" 
+            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" 
             target="_blank" 
             rel="noopener noreferrer"
             theme={theme}
@@ -191,7 +191,7 @@ const Navbar = () => {
         <li><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={toggleMenu}>TEAM</NavLink></li>
         <li><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={toggleMenu}>GALLERY</NavLink></li>
         <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={toggleMenu}>EVENTS</NavLink></li>
-        <li><a href="https://script.google.com/macros/s/AKfycbyHN7l4C1x1Fosv0GRgbsDnOYiYXYL7vOhCvV7G76fN25FIuzBwJYEFPN9srKhxLeDY/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={toggleMenu}>JOIN US</a></li>
+        <li><a href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={toggleMenu}>JOIN US</a></li>
       </DropdownMenu>
     </Nav>
   );

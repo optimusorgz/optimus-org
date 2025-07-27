@@ -152,7 +152,7 @@ const Footer = () => {
           </SocialLinks>
         </FooterSection>
       </FooterContent>
-      
+
       <Copyright theme={theme}>
         <p>&copy; {new Date().getFullYear()} OPTIMUS. All rights reserved.</p>
       </Copyright>
