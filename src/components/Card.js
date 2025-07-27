@@ -7,6 +7,7 @@ export const Card = styled.div`
   padding: 20px;
   transition: all 0.3s ease;
 
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: ${props => props.theme.shadow};
