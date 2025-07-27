@@ -6,6 +6,7 @@ export const Card = styled.div`
   border-radius: 15px;
   padding: 20px;
   transition: all 0.3s ease;
+  
 
 
   &:hover {
