@@ -163,6 +163,13 @@ const Team = () => {
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
+      name: "Ankit Kumar",
+      position: "Graphics Team Head",
+      image: require("../assets/team/shailaja.jpeg"),
+      instagram: "https://www.instagram.com/ankit258akofficial?igsh=MWliZjd5bW9zamY3dg==",
+      linkedin: "https://www.linkedin.com/in/ankitofficial25"
+    },
+    {
       name: "Ayush Chauchan",
       position: "Event Management Haed",
       image: require("../assets/avtar.jpeg"),
