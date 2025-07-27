@@ -170,7 +170,7 @@ const Team = () => {
       linkedin: "https://www.linkedin.com/in/ankitofficial25"
     },
     {
-      name: "Ayush Chauchan",
+      name: "Ayush Chauhan",
       position: "Event Management Haed",
       image: require("../assets/avtar.jpeg"),
       instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
