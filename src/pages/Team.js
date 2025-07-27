@@ -165,7 +165,7 @@ const Team = () => {
     {
       name: "Ankit Kumar",
       position: "Graphics Team Head",
-      image: require("../assets/team/shailaja.jpeg"),
+      image: require("../assets/team/ankit1.jpeg"),
       instagram: "https://www.instagram.com/ankit258akofficial?igsh=MWliZjd5bW9zamY3dg==",
       linkedin: "https://www.linkedin.com/in/ankitofficial25"
     },
