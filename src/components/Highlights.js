@@ -264,46 +264,7 @@ const highlights = [
 export const Highlights = () => {
   const { theme, isDarkTheme } = useTheme();
 
-  // For bouncing title letters
-  const title = 'What We Do';
-  const [bouncingIndex, setBouncingIndex] = useState(-1);
-  const [iteration, setIteration] = useState(0);
-
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true
-    });
-  }, []);
-
-  useEffect(() => {
-    let timeout;
-    const totalLetters = title.replace(/ /g, '').length;
-    // Smoother timing: slightly overlap next letter for a wave effect
-    const perLetter = 350; // ms per letter, adjust for smoothness
-    if (bouncingIndex < totalLetters - 1 && bouncingIndex !== -1) {
-      timeout = setTimeout(() => setBouncingIndex(bouncingIndex + 1), perLetter);
-    } else if (bouncingIndex === totalLetters - 1) {
-      timeout = setTimeout(() => setBouncingIndex(-1), 1200); // pause at end
-    } else {
-      timeout = setTimeout(() => setBouncingIndex(0), 600); // pause before start
-    }
-    return () => clearTimeout(timeout);
-  }, [bouncingIndex, title]);
-
-  // Helper to map visible letters to their index (skip spaces)
-  let letterCount = 0;
-  const renderTitle = () => (
-    title.split('').map((char, i) => {
-      if (char === ' ') {
-        return <span key={i} style={{ display: 'inline-block', width: '0.6em' }}> </span>;
-      }
-      const isBouncing = bouncingIndex === letterCount;
-      const el = <AnimatedLetter key={i} className={isBouncing ? 'bounce' : ''}>{char}</AnimatedLetter>;
-      letterCount++;
-      return el;
-    })
-  );
+  const title = 'What We Do'; // Keep the title as a string
 
   return (
     <Section id="highlights" theme={theme} isDarkTheme={isDarkTheme}>
@@ -314,7 +275,7 @@ export const Highlights = () => {
         data-aos="fade-up"
         data-aos-duration="1000"
       >
-        {renderTitle()}
+        {title}
       </Title>
       <Cards>
         <ScrollContainer className="scroll-container">

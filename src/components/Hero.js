@@ -1,10 +1,10 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-svg-icons';
-
 // Import AVIF images
 import backgroundShapes from '../assets/linkimg.avif';
 
@@ -105,9 +105,10 @@ const HeroImageWrapper = styled.div`
   z-index: 2;
   grid-row: 1;
   grid-column: 2;
+  padding-top: 60px; /* Add space below navbar */
   @media (max-width: 900px) {
     order: -1;
-    padding: 40px 0 0 0;
+    padding: 80px 0 0 0; /* More space for mobile */
     justify-content: center;
     align-items: center;
     grid-row: 1;
@@ -193,8 +194,15 @@ const Title = styled.h1`
   text-transform: none;
   font-family: sans-serif;
   letter-spacing: -0.5px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s, transform 0.7s;
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
   @media (max-width: 768px) {
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 `;
 
@@ -210,10 +218,16 @@ const Highlight = styled.span`
   display: inline-block;
   font-family: sans-serif;
   letter-spacing: -0.5px;
-  animation: bounceOptimus 1.5s infinite;
-  animation-delay: 0s;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s, transform 0.7s;
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+    animation: bounceOptimus 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
   @media (max-width: 768px) {
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 
   &::after {
@@ -228,7 +242,6 @@ const Highlight = styled.span`
     background: linear-gradient(90deg, #00FFFF 0%, #fff 100%);
     border-radius: 3px;
     opacity: 0.7;
-    animation: bounceUnderline 1.5s infinite;
     z-index: 1;
   }
 
@@ -240,24 +253,28 @@ const Highlight = styled.span`
     40% { transform: scale(1, 1) translateY(0px); }
     100% { transform: scale(1); }
   }
-  @keyframes bounceUnderline {
-    0% { transform: translateX(-50%) scaleX(1) scaleY(1); }
-    10% { transform: translateX(-50%) scaleX(1.15) scaleY(0.7); }
-    20% { transform: translateX(-50%) scaleX(0.95) scaleY(1.1); }
-    30% { transform: translateX(-50%) scaleX(1.05) scaleY(0.85); }
-    40% { transform: translateX(-50%) scaleX(1) scaleY(1); }
-    100% { transform: translateX(-50%) scaleX(1) scaleY(1); }
-  }
 `;
 
 const Description = styled.p`
-  font-size: 1.2rem; /* Adjusted font size */
+  font-size: 1.2rem;
   margin: 30px 0;
   max-width: 600px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8); /* Adjusted color to be lighter */
+  color: rgba(255, 255, 255, 0.8);
   text-align: left;
   font-weight: 400;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s, transform 0.7s;
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+    margin: 18px 0;
+    text-align: center;
+  }
 `;
 
 const StyledButton = styled(Link)`
@@ -266,61 +283,31 @@ const StyledButton = styled(Link)`
   background: transparent;
   padding: 12px 24px;
   border-radius: 30px;
-  font-size: 13px;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
   overflow: hidden;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
-  transform: scale(0.7);
-  opacity: 0;
-  animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.2s forwards, rotateLeftButton 3s infinite linear;
-
+  pointer-events: auto;
   &:first-child {
     background: white;
     color: #1a0740;
     border: 1px solid white;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-    animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.2s forwards, rotateLeftButton 3s infinite linear;
   }
-
   &:hover {
     transform: scale(1.05) translateY(-3px);
     background: white;
     color: #1a0740;
   }
-
-  &:nth-child(2) {
-    animation: buttonZoomIn 0.7s cubic-bezier(0.4,0,0.2,1) 0.4s forwards, rotateRightButton 3s infinite linear;
-  }
-
-  @keyframes buttonZoomIn {
-    0% {
-      transform: scale(0.7);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  @keyframes rotateLeftButton {
-    0% { transform: scale(1) rotate(0deg); }
-    20% { transform: scale(1.03) rotate(-5deg); }
-    50% { transform: scale(1) rotate(0deg); }
-    70% { transform: scale(1.03) rotate(5deg); }
-    100% { transform: scale(1) rotate(0deg); }
-  }
-  @keyframes rotateRightButton {
-    0% { transform: scale(1) rotate(0deg); }
-    20% { transform: scale(1.03) rotate(5deg); }
-    50% { transform: scale(1) rotate(0deg); }
-    70% { transform: scale(1.03) rotate(-5deg); }
-    100% { transform: scale(1) rotate(0deg); }
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    padding: 10px 14px;
   }
 `;
 
@@ -328,9 +315,23 @@ const ButtonContainer = styled.div`
   display: flex;
   text-align: left;
   justify-content: flex-start;
-  gap: 15px; /* Adjusted gap */
+  gap: 15px;
   margin-top: 40px;
   padding: 30px 0;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s, transform 0.7s;
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 18px 0;
+  }
 `;
 
 // ShapesContainer is not used and metallic3D is removed
@@ -352,6 +353,17 @@ const Shape = styled.img`
 
 const Hero = () => {
   const { theme, isDarkTheme } = useTheme();
+  const [showTitle, setShowTitle] = useState(false);
+  const [showHighlight, setShowHighlight] = useState(false);
+  const [showDesc, setShowDesc] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setShowTitle(true), 300);
+    setTimeout(() => setShowHighlight(true), 1100);
+    setTimeout(() => setShowDesc(true), 2100);
+    setTimeout(() => setShowButtons(true), 2700);
+  }, []);
 
   return (
     <>
@@ -369,28 +381,21 @@ const Hero = () => {
         <HeroImageWrapper>
           <AnimatedBgShape src={backgroundShapes} alt="OPTIMUS Shape" />
         </HeroImageWrapper>
-        <HeroContent
-          data-aos="fade-right"
-          data-aos-duration="1000"
-        >
-          <Title>Welcome To</Title>
-          <Highlight>OPTIMUS</Highlight>
-          <Description>
+        <HeroContent data-aos="fade-right" data-aos-duration="1000">
+          <Title className={showTitle ? 'show' : ''}>Welcome To</Title>
+          <Highlight className={showHighlight ? 'show' : ''}>OPTIMUS</Highlight>
+          <Description className={showDesc ? 'show' : ''}>
             A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.
           </Description>
-          <ButtonContainer>
+          <ButtonContainer className={showButtons ? 'show' : ''}>
             <StyledButton as="a"
               href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
               target="_blank"
-              data-aos="zoom-in"
-              data-aos-delay="300"
             >
               LET'S CONNECT
             </StyledButton>
             <StyledButton
               to="/events"
-              data-aos="zoom-in"
-              data-aos-delay="400"
             >
               EXPLORE EVENTS
             </StyledButton>

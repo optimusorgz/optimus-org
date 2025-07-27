@@ -115,7 +115,7 @@ const HeaderTitle = styled.h2`
 const MissionContent = styled.div`
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 70px;
   padding: 20px 10%;
 
@@ -123,19 +123,26 @@ const MissionContent = styled.div`
     flex-direction: column;
     gap: 30px;
     padding: 10px 2%;
+    align-items: stretch;
   }
 `;
 
 const MissionSectionBox = styled.div`
-  flex: 1;
+  flex: 1 1 0;
   min-width: 280px;
   max-width: 500px;
-  background: none;
-  box-shadow: none;
-  border: none;
-  border-radius: 0;
-  padding: 0;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: ${props => props.isDarkTheme ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'};
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+  border: 2px solid ${props => props.isDarkTheme ? 'rgba(0,255,255,0.25)' : 'rgba(0,139,139,0.25)'};
+  border-radius: 18px;
+  padding: 32px 24px;
   margin: 0;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
 `;
 
 const CardTitle = styled.h2`
@@ -269,7 +276,7 @@ const Mission = () => {
 
   useEffect(() => {
     AOS.init({
-      duration: 1000,
+      duration: 1400,
       once: true,
       mirror: false,
       offset: 100
@@ -294,7 +301,8 @@ const Mission = () => {
             <CardTitle
               isDarkTheme={isDarkTheme}
               data-aos="fade-left"
-              data-aos-duration="1000"
+              data-aos-duration="1400"
+              data-aos-delay="0"
             >
               <FontAwesomeIcon icon={faBullseye} />
               Our Mission
@@ -302,8 +310,8 @@ const Mission = () => {
             <CardText
               isDarkTheme={isDarkTheme}
               data-aos="zoom-out"
-              data-aos-duration="1000"
-              data-aos-delay="200"
+              data-aos-duration="1800"
+              data-aos-delay="900"
             >
               At <strong>Optimus</strong>, we're dedicated to creating a dynamic space where innovation thrives. Our
               mission is to empower students through hands-on learning, collaborative projects, and real-world challenges.
@@ -314,7 +322,8 @@ const Mission = () => {
             <CardTitle
               isDarkTheme={isDarkTheme}
               data-aos="fade-right"
-              data-aos-duration="1000"
+              data-aos-duration="1400"
+              data-aos-delay="0"
             >
               <FontAwesomeIcon icon={faEye} />
               Our Vision
@@ -322,8 +331,8 @@ const Mission = () => {
             <CardText
               isDarkTheme={isDarkTheme}
               data-aos="zoom-out"
-              data-aos-duration="1000"
-              data-aos-delay="200"
+              data-aos-duration="1800"
+              data-aos-delay="900"
             >
               We envision a future where every student has the opportunity to develop their technical skills and
               leadership abilities. Our goal is to build a community that not only learns together but also creates
@@ -333,7 +342,7 @@ const Mission = () => {
         </MissionContent>
 
         <MissionHeader className="values">
-          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000" rotate>
+          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000">
             Core Values
           </HeaderTitle>
         </MissionHeader>
