@@ -137,8 +137,8 @@ const Gallery = () => {
   }, []);
 
   const handleImageClick = (image, index) => {
-    setSelectedImage(image);
     setCurrentIndex(index);
+    setSelectedImage(true);
   };
 
   const handleClose = useCallback(() => {
@@ -176,8 +176,8 @@ const Gallery = () => {
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!selectedImage) return;
-      
-      switch(e.key) {
+
+      switch (e.key) {
         case 'ArrowLeft':
           handlePrevious();
           break;
@@ -206,29 +206,29 @@ const Gallery = () => {
             }}>Our Gallery</h2>
           </Header>
           <GalleryGrid>
-            {images.map((image, index) => (              
-              <GalleryCard 
-                key={index} 
+            {images.map((image, index) => (
+              <GalleryCard
+                key={index}
                 theme={theme}
                 data-aos="fade-up"
                 data-aos-delay={100 * (index % 4)}
                 onClick={() => handleImageClick(image, index)}
               >
-                <img 
-                  src={require(`../assets/${image.src}`)} 
+                <img
+                  src={require(`../assets/${image.src}`)}
                   alt={image.alt}
                   loading="lazy"
                 />
               </GalleryCard>
             ))}          </GalleryGrid>
         </Section>
-        
-        
+
+
         {selectedImage && (
           <ImageModal onClick={handleClose}>
             <ModalContent onClick={e => e.stopPropagation()}>
-              <img 
-                src={require(`../assets/${images[currentIndex].src}`)} 
+              <img
+                src={require(`../assets/${images[currentIndex].src}`)}
                 alt={images[currentIndex].alt}
               />
               <NavButton className="prev" onClick={handlePrevious}>
