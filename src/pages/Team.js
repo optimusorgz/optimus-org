@@ -166,7 +166,7 @@ const Team = () => {
       name: "Ankit Kumar",
       position: "Graphics Team Head",
       image: require("../assets/team/ankit1.jpeg"),
-      instagram: "https://www.instagram.com/ankit258akofficial?igsh=MWliZjd5bW9zamY3dg==",
+      instagram: "https://www.instagram.com/ankit258akofficial",
       linkedin: "https://www.linkedin.com/in/ankitofficial25"
     },
     {
@@ -180,7 +180,7 @@ const Team = () => {
       name: "Basu Slathia",
       position: "Core Team Member",
       image: require("../assets/team/basu.jpeg"),
-      instagram: "insta id - https://www.instagram.com/basu_9534?igsh=NDQ2MWtvazlvYnFn&utm_source=qr",
+      instagram: "https://www.instagram.com/basu_9534?igsh=NDQ2MWtvazlvYnFn&utm_source=qr",
       linkedin: "#"
     },
     // Add more members as needed
