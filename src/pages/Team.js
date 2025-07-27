@@ -117,7 +117,7 @@ const Team = () => {
       name: "Ayush Samant",
       position: "COO",
       image: require("../assets/team/ayush_samant.jpg"),
-      instagram: "https://www.instagram.com/ayush.samant23?igsh=c2MxeHc0cmk2ZmZz",
+      instagram: "https://www.instagram.com/soul.sync___?igsh=N20xa29mYnp0ZzZz",
       linkedin: "https://www.linkedin.com/in/ayushsamant/"
     },
     {
