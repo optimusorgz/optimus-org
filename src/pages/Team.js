@@ -152,13 +152,13 @@ const Team = () => {
       name: "Bhanu Pratap Singh",
       position: "Media Head",
       image: require("../assets/team/bhanu_picture.jpg"),
-      instagram: "#",
+      instagram: "wwww.instagram.com/anxxshhh._",
       linkedin: "https://www.linkedin.com/in/bhanupratap3008?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
       name: "Shailaja Singh",
       position: "Student Relation Coordinator",
-      image: require("../assets/avtar.jpeg"),
+      image: require("../assets/Shailaja.jpeg"),
       instagram: "https://www.instagram.com/solely_solitude03?igsh=MTZxbmE0a202MHg1eg==",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
@@ -168,6 +168,13 @@ const Team = () => {
       image: require("../assets/avtar.jpeg"),
       instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },  
+    {
+      name: "Basu Slathia",
+      position: "Core Team Member",
+      image: require("../assets/basu.jpeg"),
+      instagram: "insta id - https://www.instagram.com/basu_9534?igsh=NDQ2MWtvazlvYnFn&utm_source=qr",
+      linkedin: "#"
     },
     // Add more members as needed
   ];
