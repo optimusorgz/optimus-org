@@ -27,10 +27,14 @@ const bounceUp = keyframes`
 const AnimatedLetter = styled.span`
   display: inline-block;
   transition: color 0.2s;
+  font-size: inherit;
   &.bounce {
     animation: ${bounceUp} 1.5s cubic-bezier(0.23, 1, 0.32, 1);
     color: #00FFFF;
     will-change: transform;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
   }
 `;
 
@@ -68,7 +72,6 @@ background: radial-gradient(
 const Title = styled.h2`
   font-size: 2.5rem;
   color: rgba(255, 255, 255, 1.6); /* Adjusted color to be lighter */
-;
   margin-bottom: 20px;
   position: relative;
   z-index: 2;
@@ -79,8 +82,11 @@ const Title = styled.h2`
     width: 60px;
     height: 3px;
     background-color: rgba(255, 255, 255, 0.6); /* Adjusted color to be lighter */
-
     margin: 10px auto;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
   }
 `;
 
@@ -203,15 +209,15 @@ const Card = styled.div`
 
   @media (max-width: 768px) {
     .icon {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
-    }
-    h3 {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 8px;
     }
+    h3 {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
     p {
-      font-size: 0.95rem;
+      font-size: 0.75rem;
     }
   }
 
