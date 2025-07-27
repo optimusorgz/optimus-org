@@ -158,7 +158,7 @@ const Team = () => {
     {
       name: "Shailaja Singh",
       position: "Student Relation Coordinator",
-      image: require("../assets/Shailaja.jpeg"),
+      image: require("../assets/shailaja.jpeg"),
       instagram: "https://www.instagram.com/solely_solitude03?igsh=MTZxbmE0a202MHg1eg==",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
