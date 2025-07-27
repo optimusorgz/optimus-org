@@ -171,7 +171,7 @@ const Team = () => {
     },
     {
       name: "Ayush Chauhan",
-      position: "Event Management Haed",
+      position: "Event Management Head",
       image: require("../assets/avtar.jpeg"),
       instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
