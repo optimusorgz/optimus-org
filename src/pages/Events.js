@@ -109,7 +109,7 @@ const Events = () => {
       time: '5:00 PM',
       status: 'ended'
     }
-   
+
   ];
 
   return (

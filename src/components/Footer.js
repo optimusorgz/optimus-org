@@ -41,8 +41,16 @@ const FooterContent = styled.div`
   margin: 0 auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 40px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const FooterSection = styled.div`
@@ -86,20 +94,20 @@ const FooterSection = styled.div`
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 4px;
 
   a {
-    color: ${props => props.theme.primary};
-    font-size: 1.5rem;
+    color: #fff;
+    font-size: clamp(1.05rem, 2.8vw, 1.4rem);
     transition: all 0.3s ease;
-    padding: 10px;
+    padding: 7px;
     border-radius: 50%;
 
     &:hover {
-      color: #00FFFF;
+      color: #1e90ff;
       transform: translateY(-3px);
-      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+      filter: drop-shadow(0 0 10px #1e90ff);
     }
   }
 `;
@@ -119,6 +127,75 @@ const Copyright = styled.div`
   }
 `;
 
+const FooterBottom = styled.div`
+  margin-top: 40px;
+  padding-top: 20px;
+  color: ${props => props.theme.text};
+  font-size: 0.9rem;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    width: calc(100% - 32px);
+    height: 2px;
+    background: ${props => props.theme.cardBorder};
+    position: absolute;
+    top: 0;
+    left: 16px;
+  }
+
+  .dev-by {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+  }
+
+  .footer-dev-line {
+    width: calc(100% - 32px);
+    height: 2px;
+    background: ${props => props.theme.cardBorder};
+    margin-bottom: 2px;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .footer-bottom-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 10px;
+  }
+
+  .footer-bottom-left {
+    text-align: left;
+    flex: 1;
+  }
+
+  .footer-bottom-right {
+    text-align: right;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 const Footer = () => {
   const { theme } = useTheme();
 
@@ -131,7 +208,7 @@ const Footer = () => {
         </FooterSection>
 
         <FooterSection theme={theme}>
-          <h3>Quick Links</h3>
+          <h3>Quick Access</h3>
           <Link to="/">Home</Link>
           <Link to="/team">Team</Link>
           <Link to="/gallery">Gallery</Link>
@@ -139,23 +216,43 @@ const Footer = () => {
         </FooterSection>
 
         <FooterSection theme={theme}>
+          <h3>Reach Us</h3>
+          <p>
+            Optimus LPU,<br />
+            Block 13, Division of student welfare,<br />
+            Lovely Professional University,<br />
+            Kapurthala, Pin 144402, Punjab
+          </p>
+        </FooterSection>
+
+        <FooterSection theme={theme}>
           <h3>Contact Us</h3>
-          <p>optimus.orgz@gmail.com<br /></p>
-          <h3>Social Media</h3>
-          <SocialLinks theme={theme}>
-            <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-            <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faLinkedinIn} />
-            </a>
-          </SocialLinks>
+          <p>
+            optimus.orgz@gmail.com<br />
+            +91 87550 26400
+          </p>
         </FooterSection>
       </FooterContent>
 
-      <Copyright theme={theme}>
-        <p>&copy; {new Date().getFullYear()} OPTIMUS. All rights reserved.</p>
-      </Copyright>
+      <FooterBottom theme={theme}>
+        <div className="dev-by"><span style={{ fontWeight: 'bold' }}>Developed by:</span> Optimus Technical Team</div>
+        <div className="footer-dev-line"></div>
+        <div className="footer-bottom-row">
+          <div className="footer-bottom-left">
+            &copy; {new Date().getFullYear()} OPTIMUS. All rights reserved.
+          </div>
+          <div className="footer-bottom-right">
+            <SocialLinks theme={theme}>
+              <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faInstagram} />
+              </a>
+              <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faLinkedinIn} />
+              </a>
+            </SocialLinks>
+          </div>
+        </div>
+      </FooterBottom>
     </FooterWrapper>
   );
 };

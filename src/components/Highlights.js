@@ -295,5 +295,3 @@ export const Highlights = () => {
     </Section>
   );
 };
-
-export default Highlights;
