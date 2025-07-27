@@ -9,20 +9,18 @@ import { faChevronLeft, faChevronRight, faTimes } from '@fortawesome/free-solid-
 
 const GalleryContainer = styled.div`
   min-height: 100vh;
-  
   padding-top: 20px;
   transition: background-color 0.3s ease;
 
   background: radial-gradient(
-  circle at top left,
-  rgba(255, 255, 255, 0.3) 100px,
-  rgba(255, 255, 255, 0.1) 200px,
-  rgba(12, 12, 29, 0.8) 400px,
-  rgba(12, 12, 29, 1) 500px,
-  transparent 100%
-);
-  background-color: rgba(12,12,29,255);
-  
+    circle at top left,
+    rgba(255, 255, 255, 0.3) 100px,
+    rgba(255, 255, 255, 0.1) 200px,
+    rgba(12, 12, 29, 0.8) 400px,
+    rgba(12, 12, 29, 1) 500px,
+    transparent 100%
+  );
+  background-color: rgba(12, 12, 29, 1);
 `;
 
 const GalleryGrid = styled.div`
@@ -69,6 +67,7 @@ const ModalContent = styled.div`
   position: relative;
   max-width: 90%;
   max-height: 90vh;
+
   img {
     max-width: 100%;
     max-height: 90vh;
@@ -130,22 +129,8 @@ const Gallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: true
-    });
+    AOS.init({ duration: 1000, once: true });
   }, []);
-
-  const handleImageClick = (image, index) => {
-    setCurrentIndex(index);
-    setSelectedImage(true);
-  };
-
-  const handleClose = useCallback(() => {
-    setSelectedImage(null);
-  }, []);
-
-
 
   const images = [
     { src: 'IMG_0317.jpg', alt: 'Team Building Activity' },
@@ -164,19 +149,35 @@ const Gallery = () => {
     { src: 'IMG_0352.jpg', alt: 'Development Session' }
   ];
 
+  const handleImageClick = (image, index) => {
+    setCurrentIndex(index);
+    setSelectedImage(image);
+  };
+
+  const handleClose = useCallback(() => {
+    setSelectedImage(null);
+  }, []);
+
   const handleNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => {
+      const nextIndex = (prev + 1) % images.length;
+      setSelectedImage(images[nextIndex]);
+      return nextIndex;
+    });
+  }, [images]);
 
   const handlePrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  }, [images.length]);
+    setCurrentIndex((prev) => {
+      const prevIndex = (prev - 1 + images.length) % images.length;
+      setSelectedImage(images[prevIndex]);
+      return prevIndex;
+    });
+  }, [images]);
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (!selectedImage) return;
-
       switch (e.key) {
         case 'ArrowLeft':
           handlePrevious();
@@ -201,9 +202,9 @@ const Gallery = () => {
       <GalleryContainer theme={theme}>
         <Section>
           <Header theme={theme}>
-            <h2 data-aos="fade-up" style={{
-              fontSize: '2.5rem'
-            }}>Our Gallery</h2>
+            <h2 data-aos="fade-up" style={{ fontSize: '2.5rem' }}>
+              Our Gallery
+            </h2>
           </Header>
           <GalleryGrid>
             {images.map((image, index) => (
@@ -220,16 +221,16 @@ const Gallery = () => {
                   loading="lazy"
                 />
               </GalleryCard>
-            ))}          </GalleryGrid>
+            ))}
+          </GalleryGrid>
         </Section>
-
 
         {selectedImage && (
           <ImageModal onClick={handleClose}>
-            <ModalContent onClick={e => e.stopPropagation()}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
               <img
-                src={require(`../assets/${images[currentIndex].src}`)}
-                alt={images[currentIndex].alt}
+                src={require(`../assets/${selectedImage.src}`)}
+                alt={selectedImage.alt}
               />
               <NavButton className="prev" onClick={handlePrevious}>
                 <FontAwesomeIcon icon={faChevronLeft} size="2x" />

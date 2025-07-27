@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedinIn, faGithub } from '@fortawesome/free-brands-svg-icons';
 
 // Import AVIF images
-import backgroundShapes from '../assets/6814a15afea82ff3505d163e_shape-2-p-800.avif';
+import backgroundShapes from '../assets/linkimg.avif';
 import metallic3D from '../assets/6814a411594d8a7230486656_Color=Dark,-Variant=Metallic-(4)-p-800.avif';
 
 const HeroSection = styled.section`
@@ -264,7 +264,7 @@ const Hero = () => {
           A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.          </Description>
           <ButtonContainer>
             <StyledButton as="a"
-            href="https://script.google.com/macros/s/AKfycbzal-X62oMRF-VvE3KNk7fUsWuXlc_o29pzzX6aKy8hNpCsWoMv1aohOfHszGnX1S7O/exec" 
+            href="https://script.google.com/macros/s/AKfycbyHN7l4C1x1Fosv0GRgbsDnOYiYXYL7vOhCvV7G76fN25FIuzBwJYEFPN9srKhxLeDY/exec" 
             target="_blank"
             data-aos="zoom-in" 
               data-aos-delay="300"
