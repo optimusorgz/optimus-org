@@ -27,6 +27,7 @@ function AppContent() {
       mirror: false
     });
   }, []);
+  
 
   return (
     <AppContainer theme={theme} isDarkTheme={theme.isDarkTheme}>
