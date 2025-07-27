@@ -152,7 +152,7 @@ const MissionSectionBox = styled.div`
   box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
   background-size: 100% 100%;
   border-radius: 18px;
-  padding: 32px 24px;
+  padding: 48px 36px;
   margin: 0;
   transition: border-color 0.3s;
   box-sizing: border-box;
@@ -166,18 +166,18 @@ const MissionSectionBox = styled.div`
     min-width: 0;
     max-width: 100%;
     width: 100%;
-    padding: 20px 10px;
+    padding: 28px 12px;
   }
 `;
 
 const CardTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: rgba(255, 255, 255, 1.6);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-weight: 700;
   justify-content: center;
   text-align: center;
@@ -196,19 +196,19 @@ const CardTitle = styled.h2`
   }
 
   svg {
-    font-size: 2.2rem;
-    filter: drop-shadow(0 0 8px ${props => props.isDarkTheme
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 6px ${props => props.isDarkTheme
     ? 'rgba(0, 255, 255, 0.2)'
     : 'rgba(0, 139, 139, 0.2)'});
   }
 `;
 
 const CardText = styled.p`
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: ${props => props.isDarkTheme
     ? 'rgba(255, 255, 255, 0.9)'
     : 'rgba(0, 0, 0, 0.9)'};
-  line-height: 1.8;
+  line-height: 1.6;
 `;
 
 const CoreValues = styled.div`

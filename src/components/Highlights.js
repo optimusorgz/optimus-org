@@ -151,12 +151,13 @@ const Card = styled.div`
   border-radius: 15px;
   padding: 30px 20px;
   text-align: center;
-  width: 240px;
-  min-width: 240px;
-  max-width: 240px;
-  height: 180px;
-  min-height: 180px;
-  max-height: 180px;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  min-height: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,9 +185,10 @@ const Card = styled.div`
     width: 70vw;
     min-width: 70vw;
     max-width: 70vw;
-    height: 110px;
-    min-height: 110px;
-    max-height: 110px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    min-height: 0;
+    max-height: none;
     padding: 14px 4px;
     margin: 0 5px;
     font-size: 0.1rem;
@@ -205,10 +207,6 @@ const Card = styled.div`
   &:hover::before {
     transform: translateX(100%);
   }
-
-
-
-
 
   .icon {
     font-size: 1.6rem;
