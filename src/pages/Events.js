@@ -19,9 +19,14 @@ const EventsContainer = styled.div`
 
 const EventGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
-  padding: 20px;
+  justify-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 40px 24px;
+  box-sizing: border-box;
 `;
 
 const EventCard = styled.div`
@@ -104,26 +109,7 @@ const Events = () => {
       time: '5:00 PM',
       status: 'ended'
     }
-    // {
-    //   id: 2,
-    //   title: 'Hackathon',
-    //   image: require('../assets/event1.jpeg'),
-    //   location: 'Computer Lab',
-    //   venue: 'Tech Park',
-    //   date: '25 Nov 2023',
-    //   time: '9:00 AM',
-    //   status: 'running'
-    // },
-    // {
-    //   id: 3,
-    //   title: 'Workshop',
-    //   image: require('../assets/event1.jpeg'),
-    //   location: 'Seminar Hall',
-    //   venue: 'Convention Center',
-    //   date: '10 Dec 2023',
-    //   time: '2:00 PM',
-    //   status: 'upcoming'
-    // }
+   
   ];
 
   return (
@@ -131,7 +117,9 @@ const Events = () => {
       <PageWrapper>
         <ContentContainer>
           <Section>
-            <Header>Our Events</Header>
+            <Header theme={theme}>
+              <h2 style={{ fontSize: '2.5rem' }} data-aos="fade-up">Our Events</h2>
+            </Header>
             <EventGrid>
               {events.map(event => (
                 <EventCard key={event.id} data-aos="fade-up">
