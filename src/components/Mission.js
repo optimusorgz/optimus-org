@@ -284,13 +284,13 @@ const ValueItem = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 40vw;
-    min-width: 40vw;
-    max-width: 40vw;
+    width: 41vw;
+    min-width: 41vw;
+    max-width: 41vw;
     aspect-ratio: 1 / 1;
-    height: 40vw;
-    min-height: 40vw;
-    max-height: 40vw;
+    height: 41vw;
+    min-height: 41vw;
+    max-height: 41vw;
     padding: 5px 6px;
     svg {
       font-size: 1.7rem;
