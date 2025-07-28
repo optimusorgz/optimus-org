@@ -168,7 +168,7 @@ const Navbar = () => {
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <JoinButton 
-            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/execgit " 
+            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" 
             target="_blank" 
             rel="noopener noreferrer"
             theme={theme}
