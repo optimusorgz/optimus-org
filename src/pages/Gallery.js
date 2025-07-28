@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+// import Masonry from 'react-masonry-css';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, Header } from '../components/common/PageWrapper';
@@ -78,29 +79,48 @@ const GallerySection = styled.section`
 `;
 
 const GalleryGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
-  padding: 20px;
-
-  @media (max-width: 768px) {
-    padding: 10px 0;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    
+  column-count: 4;
+  column-gap: 0px;
+  padding: 0;
+  background: transparent;
+  border-radius: 10px;
+  @media (max-width: 1400px) {
+    column-count: 3;
   }
+  @media (max-width: 1024px) {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  @media (max-width: 700px) {
+    column-count: 2;
+    column-gap: 10px;
+  }
+`;
+
+const GalleryCard = styled.div`
+  background: transparent;
+  border-radius: 10px;
+  margin: 10px 5px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  padding: 0;
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const GalleryImage = styled.img`
   width: 100%;
-  height: 220px;
-  object-fit: cover;
+  height: auto;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.18s, box-shadow 0.18s;
+  display: block;
+  background: #181a2a;
+  object-fit: cover;
+  max-width: 100%;
   &:hover {
-    transform: scale(1.04);
     box-shadow: 0 8px 24px rgba(0,255,255,0.15);
   }
 `;
@@ -194,6 +214,14 @@ function GalleryPage() {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // Masonry breakpoints
+  const breakpointColumnsObj = {
+    default: 4,
+    1400: 3,
+    1024: 2,
+    700: 1
+  };
+
   return (
     <PageWrapper theme={theme}>
       <GalleryContainer theme={theme}>
@@ -203,9 +231,13 @@ function GalleryPage() {
           </Header>
           <GalleryGrid>
             {images.map((img, idx) => (
-              <div key={idx} data-aos="fade-up" data-aos-delay={100 * (idx % 4)}>
-                <GalleryImage src={img} alt={`Gallery ${idx + 1}`} onClick={() => openModal(idx)} />
-              </div>
+              <GalleryCard key={idx}>
+                <GalleryImage
+                  src={img}
+                  alt={`Gallery ${idx + 1}`}
+                  onClick={() => openModal(idx)}
+                />
+              </GalleryCard>
             ))}
           </GalleryGrid>
         </GallerySection>

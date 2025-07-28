@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import AOS from 'aos';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -120,10 +120,6 @@ const Cards = styled.div`
   overflow: hidden;
   padding: 10px 0 0 0;
   width: 100%;
-
-  &:hover .scroll-container {
-    animation-play-state: paused;
-  }
 `;
 
 const ScrollContainer = styled.div`
@@ -133,6 +129,9 @@ const ScrollContainer = styled.div`
   animation: ${scrollX} 60s linear infinite;
   width: fit-content;
   padding-right: 0;
+  opacity: ${props => (props.fadein ? 1 : 0)};
+  transform: translateY(${props => (props.fadein ? '0' : '40px')});
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
 
   @media (max-width: 768px) {
     gap: 0;
@@ -286,11 +285,56 @@ const highlights = [
 
 export const Highlights = () => {
   const { theme, isDarkTheme } = useTheme();
+  const [paused, setPaused] = useState(true);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const sectionRef = useRef(null);
+  const scrollTimeout = useRef();
 
-  const title = 'What We Do'; // Keep the title as a string
+  useEffect(() => {
+    setPaused(true);
+    setFadeIn(false);
+    scrollTimeout.current = setTimeout(() => {
+      setPaused(false);
+      setFadeIn(true);
+    }, 200);
+    return () => clearTimeout(scrollTimeout.current);
+  }, []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setPaused(true);
+            setFadeIn(false);
+            clearTimeout(scrollTimeout.current);
+            scrollTimeout.current = setTimeout(() => {
+              setPaused(false);
+              setFadeIn(true);
+            }, 200);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(section);
+    return () => {
+      observer.disconnect();
+      clearTimeout(scrollTimeout.current);
+    };
+  }, []);
+
+  // Pause scroll on hover
+  const handleMouseEnter = () => setPaused(true);
+  const handleMouseLeave = () => setPaused(false);
+
+  const title = 'What We Do';
 
   return (
-    <Section id="highlights" theme={theme} isDarkTheme={isDarkTheme}>
+    <Section id="highlights" theme={theme} isDarkTheme={isDarkTheme} ref={sectionRef}>
       <Title
         theme={theme}
         isDarkTheme={isDarkTheme}
@@ -301,7 +345,13 @@ export const Highlights = () => {
         {title}
       </Title>
       <Cards>
-        <ScrollContainer className="scroll-container">
+        <ScrollContainer
+          className="scroll-container"
+          style={{ animationPlayState: paused ? 'paused' : 'running' }}
+          fadein={fadeIn}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           {Array(6).fill(null).flatMap(() => highlights).map((item, index) => (
             <Card
               key={index}

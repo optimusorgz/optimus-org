@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import TypingText from './TypingText';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
@@ -266,11 +267,9 @@ const Description = styled.p`
   text-align: left;
   font-weight: 400;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s, transform 0.7s;
+  transition: opacity 0.7s;
   &.show {
     opacity: 1;
-    transform: translateY(0);
   }
   @media (max-width: 768px) {
     font-size: 0.95rem;
@@ -359,40 +358,46 @@ const Hero = () => {
   const [showHighlight, setShowHighlight] = useState(false);
   const [showDesc, setShowDesc] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
+  const [descTyped, setDescTyped] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Element is in view, start animations
             setTimeout(() => setShowTitle(true), 300);
             setTimeout(() => setShowHighlight(true), 1100);
-            setTimeout(() => setShowDesc(true), 2100);
-            setTimeout(() => setShowButtons(true), 2700);
+            setTimeout(() => {
+              setShowDesc(true);
+              setShowButtons(true);
+            }, 2100);
+            setDescTyped(false);
           } else {
-            // Element is out of view, reset states
             setShowTitle(false);
             setShowHighlight(false);
             setShowDesc(false);
             setShowButtons(false);
+            setDescTyped(false);
           }
         });
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { threshold: 0.1 }
     );
-
     const heroSection = document.getElementById('hero-section');
     if (heroSection) {
       observer.observe(heroSection);
     }
-
     return () => {
       if (heroSection) {
         observer.unobserve(heroSection);
       }
     };
   }, []);
+
+  // Prevent TypingText from re-typing after buttons appear
+  const handleTypingEnd = () => {
+    if (!showButtons) setShowButtons(true);
+  };
 
   return (
     <>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TypingText from './TypingText';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -181,12 +182,14 @@ const CardTitle = styled.h2`
   font-weight: 700;
   justify-content: center;
   text-align: center;
+  margin: 0 10px 30px 10px;
 
   &::after {
     content: '';
     position: absolute;
     bottom: -10px;
     left: 50%;
+    top: 100%;
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
@@ -359,13 +362,11 @@ const Mission = () => {
             </CardTitle>
             <CardText
               isDarkTheme={isDarkTheme}
-              data-aos="zoom-out"
-              data-aos-duration="1800"
-              data-aos-delay="900"
             >
-              At <strong>Optimus</strong>, we're dedicated to creating a dynamic space where innovation thrives. Our
-              mission is to empower students through hands-on learning, collaborative projects, and real-world challenges.
-              We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions.
+              <TypingText
+                text={"At Optimus, we're dedicated to creating a dynamic space where innovation thrives. Our mission is to empower students through hands-on learning, collaborative projects, and real-world challenges. We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions."}
+                speed={35}
+              />
             </CardText>
           </MissionSectionBox>
           <MissionSectionBox>
@@ -380,13 +381,11 @@ const Mission = () => {
             </CardTitle>
             <CardText
               isDarkTheme={isDarkTheme}
-              data-aos="zoom-out"
-              data-aos-duration="1800"
-              data-aos-delay="900"
             >
-              We envision a future where every student has the opportunity to develop their technical skills and
-              leadership abilities. Our goal is to build a community that not only learns together but also creates
-              lasting impact through technology and innovation.
+              <TypingText
+                text={"We envision a future where every student has the opportunity to develop their technical skills and leadership abilities. Our goal is to build a community that not only learns together but also creates lasting impact through technology and innovation."}
+                speed={35}
+              />
             </CardText>
           </MissionSectionBox>
         </MissionContent>
