@@ -74,7 +74,7 @@ const TeamGrid = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px 40px;
-    padding: 0 0 20px 0;
+    padding: 0 0;;
     margin: 0 0;
   }
 `;
