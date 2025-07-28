@@ -88,8 +88,8 @@ const TeamMemberImg = styled.img`
     transition: width 0.2s, height 0.2s;
 
     @media (max-width: 768px) {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     margin-bottom: 8px;
   }
   `;
