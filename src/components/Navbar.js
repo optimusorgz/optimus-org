@@ -20,7 +20,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1%;
+  padding: 1rem 1% 0 1%;
 `;
 
 const Logo = styled(Link)`

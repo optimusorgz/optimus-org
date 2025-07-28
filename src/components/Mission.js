@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import TypingText from './TypingText';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
@@ -15,6 +17,16 @@ import {
   faGlobeAmericas,
   faRocket
 } from '@fortawesome/free-solid-svg-icons';
+
+// Helper component to trigger TypingText only when visible
+function MissionTypingTrigger({ text, speed, fontSize }) {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  return (
+    <span ref={ref}>
+      {inView ? <TypingText text={text} speed={speed} fontSize={fontSize} /> : null}
+    </span>
+  );
+}
 
 const pulseGradient = keyframes`
   0% {
@@ -141,6 +153,27 @@ const MissionContent = styled.div`
   }
 `;
 
+const fadeLeft = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+const fadeRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
 const MissionSectionBox = styled.div`
   flex: 1 1 0;
   min-width: 220px;
@@ -162,6 +195,8 @@ const MissionSectionBox = styled.div`
   max-width: 100%;
   width: 100%;
   border: 2.5px solid ${props => props.isDarkTheme ? 'rgba(0,255,255,0.25)' : 'rgba(0,139,139,0.25)'};
+  opacity: ${props => props.inview ? 1 : 0};
+  animation: ${props => props.inview === undefined ? 'none' : props.fade === 'left' ? fadeLeft : fadeRight} 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
 
   @media (max-width: 1024px) {
     min-width: 0;
@@ -322,11 +357,16 @@ const ValueText = styled.p`
   margin: 0;
 `;
 
-const Mission = () => {
+
+function Mission() {
   const { isDarkTheme } = useTheme();
 
   const [isHoveredMission, setIsHoveredMission] = useState(false);
   const [isHoveredVision, setIsHoveredVision] = useState(false);
+
+  // Intersection observers for the two boxes
+  const { ref: missionRef, inView: missionInView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref: visionRef, inView: visionInView } = useInView({ triggerOnce: true, threshold: 0.2 });
 
   useEffect(() => {
     AOS.init({
@@ -345,49 +385,52 @@ const Mission = () => {
     { icon: faRocket, title: 'Leadership', description: 'Inspiring and guiding others to success' }
   ];
 
-
   return (
     <MissionSection id="mission" isDarkTheme={isDarkTheme}>
       <MissionContainer>
         <MissionContent>
-          <MissionSectionBox>
-            <CardTitle
-              isDarkTheme={isDarkTheme}
-              data-aos="fade-left"
-              data-aos-duration="1400"
-              data-aos-delay="0"
-            >
+          {/* Mission Section with Intersection Observer */}
+
+          {/* Mission Section with fade left when visible */}
+          <MissionSectionBox
+            ref={missionRef}
+            isDarkTheme={isDarkTheme}
+            inview={missionInView ? 1 : 0}
+            fade="left"
+          >
+            <CardTitle isDarkTheme={isDarkTheme}>
               <FontAwesomeIcon icon={faBullseye} />
               Our Mission
             </CardTitle>
-            <CardText
-              isDarkTheme={isDarkTheme}
-            >
-              <TypingText
+            <CardText isDarkTheme={isDarkTheme}>
+              <MissionTypingTrigger
                 text={"At Optimus, we're dedicated to creating a dynamic space where innovation thrives. Our mission is to empower students through hands-on learning, collaborative projects, and real-world challenges. We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions."}
-                speed={35}
+                speed={20}
+                fontSize="1.1em"
               />
             </CardText>
           </MissionSectionBox>
-          <MissionSectionBox>
-            <CardTitle
-              isDarkTheme={isDarkTheme}
-              data-aos="fade-right"
-              data-aos-duration="1400"
-              data-aos-delay="0"
-            >
+
+          {/* Vision Section with fade right when visible */}
+          <MissionSectionBox
+            ref={visionRef}
+            isDarkTheme={isDarkTheme}
+            inview={visionInView ? 1 : 0}
+            fade="right"
+          >
+            <CardTitle isDarkTheme={isDarkTheme}>
               <FontAwesomeIcon icon={faEye} />
               Our Vision
             </CardTitle>
-            <CardText
-              isDarkTheme={isDarkTheme}
-            >
-              <TypingText
+            <CardText isDarkTheme={isDarkTheme}>
+              <MissionTypingTrigger
                 text={"We envision a future where every student has the opportunity to develop their technical skills and leadership abilities. Our goal is to build a community that not only learns together but also creates lasting impact through technology and innovation."}
-                speed={35}
+                speed={20}
+                fontSize="1.1em"
               />
             </CardText>
           </MissionSectionBox>
+
         </MissionContent>
 
         <MissionHeader className="values">
@@ -413,6 +456,6 @@ const Mission = () => {
       </MissionContainer>
     </MissionSection>
   );
-};
+}
 
 export default Mission;

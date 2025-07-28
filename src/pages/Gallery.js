@@ -41,14 +41,14 @@ const images = [
 
 const GalleryContainer = styled.div`
   min-height: 100%;
-  padding-top: 20px;
+  padding-top: 0px;
   position: relative;
   background: radial-gradient(
     circle at top left,
-     rgba(255, 255, 255, 0.3) 120px,
-  rgba(255, 255, 255, 0.1) 250px,
-  rgba(12, 12, 29, 0.8) 450px,
-  rgba(12, 12, 29, 1) 500px,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
     transparent 90%
   );
   background-color: rgba(12,12,29,255);
@@ -99,7 +99,7 @@ const GalleryGrid = styled.div`
 
 const GalleryCard = styled.div`
   background: transparent;
-  border-radius: 10px;
+  border-radius: 0px;
   margin: 10px 5px;
   box-shadow: 0 6px 32px rgba(0,0,0,0.18);
   padding: 0;
@@ -112,7 +112,7 @@ const GalleryCard = styled.div`
 const GalleryImage = styled.img`
   width: 100%;
   height: auto;
-  border-radius: 16px;
+  border-radius: 2%;
   box-shadow: 0 2px 12px rgba(0,0,0,0.10);
   cursor: pointer;
   transition: transform 0.18s, box-shadow 0.18s;

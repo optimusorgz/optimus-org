@@ -24,10 +24,10 @@ const EventsContainer = styled.div`
   position: relative;
   background: radial-gradient(
     circle at top left,
-     rgba(255, 255, 255, 0.3) 120px,
-  rgba(255, 255, 255, 0.1) 250px,
-  rgba(12, 12, 29, 0.8) 450px,
-  rgba(12, 12, 29, 1) 500px,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
     transparent 90%
   );
   background-color: rgba(12,12,29,255);
@@ -70,7 +70,7 @@ border: 1px solid ${props => props.theme.cardBorder};
   }
 
   .event-content {
-    padding: 20px;
+    padding: 0px;
   }
 
   .event-status {

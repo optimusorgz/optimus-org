@@ -22,14 +22,14 @@ const pulseGradient = keyframes`
 
 const TeamContainer = styled.div`
   min-height: 100%;
-  padding-top: 20px;
+  padding-top: 0px;
   position: relative;
   background: radial-gradient(
     circle at top left,
-    rgba(255, 255, 255, 0.3) 120px,
-  rgba(255, 255, 255, 0.1) 250px,
-  rgba(12, 12, 29, 0.8) 450px,
-  rgba(12, 12, 29, 1) 500px,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
     transparent 90%
   );
   background-color: rgba(12,12,29,255);

@@ -12,48 +12,62 @@ const cursorStyle = {
 };
 
 
-const TypingText = ({ text, speed = 100, onTypingEnd }) => {
+const TypingText = ({ text, speed = 100, onTypingEnd, fontSize }) => {
     const [displayed, setDisplayed] = useState('');
     const hasTypedRef = useRef(false);
 
     useEffect(() => {
-        // Reset hasTypedRef when text changes
         hasTypedRef.current = false;
         setDisplayed('');
+        let i = 0;
         const interval = setInterval(() => {
-            setDisplayed((prev) => {
+            setDisplayed(prev => {
                 if (prev.length < text.length) {
-                    return prev + text.charAt(prev.length);
+                    return text.slice(0, prev.length + 1);
                 } else {
+                    clearInterval(interval);
                     return prev;
                 }
             });
         }, speed);
-        return () => {
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, [text, speed]);
-
-    useEffect(() => {
-        if (displayed.length === text.length && !hasTypedRef.current) {
-            hasTypedRef.current = true;
-            if (onTypingEnd) onTypingEnd();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [displayed, text, onTypingEnd]);
-
+    // Highlight 'revolution' if present in the displayed text
+    const highlightWord = 'revolution';
+    let content;
+    if (displayed.includes(highlightWord)) {
+        const parts = displayed.split(new RegExp(`(${highlightWord})`, 'i'));
+        content = parts.map((part, idx) =>
+            part.toLowerCase() === highlightWord
+                ? <span key={idx} style={{ color: '#00FFFF', fontWeight: 700 }}>{part}</span>
+                : <span key={idx}>{part}</span>
+        );
+    } else {
+        content = displayed;
+    }
     return (
-        <span style={{ whiteSpace: 'pre-line' }}>
-            {displayed}
+        <span
+            style={{
+                whiteSpace: 'pre-line',
+                fontWeight: 700,
+                fontSize: fontSize || '2.5em',
+                color: '#fff',
+                fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
+                letterSpacing: '0.5px',
+            }}
+        >
+            {content}
             <span style={cursorStyle}>|</span>
         </span>
     );
 };
 
+
 TypingText.propTypes = {
     text: PropTypes.string.isRequired,
     speed: PropTypes.number,
     onTypingEnd: PropTypes.func,
+    fontSize: PropTypes.string,
 };
 
 export default TypingText;
