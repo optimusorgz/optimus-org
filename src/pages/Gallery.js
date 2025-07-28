@@ -42,19 +42,20 @@ const GalleryContainer = styled.div`
   min-height: 100%;
   padding-top: 20px;
   position: relative;
-  background-color: rgba(12,12,29,255);
-  background-position: center;
-  transition: background-color 0.3s ease;
   background: radial-gradient(
     circle at top left,
-    rgba(255, 255, 255, 0.3) 100px,
-    rgba(255, 255, 255, 0.1) 200px,
-    rgba(12, 12, 29, 0.8) 400px,
-    rgba(12, 12, 29, 1) 500px,
-    transparent 100%
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
+    transparent 90%
   );
+  background-color: rgba(12,12,29,255);
+  background-position: left top;
   background-size: 100% 100%;
   animation: ${pulseGradient} 5s ease-in-out infinite;
+  align-items: stretch;
+  transition: background-color 0.3s ease;
   &::before {
     content: '';
     position: absolute;

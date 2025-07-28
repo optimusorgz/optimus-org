@@ -1,15 +1,40 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
 import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+const pulseGradient = keyframes`
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 140% 140%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+`;
+
 const EventsContainer = styled.div`
   height: 100%;
-  background-color: rgba(12,12,29,255); /* Adjusted background color */
-  padding-top: 20px;
+  padding-top: 0;
+  position: relative;
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 255, 255, 0.3) 10%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(12, 12, 29, 0.8) 30%,
+    rgba(12, 12, 29, 1) 60%,
+    transparent 90%
+  );
+  background-color: rgba(12,12,29,255);
+  background-position: left top;
+  background-size: 100% 100%;
+  animation: ${pulseGradient} 5s ease-in-out infinite;
+  align-items: stretch;
   transition: background-color 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -116,9 +141,9 @@ const Events = () => {
     <EventsContainer theme={theme}>
       <PageWrapper>
         <ContentContainer>
-          <Section>
-            <Header theme={theme}>
-              <h2 style={{ fontSize: '2.5rem' }} data-aos="fade-up">Our Events</h2>
+          <Section style={{ marginTop: 0, paddingTop: 0 }}>
+            <Header theme={theme} style={{ marginTop: 0, paddingTop: 0 }}>
+              <h2 style={{ fontSize: '2.5rem', marginTop: 0, paddingTop: 0 }} data-aos="fade-up">Our Events</h2>
             </Header>
             <EventGrid>
               {events.map(event => (

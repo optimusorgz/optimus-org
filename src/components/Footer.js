@@ -156,16 +156,7 @@ const FooterBottom = styled.div`
   box-sizing: border-box;
   position: relative;
 
-  &::before {
-    content: '';
-    display: block;
-    width: calc(100% - 32px);
-    height: 2px;
-    background: ${props => props.theme.cardBorder};
-    position: absolute;
-    top: 0;
-    left: 16px;
-  }
+
 
   .dev-by {
     font-size: 1rem;
@@ -175,14 +166,7 @@ const FooterBottom = styled.div`
     font-weight: bold;
   }
 
-  .footer-dev-line {
-    width: calc(100% - 32px);
-    height: 2px;
-    background: ${props => props.theme.cardBorder};
-    margin-bottom: 2px;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
+
 
   .footer-bottom-row {
     width: 100%;
@@ -245,26 +229,22 @@ const Footer = () => {
           <p>
             optimus.orgz@gmail.com<br />
           </p>
+          <SocialLinks theme={theme}>
+            <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faInstagram} />
+            </a>
+            <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faLinkedinIn} />
+            </a>
+          </SocialLinks>
         </FooterSection>
       </FooterContent>
 
       <FooterBottom theme={theme}>
-        <div className="dev-by"><span style={{ fontWeight: 'bold' }}>Developed by:</span> Optimus Technical Team</div>
-        <div className="footer-dev-line"></div>
-        <div className="footer-bottom-row">
-          <div className="footer-bottom-left">
-            &copy; {new Date().getFullYear()} OPTIMUS. All rights reserved.
-          </div>
-          <div className="footer-bottom-right">
-            <SocialLinks theme={theme}>
-              <a href="https://www.instagram.com/optimus.orgz/" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faInstagram} />
-              </a>
-              <a href="https://www.linkedin.com/company/optimus16/" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faLinkedinIn} />
-              </a>
-            </SocialLinks>
-          </div>
+        <div className="dev-by" style={{ marginBottom: '10px' }}><span style={{ fontWeight: 'bold' }}>Developed by:</span> Optimus Technical Team</div>
+        <div style={{ width: 'calc(100% - 40px)', height: '2px', background: theme.cardBorder, margin: '0 20px 10px 20px' }}></div>
+        <div style={{ marginTop: '10px', marginBottom: '24px', fontSize: '0.95rem', opacity: 0.8, textAlign: 'center' }}>
+          &copy; 2025 OPTIMUS. All rights reserved.
         </div>
       </FooterBottom>
     </FooterWrapper>

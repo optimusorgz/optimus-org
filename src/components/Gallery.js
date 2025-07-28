@@ -21,6 +21,7 @@ const pulseGradient = keyframes`
 
 const Section = styled.section`
   padding: 0px 70px 100px 70px;
+  padding-top: 0 !important;
   position: relative;
   overflow: hidden;
   background: radial-gradient(

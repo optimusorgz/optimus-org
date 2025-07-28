@@ -36,7 +36,7 @@ const underlinePulse = keyframes`
 
 
 const MissionSection = styled.section`
-  padding: 100px 10% 100px 10%;
+  padding: 0 10% 0 10%;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -302,7 +302,6 @@ const Mission = () => {
   useEffect(() => {
     AOS.init({
       duration: 1400,
-      once: true,
       mirror: false,
       offset: 100
     });
