@@ -117,7 +117,7 @@ const rotateZ = keyframes`
 `;
 
 const HeaderTitle = styled.h2`
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: #fff;
   font-weight: 700;
   text-align: center;
@@ -125,11 +125,27 @@ const HeaderTitle = styled.h2`
   margin-top: 40px;
   letter-spacing: 1px;
   text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  position: relative;
+
+  &::after {
+    content: '';
+    display: block;
+    margin: 0.5em auto 0 auto;
+    width: 80px;
+    height: 4px;
+    background-color: #ffffffff;
+    border-radius: 2px;
+    animation: ${underlinePulse} 2.2s ease-in-out infinite;
+  }
 
   @media (max-width: 600px) {
-    font-size: 1.18rem;
+    font-size: 1.45rem;
     margin-bottom: 16px;
     margin-top: 22px;
+    &::after {
+      width: 50px;
+      height: 3px;
+    }
   }
 `;
 
@@ -202,7 +218,7 @@ const MissionSectionBox = styled.div`
 `;
 
 const CardTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 2.25rem;
   color: rgba(255, 255, 255, 1.6);
   margin-bottom: 16px;
   position: relative;
@@ -236,7 +252,7 @@ const CardTitle = styled.h2`
   }
 
   @media (max-width: 600px) {
-    font-size: 1.15rem;
+    font-size: 1.45rem;
     margin-bottom: 10px;
     margin: 0 4px 18px 4px;
     svg {
@@ -246,15 +262,18 @@ const CardTitle = styled.h2`
 `;
 
 const CardText = styled.p`
-  font-size: 1.15rem;
+  font-size: 1.02rem;
   color: #e0e0e0;
   margin-bottom: 0;
   text-align: center;
   font-weight: 400;
   margin: 0 10px 0 10px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
     font-size: 0.92rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.82rem;
     margin: 0 4px 0 4px;
   }
 `;
@@ -354,7 +373,7 @@ const ValueItem = styled.div`
 
 const ValueTitle = styled.h4`
   color: ${props => props.isDarkTheme ? '#00FFFF' : '#008B8B'};
-  font-size: 1.3rem;
+  font-size: 1.55rem;
   margin-bottom: 10px;
 `;
 

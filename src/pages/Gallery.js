@@ -21,21 +21,21 @@ const pulseGradient = keyframes`
 
 const images = [
   require('../assets/gallary/IMG_0314.jpg'),
-  require('../assets/gallary/IMG_0317.jpg'),
-  require('../assets/gallary/IMG_0322.jpg'),
-  require('../assets/gallary/IMG_0323.jpg'),
   require('../assets/gallary/IMG_0325.jpg'),
-  require('../assets/gallary/IMG_0326.jpg'),
   require('../assets/gallary/IMG_0331.jpg'),
   require('../assets/gallary/IMG_0333.jpg'),
+  require('../assets/gallary/IMG_0323.jpg'),
   require('../assets/gallary/IMG_0338.jpg'),
   require('../assets/gallary/IMG_0341.jpg'),
   require('../assets/gallary/IMG_0352.jpg'),
+  require('../assets/gallary/IMG_0322.jpg'),
   require('../assets/gallary/IMG_0358.jpg'),
   require('../assets/gallary/IMG_4972.jpg'),
+  require('../assets/gallary/IMG_0317.jpg'),
   require('../assets/gallary/IMG_5760.jpeg'),
   require('../assets/gallary/IMG_5766.JPG'),
   require('../assets/gallary/IMG_5773.JPG'),
+  require('../assets/gallary/IMG_0326.jpg'),
   require('../assets/gallary/IMG_5780.JPG'),
 ];
 
@@ -71,23 +71,23 @@ const GalleryContainer = styled.div`
     padding: 40px 1.5% 0 1.5%;
   }
   @media (max-width: 600px) {
-    padding: 24px 0.5% 0 0.5%;
+    padding: 24px 0.9% 0 0.9%;
   }
 `;
 
 const GallerySection = styled.section`
-  padding: 100px 10%;
+  padding: 100px 0%;
   position: relative;
   z-index: 1;
   @media (max-width: 600px) {
-    padding: 36px 4% 0 4%;
+    padding: 36px 2% 0 2%;
   }
 `;
 
 const GalleryGrid = styled.div`
   column-count: 4;
-  column-gap: 0px;
-  padding: 0;
+  column-gap: 5px;
+  padding: 7px;
   background: transparent;
   border-radius: 10px;
   @media (max-width: 1400px) {
@@ -95,11 +95,11 @@ const GalleryGrid = styled.div`
   }
   @media (max-width: 1024px) {
     column-count: 3;
-    column-gap: 20px;
+    column-gap: 0px;
   }
   @media (max-width: 700px) {
     column-count: 3;
-    column-gap: 10px;
+    column-gap: 0px;
   }
 `;
 
