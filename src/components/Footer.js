@@ -244,7 +244,6 @@ const Footer = () => {
           <h3>Contact Us</h3>
           <p>
             optimus.orgz@gmail.com<br />
-            +91 87550 26400
           </p>
         </FooterSection>
       </FooterContent>
