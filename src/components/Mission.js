@@ -117,24 +117,19 @@ const rotateZ = keyframes`
 `;
 
 const HeaderTitle = styled.h2`
-  font-size: 3rem;
-  color: rgba(255, 255, 255, 1.6); /* Adjusted color to be lighter */
-  margin-bottom: 20px;
-  position: relative;
-  display: inline-block;
-  animation: ${props => props.rotate ? rotateZ : 'none'} 3s infinite;
+  font-size: 2.2rem;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 40px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background-color: rgba(255, 255, 255, 1.6); /* Adjusted color to be lighter */
-
-    border-radius: 2px;
+  @media (max-width: 600px) {
+    font-size: 1.18rem;
+    margin-bottom: 16px;
+    margin-top: 22px;
   }
 `;
 
@@ -239,16 +234,30 @@ const CardTitle = styled.h2`
     ? 'rgba(0, 255, 255, 0.2)'
     : 'rgba(0, 139, 139, 0.2)'});
   }
+
+  @media (max-width: 600px) {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    margin: 0 4px 18px 4px;
+    svg {
+      font-size: 1.1rem;
+    }
+  }
 `;
 
 const CardText = styled.p`
-  font-size: 0.95rem;
-  color: ${props => props.isDarkTheme
-    ? 'rgba(255, 255, 255, 0.9)'
-    : 'rgba(0, 0, 0, 0.9)'};
-  line-height: 1.6;
-`;
+  font-size: 1.15rem;
+  color: #e0e0e0;
+  margin-bottom: 0;
+  text-align: center;
+  font-weight: 400;
+  margin: 0 10px 0 10px;
 
+  @media (max-width: 600px) {
+    font-size: 0.92rem;
+    margin: 0 4px 0 4px;
+  }
+`;
 const CoreValues = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);

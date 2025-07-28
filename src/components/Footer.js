@@ -76,24 +76,52 @@ const FooterTopBar = styled.div`
   padding: 0 20px;
   position: relative;
   z-index: 1;
+  .footer-cta-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    @media (max-width: 600px) {
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 8px;
+    }
+  }
+  .footer-typing-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    @media (max-width: 600px) {
+      font-size: 1.1rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+  .footer-cta-btn-wrap {
+    @media (max-width: 600px) {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
   @media (max-width: 600px) {
     flex-direction: column;
     gap: 16px;
     padding: 0 10px;
     margin-bottom: 18px;
+    align-items: center;
   }
 `;
 
 
 const FooterLogo = styled.img`
   height: auto;
-  width: 200px;
+  width: 12%;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.10);
   background: transparent;
   padding: 0;
   @media (max-width: 600px) {
-    height: 40px;
+    display: none;
   }
 `;
 
@@ -274,17 +302,21 @@ const Footer = () => {
     <FooterWrapper theme={theme} ref={ref}>
       <FooterTopBar>
         <FooterLogo src={clubLogo} alt="Optimus Club Logo" />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="footer-cta-bar">
           {inView ? (
-            <TypingText text="Join the revolution!" speed={80} />
+            <span className="footer-typing-text">
+              <TypingText text="Join the revolution!" speed={80} />
+            </span>
           ) : null}
-          <JoinUsButton
-            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join Now
-          </JoinUsButton>
+          <div className="footer-cta-btn-wrap">
+            <JoinUsButton
+              href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join Now
+            </JoinUsButton>
+          </div>
         </div>
       </FooterTopBar>
 

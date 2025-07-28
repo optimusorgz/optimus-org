@@ -62,6 +62,9 @@ const TeamSection = styled.section`
   padding: 100px 5%;
   position: relative;
   z-index: 1;
+  @media (max-width: 600px) {
+    padding: 36px 4% 0 4%;
+  }
 `;
 
 const TeamGrid = styled.div`
@@ -230,7 +233,17 @@ const Team = () => {
       <TeamContainer theme={theme}>
         <TeamSection>
           <Header theme={theme}>
-            <h2 style={{ fontSize: '2.5rem' }} data-aos="fade-up">Our Team</h2>
+            <h2
+              style={{
+                fontSize: '2.5rem',
+                marginTop: 0,
+                marginBottom: '1.2em',
+                ...(window.innerWidth <= 600 ? { fontSize: '1.5rem', marginBottom: '0.7em' } : {})
+              }}
+              data-aos="fade-up"
+            >
+              Our Team
+            </h2>
           </Header>
           <TeamGrid>
             {teamMembers.map((member, index) => (
@@ -243,7 +256,7 @@ const Team = () => {
                   src={member.image}
                   alt={member.name}
                 />
-                
+
                 <TeamMemberContent>
                   <h3 style={{
                     color: theme.primary,

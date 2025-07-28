@@ -68,7 +68,10 @@ const GalleryContainer = styled.div`
     background-color: rgba(15, 3, 38, 0.15);
   }
   @media (max-width: 768px) {
-    padding: 60px 5%;
+    padding: 40px 1.5% 0 1.5%;
+  }
+  @media (max-width: 600px) {
+    padding: 24px 0.5% 0 0.5%;
   }
 `;
 
@@ -76,6 +79,9 @@ const GallerySection = styled.section`
   padding: 100px 10%;
   position: relative;
   z-index: 1;
+  @media (max-width: 600px) {
+    padding: 36px 4% 0 4%;
+  }
 `;
 
 const GalleryGrid = styled.div`
@@ -88,11 +94,11 @@ const GalleryGrid = styled.div`
     column-count: 3;
   }
   @media (max-width: 1024px) {
-    column-count: 2;
+    column-count: 3;
     column-gap: 20px;
   }
   @media (max-width: 700px) {
-    column-count: 2;
+    column-count: 3;
     column-gap: 10px;
   }
 `;
@@ -227,7 +233,17 @@ function GalleryPage() {
       <GalleryContainer theme={theme}>
         <GallerySection>
           <Header theme={theme}>
-            <h2 style={{ fontSize: '2.5rem' }} data-aos="fade-up">Gallery</h2>
+            <h2
+              style={{
+                fontSize: '2.5rem',
+                marginTop: 0,
+                marginBottom: '1.2em',
+                ...(window.innerWidth <= 600 ? { fontSize: '1.5rem', marginBottom: '0.7em' } : {})
+              }}
+              data-aos="fade-up"
+            >
+              Gallery
+            </h2>
           </Header>
           <GalleryGrid>
             {images.map((img, idx) => (
