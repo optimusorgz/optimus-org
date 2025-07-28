@@ -79,6 +79,20 @@ const TeamGrid = styled.div`
   }
 `;
 
+const TeamMemberImg = styled.img`
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    transition: width 0.2s, height 0.2s;
+
+    @media (max-width: 768px) {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 8px;
+  }
+  `;
 const TeamMemberContent = styled.div`
   text-align: center;
   padding: 0 8px;
@@ -225,17 +239,11 @@ const Team = () => {
                 data-aos="fade-up"
                 data-aos-delay={100 * (index % 4)}
               >
-                <img
+                <TeamMemberImg
                   src={member.image}
                   alt={member.name}
-                  style={{
-                    width: '170px',
-                    height: '170px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    marginBottom: '15px'
-                  }}
                 />
+                
                 <TeamMemberContent>
                   <h3 style={{
                     color: theme.primary,
