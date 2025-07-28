@@ -118,7 +118,7 @@ const Cards = styled.div`
   position: relative;
   z-index: 2;
   overflow: hidden;
-  padding: 50px 10px;
+  padding: 10px 0 0 0;
   width: 100%;
 
   &:hover .scroll-container {
@@ -128,11 +128,11 @@ const Cards = styled.div`
 
 const ScrollContainer = styled.div`
   display: flex;
-  gap: 30px;
+  gap: 12px;
   border-radius: 15px;
   animation: ${scrollX} 60s linear infinite;
   width: fit-content;
-  padding-right: 30px;
+  padding-right: 0;
 
   @media (max-width: 768px) {
     gap: 0;
@@ -149,15 +149,16 @@ const Card = styled.div`
     ? 'rgba(255, 255, 255, 0.1)'
     : 'rgba(0, 0, 0, 0.1)'};
   border-radius: 15px;
+  margin: 0 10px;
   padding: 30px 20px;
   text-align: center;
-  width: 220px;
-  min-width: 220px;
-  max-width: 220px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
   aspect-ratio: 1 / 1;
-  height: auto;
-  min-height: 0;
-  max-height: none;
+  height: 180px;
+  min-height: 180px;
+  max-height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -182,16 +183,25 @@ const Card = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 70vw;
-    min-width: 70vw;
-    max-width: 70vw;
+    width: 34vw;
+    min-width: 34vw;
+    max-width: 34vw;
     aspect-ratio: 1 / 1;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-    padding: 14px 4px;
+    height: 34vw;
+    min-height: 34vw;
+    max-height: 34vw;
+    padding: 5px 6px;
     margin: 0 5px;
-    font-size: 0.1rem;
+    svg {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+    h4 {
+      font-size: 1.1rem;
+    }
+    p {
+      font-size: 0.8rem;
+    }
   }
 
   &:hover {

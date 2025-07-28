@@ -240,6 +240,10 @@ const ValueItem = styled.div`
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   &::before {
     content: '';
@@ -276,6 +280,28 @@ const ValueItem = styled.div`
     filter: drop-shadow(0 0 10px ${props => props.isDarkTheme
     ? 'rgba(0, 255, 255, 0.3)'
     : 'rgba(0, 139, 139, 0.3)'});
+    transition: font-size 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    width: 34vw;
+    min-width: 34vw;
+    max-width: 34vw;
+    aspect-ratio: 1 / 1;
+    height: 34vw;
+    min-height: 34vw;
+    max-height: 34vw;
+    padding: 5px 6px;
+    svg {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+    h4 {
+      font-size: 1.1rem;
+    }
+    p {
+      font-size: 0.8rem;
+    }
   }
 `;
 
