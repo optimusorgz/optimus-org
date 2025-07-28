@@ -26,10 +26,10 @@ const TeamContainer = styled.div`
   position: relative;
   background: radial-gradient(
     circle at top left,
-    rgba(255, 255, 255, 0.3) 10%,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(12, 12, 29, 0.8) 30%,
-    rgba(12, 12, 29, 1) 60%,
+    rgba(255, 255, 255, 0.3) 120px,
+  rgba(255, 255, 255, 0.1) 250px,
+  rgba(12, 12, 29, 0.8) 450px,
+  rgba(12, 12, 29, 1) 500px,
     transparent 90%
   );
   background-color: rgba(12,12,29,255);
@@ -59,7 +59,7 @@ const TeamContainer = styled.div`
 `;
 
 const TeamSection = styled.section`
-  padding: 100px 10%;
+  padding: 100px 5%;
   position: relative;
   z-index: 1;
 `;
@@ -68,38 +68,45 @@ const TeamGrid = styled.div`
   display: grid;
   text-align: center;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 30px;
-  padding: 20px;
+  gap: 36px 24px;
+  padding: 10px 0 30px 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+    padding: 0 0 20px 0;
+    margin: 0 0;
+  }
 `;
 
 const TeamMemberContent = styled.div`
   text-align: center;
-  padding: 0 20px;
+  padding: 0 8px;
 `;
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 12px;
   text-align: center;
-  margin-top: 5px;
+  margin-top: 2px;
   justify-content: center;
 
   a {
     color: ${props => props.theme.primary};
-    font-size: 1.5rem;
+    font-size: 1.15rem;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     text-decoration: none;
-    padding: 10px;
+    padding: 6px;
     border-radius: 50%;
 
     &:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       color: ${props => props.theme.hoverColor};
       background-color: rgba(255, 255, 255, 0.1);
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     &.disabled {
@@ -108,7 +115,7 @@ const SocialLinks = styled.div`
     }
 
     span {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
   }
 `;

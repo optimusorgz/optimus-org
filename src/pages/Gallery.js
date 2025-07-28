@@ -44,10 +44,10 @@ const GalleryContainer = styled.div`
   position: relative;
   background: radial-gradient(
     circle at top left,
-    rgba(255, 255, 255, 0.3) 10%,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(12, 12, 29, 0.8) 30%,
-    rgba(12, 12, 29, 1) 60%,
+     rgba(255, 255, 255, 0.3) 120px,
+  rgba(255, 255, 255, 0.1) 250px,
+  rgba(12, 12, 29, 0.8) 450px,
+  rgba(12, 12, 29, 1) 500px,
     transparent 90%
   );
   background-color: rgba(12,12,29,255);
@@ -82,6 +82,13 @@ const GalleryGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 25px;
   padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 10px 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    
+  }
 `;
 
 const GalleryImage = styled.img`
