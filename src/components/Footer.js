@@ -1,6 +1,7 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import clubLogo from '../assets/clublogo.png';
+import InfiniteTypingText from './InfiniteTypingText';
 import TypingText from './TypingText';
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -304,8 +305,38 @@ const Footer = () => {
         <FooterLogo src={clubLogo} alt="Optimus Club Logo" />
         <div className="footer-cta-bar">
           {inView ? (
-            <span className="footer-typing-text">
-              <TypingText text="Join the revolution!" speed={80} />
+            <span
+              className="footer-typing-text"
+              style={{
+                fontSize: '2.6rem',
+                fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
+                fontWeight: 700,
+                letterSpacing: '1px',
+                display: 'block',
+                textAlign: 'center',
+              }}
+            >
+              <span
+                style={{
+                  fontSize: '2.6rem',
+                  fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
+                  fontWeight: 700,
+                  letterSpacing: '1px',
+                  display: 'block',
+                  textAlign: 'center',
+                }}
+                className="footer-typing-text-responsive"
+              >
+                <InfiniteTypingText text="join the revolution!" speed={80} fontSize="inherit" />
+              </span>
+              <style>{`
+                
+                @media (min-width: 601px) {
+                  .footer-typing-text-responsive {
+                    font-size: 2.1rem !important;
+                  }
+                }
+              `}</style>
             </span>
           ) : null}
           <div className="footer-cta-btn-wrap">

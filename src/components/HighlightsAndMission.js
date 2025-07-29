@@ -150,7 +150,7 @@ const Cards = styled.div`
   position: relative;
   z-index: 2;
   overflow: hidden;
-  padding: 10px 0 0 0;
+  padding: 20px 0 0 0;
   width: 100%;
 `;
 
@@ -292,17 +292,6 @@ const Card = styled.div`
   }
 `;
 
-// Styled Components - Mission Section
-// const pulseGradient = keyframes`
-//   0%, 100% {
-//     transform: translate(-50%, -50%) scale(1.3);
-//     opacity: 1;
-//   }
-//   50% {
-//     transform: translate(-50%, -50%) scale(3.3);
-//     opacity: 0.9;
-//   }
-// `;
 
 const MissionSection = styled.section`
   position: relative;
@@ -327,8 +316,8 @@ const MissionSection = styled.section`
       circle,
       rgba(255, 255, 255, 0.3) 2%,
       rgba(255, 255, 255, 0.1) 8%,
-      rgba(12, 12, 29, 0.8) 30%,
-      rgba(12, 12, 29, 1) 60%,
+      rgba(12, 12, 29, 0.8) 25%,
+      rgba(12, 12, 29, 1) 40%,
       transparent 90%
     );
     border-radius: 50%;
@@ -358,8 +347,8 @@ const MissionSection = styled.section`
       circle,
       rgba(255, 255, 255, 0.3) 5%,
       rgba(255, 255, 255, 0.1) 10%,
-      rgba(12, 12, 29, 0.8) 30%,
-      rgba(12, 12, 29, 1) 60%,
+      rgba(12, 12, 29, 0.8) 25%,
+      rgba(12, 12, 29, 1) 40%,
       transparent 90%
     );
     border-radius: 50%;

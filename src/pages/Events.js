@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import InfiniteTypingText from '../components/InfiniteTypingText';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
@@ -143,7 +144,9 @@ const Events = () => {
         <ContentContainer>
           <Section style={{ marginTop: 0, paddingTop: 0 }}>
             <Header theme={theme} style={{ marginTop: 0, paddingTop: 0 }}>
-              <h2 style={{ fontSize: '2.5rem', marginTop: 0, paddingTop: 0 }} data-aos="fade-up">Our Events</h2>
+              <h2 style={{ fontSize: '2.5rem', marginTop: 0, paddingTop: 0 }} data-aos="fade-up">
+                <InfiniteTypingText text="Our Events" speed={80} fontSize="inherit" loop={true} />
+              </h2>
             </Header>
             <EventGrid>
               {events.map(event => (

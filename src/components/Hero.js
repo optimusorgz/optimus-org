@@ -43,6 +43,7 @@ const HeroSection = styled.section`
     rgba(12, 12, 29, 1) 80%,
     transparent 100%
   );
+  z-index: 3;
   background-color: rgba(12,12,29,255);
   background-position: left top;
   background-size: 100% 100%;

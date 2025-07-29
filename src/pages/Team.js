@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import InfiniteTypingText from '../components/InfiniteTypingText';
 import styled, { keyframes } from 'styled-components';
 import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
@@ -242,7 +243,7 @@ const Team = () => {
               }}
               data-aos="fade-up"
             >
-              Our Team
+              <InfiniteTypingText text="Our Team" speed={80} fontSize="inherit" loop={true} />
             </h2>
           </Header>
           <TeamGrid>
