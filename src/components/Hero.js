@@ -211,11 +211,16 @@ const Title = styled.h1`
   line-height: 1.2;
   color: white;
   font-weight: 700;
-  text-transform: none;
+            <span className="desktop-welcome">
+              <TypingText key={typingKey} text="Welcome To" speed={80} cursor={true} />
+            </span>
+            <span className="mobile-welcome">
+              <TypingText key={typingKey} text="Welcome" speed={80} cursor={true} />
+            </span>
   font-family: sans-serif;
   letter-spacing: -0.5px;
   @media (max-width: 768px) {
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
 `;
 
@@ -240,7 +245,7 @@ const Highlight = styled.span`
     animation: bounceOptimus 1.2s cubic-bezier(0.23, 1, 0.32, 1);
   }
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.7rem;
   }
 
   &::after {
@@ -251,6 +256,18 @@ const Highlight = styled.span`
     transform: translateX(-50%) scaleX(1);
     bottom: -8px;
     width: 80%;
+  .desktop-welcome {
+    display: inline;
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+  .mobile-welcome {
+    display: none;
+    @media (max-width: 768px) {
+      display: inline;
+    }
+  }
     height: 5px;
     background: linear-gradient(90deg, #00FFFF 0%, #fff 100%);
     border-radius: 3px;
@@ -328,14 +345,15 @@ const ButtonContainer = styled.div`
   text-align: left;
   justify-content: flex-start;
   gap: 15px;
-  margin-top: 40px;
-  padding: 30px 0;
+  margin: 0 0 20px 0;
+  padding: 0 0 30px 0;
   @media (max-width: 768px) {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    margin-top: 18px;
-    padding: 18px 0;
+    margin-top: 0 0 40px 0;
+    padding: 0 0 18px 0;
   }
 `;
 

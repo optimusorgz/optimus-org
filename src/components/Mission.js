@@ -210,7 +210,7 @@ const MissionSectionBox = styled.div`
   flex: 1 1 0;
   min-width: 220px;
   max-width: 500px;
-  min-height: 340px;
+  min-height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -218,7 +218,7 @@ const MissionSectionBox = styled.div`
   box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
   background-size: 100% 100%;
   border-radius: 18px;
-  padding: 48px 36px;
+  padding: 10% 5%;
   margin: 0;
   transition: border-color 0.3s;
   box-sizing: border-box;

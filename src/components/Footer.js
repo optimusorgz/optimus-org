@@ -166,7 +166,7 @@ const FooterContent = styled.div`
   }
 
   @media (max-width: 600px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 35% 65%;
   }
 `;
 

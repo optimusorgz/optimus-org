@@ -185,15 +185,11 @@ const Drawer = styled.nav`
   flex-direction: column;
   padding: 2rem 1.5rem 1.5rem 1.5rem;
   transform: translateX(${props => (props.isOpen ? '0' : '100%')});
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s cubic-bezier(0.4,0,0.2,1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  opacity: 0;
-  &.fade-left {
-    animation: ${fadeLeft} 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
-    opacity: 1;
-    transform: translateX(0);
-  }
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
   @media (min-width: 769px) {
     display: none !important;
   }
