@@ -7,9 +7,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import styled from 'styled-components';
 import Hero from './components/Hero';
-import { Highlights } from './components/Highlights';
-import Mission from './components/Mission';
-import GalleryComponent from './components/Gallery';
+import HighlightsAndMission from './components/HighlightsAndMission';
 import Footer from './components/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Team from './pages/Team';
@@ -23,7 +21,7 @@ function AppContent() {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: false,
+      once: true,
       mirror: false
     });
   }, []);
@@ -37,9 +35,7 @@ function AppContent() {
         <Route index element={
           <>
             <Hero />
-            <Highlights />
-            <Mission />
-            <GalleryComponent />
+            <HighlightsAndMission />
           </>
         } />
         <Route path="/team" element={<Team />} />

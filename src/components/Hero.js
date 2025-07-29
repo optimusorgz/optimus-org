@@ -36,12 +36,12 @@ const HeroSection = styled.section`
   box-sizing: border-box;
   overflow: hidden;
   background: radial-gradient(
-    circle at top left,
-    rgba(255, 255, 255, 0.3) 10%,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(12, 12, 29, 0.8) 30%,
-    rgba(12, 12, 29, 1) 60%,
-    transparent 90%
+    circle 800px at 0% 0%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(12, 12, 29, 0.8) 60%,
+    rgba(12, 12, 29, 1) 80%,
+    transparent 100%
   );
   background-color: rgba(12,12,29,255);
   background-position: left top;
