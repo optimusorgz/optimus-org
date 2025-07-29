@@ -91,7 +91,7 @@ const FooterTopBar = styled.div`
     font-size: 1.5rem;
     font-weight: 600;
     @media (max-width: 600px) {
-      font-size: 1.1rem;
+      font-size: 0.8rem;
       text-align: center;
       width: 100%;
     }
@@ -156,7 +156,7 @@ const FooterContent = styled.div`
   margin: 0 auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   position: relative;
   z-index: 1;
@@ -324,14 +324,6 @@ const Footer = () => {
         <FooterSection theme={theme}>
           <h3>About Us</h3>
           <p>OPTIMUS is a dynamic technical club dedicated to fostering innovation and technical excellence.</p>
-        </FooterSection>
-
-        <FooterSection theme={theme}>
-          <h3>Quick Access</h3>
-          <Link to="/">Home</Link>
-          <Link to="/team">Team</Link>
-          <Link to="/gallery">Gallery</Link>
-          <Link to="/events">Events</Link>
         </FooterSection>
 
         <FooterSection theme={theme}>

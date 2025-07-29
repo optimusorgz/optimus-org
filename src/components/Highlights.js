@@ -9,6 +9,7 @@ import {
   faChalkboardTeacher
 } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '../context/ThemeContext';
+import TypingText from './TypingText';
 
 const pulseGradient = keyframes`
   0% {
@@ -85,7 +86,7 @@ animation: ${pulseGradient} 5s ease-in-out infinite;
 `;
 
 const Title = styled.h2`
-  font-size: 2.5rem;
+  font-size: 1.1rem;
   color: rgba(255, 255, 255, 1.6); /* Adjusted color to be lighter */
   margin-bottom: 20px;
   position: relative;
@@ -101,7 +102,7 @@ const Title = styled.h2`
   }
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 0.8rem;
   }
 `;
 
@@ -288,6 +289,7 @@ export const Highlights = () => {
   const [paused, setPaused] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [typingKey, setTypingKey] = useState(0);
   const sectionRef = useRef(null);
   const scrollTimeout = useRef();
 
@@ -314,6 +316,7 @@ export const Highlights = () => {
             scrollTimeout.current = setTimeout(() => {
               setPaused(false);
               setFadeIn(true);
+              setTypingKey(prev => prev + 1);
             }, 200);
           }
         });
@@ -339,10 +342,8 @@ export const Highlights = () => {
         theme={theme}
         isDarkTheme={isDarkTheme}
         style={{ textAlign: 'center', display: 'block' }}
-        data-aos="fade-up"
-        data-aos-duration="1000"
       >
-        {title}
+        <TypingText key={typingKey} text={title} speed={80} cursor={true} />
       </Title>
       <Cards>
         <ScrollContainer

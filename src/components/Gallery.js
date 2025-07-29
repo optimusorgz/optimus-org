@@ -20,7 +20,7 @@ const pulseGradient = keyframes`
 `;
 
 const Section = styled.section`
-  padding: 0px 70px 100px 70px;
+  padding: 0px 7% 100px 7%;
   padding-top: 0 !important;
   position: relative;
   overflow: hidden;

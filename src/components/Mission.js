@@ -18,15 +18,35 @@ import {
   faRocket
 } from '@fortawesome/free-solid-svg-icons';
 
-// Helper component to trigger TypingText only when visible
-function MissionTypingTrigger({ text, speed, fontSize }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+const revealImage = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+// Helper for infinite typewriter effect
+function InfiniteTypingText({ text, speed, fontSize }) {
+  const { ref, inView } = useInView({ triggerOnce: false, threshold: 0.2 });
+  const [typingKey, setTypingKey] = useState(0);
+  useEffect(() => {
+    if (inView) setTypingKey(prev => prev + 1);
+  }, [inView]);
   return (
-    <span ref={ref}>
-      {inView ? <TypingText text={text} speed={speed} fontSize={fontSize} /> : null}
+    <span ref={ref} style={{ display: 'inline-block', fontSize }}>
+      {inView ? <TypingText key={typingKey} text={text} speed={speed} fontSize={fontSize} /> : null}
     </span>
   );
 }
+
+const revealFade = keyframes`
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+`;
 
 const pulseGradient = keyframes`
   0% {
@@ -126,6 +146,7 @@ const HeaderTitle = styled.h2`
   letter-spacing: 1px;
   text-shadow: 0 2px 8px rgba(0,0,0,0.18);
   position: relative;
+  font-family: inherit;
 
   &::after {
     content: '';
@@ -206,8 +227,8 @@ const MissionSectionBox = styled.div`
   max-width: 100%;
   width: 100%;
   border: 2.5px solid ${props => props.isDarkTheme ? 'rgba(0,255,255,0.25)' : 'rgba(0,139,139,0.25)'};
-  opacity: ${props => props.inview ? 1 : 0};
-  animation: ${props => props.inview === undefined ? 'none' : props.fade === 'left' ? fadeLeft : fadeRight} 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+  opacity: 1;
+  animation: none;
 
   @media (max-width: 1024px) {
     min-width: 0;
@@ -229,6 +250,7 @@ const CardTitle = styled.h2`
   justify-content: center;
   text-align: center;
   margin: 0 10px 30px 10px;
+  font-family: inherit;
 
   &::after {
     content: '';
@@ -268,7 +290,13 @@ const CardText = styled.p`
   text-align: center;
   font-weight: 400;
   margin: 0 10px 0 10px;
-
+  font-family: inherit;
+  opacity: 1;
+  transform: none;
+  animation: none;
+  &.reveal {
+    animation: ${revealImage} 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
   @media (max-width: 900px) {
     font-size: 0.92rem;
   }
@@ -393,8 +421,17 @@ function Mission() {
   const [isHoveredVision, setIsHoveredVision] = useState(false);
 
   // Intersection observers for the two boxes
-  const { ref: missionRef, inView: missionInView } = useInView({ triggerOnce: true, threshold: 0.2 });
-  const { ref: visionRef, inView: visionInView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  const { ref: missionRef, inView: missionInView } = useInView({ triggerOnce: false, threshold: 0.2 });
+  const { ref: visionRef, inView: visionInView } = useInView({ triggerOnce: false, threshold: 0.2 });
+  const { ref: coreRef, inView: coreInView } = useInView({ triggerOnce: false, threshold: 0.2 });
+  const [missionRevealKey, setMissionRevealKey] = useState(0);
+  const [visionRevealKey, setVisionRevealKey] = useState(0);
+  useEffect(() => {
+    if (missionInView) setMissionRevealKey(prev => prev + 1);
+  }, [missionInView]);
+  useEffect(() => {
+    if (visionInView) setVisionRevealKey(prev => prev + 1);
+  }, [visionInView]);
 
   useEffect(() => {
     AOS.init({
@@ -418,62 +455,45 @@ function Mission() {
       <MissionContainer>
         <MissionContent>
           {/* Mission Section with Intersection Observer */}
-
-          {/* Mission Section with fade left when visible */}
           <MissionSectionBox
             ref={missionRef}
             isDarkTheme={isDarkTheme}
-            inview={missionInView ? 1 : 0}
-            fade="left"
+            inview={1}
+            fade="none"
           >
             <CardTitle isDarkTheme={isDarkTheme}>
               <FontAwesomeIcon icon={faBullseye} />
-              Our Mission
+              <InfiniteTypingText text="Our Mission" speed={80} fontSize="inherit" />
             </CardTitle>
-            <CardText isDarkTheme={isDarkTheme}>
-              <MissionTypingTrigger
-                text={"At Optimus, we're dedicated to creating a dynamic space where innovation thrives. Our mission is to empower students through hands-on learning, collaborative projects, and real-world challenges. We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions."}
-                speed={20}
-                fontSize="1.1em"
-              />
+            <CardText isDarkTheme={isDarkTheme} className={missionInView ? 'reveal' : ''} key={missionRevealKey}>
+              {"At Optimus, we're dedicated to creating a dynamic space where innovation thrives. Our mission is to empower students through hands-on learning, collaborative projects, and real-world challenges. We believe in nurturing talent and providing the tools needed to turn ideas into impactful solutions."}
             </CardText>
           </MissionSectionBox>
-
-          {/* Vision Section with fade right when visible */}
           <MissionSectionBox
             ref={visionRef}
             isDarkTheme={isDarkTheme}
-            inview={visionInView ? 1 : 0}
-            fade="right"
+            inview={1}
+            fade="none"
           >
             <CardTitle isDarkTheme={isDarkTheme}>
               <FontAwesomeIcon icon={faEye} />
-              Our Vision
+              <InfiniteTypingText text="Our Vision" speed={80} fontSize="inherit" />
             </CardTitle>
-            <CardText isDarkTheme={isDarkTheme}>
-              <MissionTypingTrigger
-                text={"We envision a future where every student has the opportunity to develop their technical skills and leadership abilities. Our goal is to build a community that not only learns together but also creates lasting impact through technology and innovation."}
-                speed={20}
-                fontSize="1.1em"
-              />
+            <CardText isDarkTheme={isDarkTheme} className={visionInView ? 'reveal' : ''} key={visionRevealKey}>
+              {"We envision a future where every student has the opportunity to develop their technical skills and leadership abilities. Our goal is to build a community that not only learns together but also creates lasting impact through technology and innovation."}
             </CardText>
           </MissionSectionBox>
-
         </MissionContent>
-
         <MissionHeader className="values">
-          <HeaderTitle isDarkTheme={isDarkTheme} data-aos="fade-up" data-aos-duration="1000">
-            Core Values
+          <HeaderTitle isDarkTheme={isDarkTheme} ref={coreRef}>
+            <InfiniteTypingText text="Core Values" speed={80} fontSize="inherit" />
           </HeaderTitle>
         </MissionHeader>
-
         <CoreValues>
           {coreValues.map((value, index) => (
             <ValueItem
               key={index}
               isDarkTheme={isDarkTheme}
-              data-aos="zoom-in"
-              data-aos-delay={100 * (index + 1)}
             >
               <FontAwesomeIcon icon={value.icon} />
               <ValueTitle isDarkTheme={isDarkTheme}>{value.title}</ValueTitle>

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TypingText from './TypingText';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -157,6 +157,18 @@ const GlobalHeroKeyframes = createGlobalStyle`
   }
 `;
 
+const revealImage = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
 const AnimatedBgShape = styled.img`
   width: 90%;
   max-width: 600px;
@@ -166,6 +178,11 @@ const AnimatedBgShape = styled.img`
   will-change: transform;
   display: block;
   margin: 0 auto;
+  opacity: 1;
+  transform: scale(0.85);
+  &.reveal {
+    animation: ${revealImage} 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
   @media (max-width: 900px) {
     width: 80vw;
     max-width: 400px;
@@ -189,7 +206,7 @@ const RotatingImage = styled.img`
 `;
 
 const Title = styled.h1`
-  font-size: 4.5rem;
+  font-size: 1.8rem;
   margin-bottom: 0;
   line-height: 1.2;
   color: white;
@@ -197,15 +214,8 @@ const Title = styled.h1`
   text-transform: none;
   font-family: sans-serif;
   letter-spacing: -0.5px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s, transform 0.7s;
-  &.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
 `;
 
@@ -278,6 +288,8 @@ const Description = styled.p`
   }
 `;
 
+
+
 const StyledButton = styled(Link)`
   text-decoration: none;
   color: rgba(255, 255, 255, 0.9);
@@ -287,24 +299,23 @@ const StyledButton = styled(Link)`
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.5px;
-  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
   overflow: hidden;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
   pointer-events: auto;
+  opacity: 0;
+  transform: scale(0.35);
+  &.reveal {
+    animation: ${revealImage} 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
   &:first-child {
     background: white;
     color: #1a0740;
     border: 1px solid white;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-  }
-  &:hover {
-    transform: scale(1.05) translateY(-3px);
-    background: white;
-    color: #1a0740;
   }
   @media (max-width: 768px) {
     font-size: 0.85rem;
@@ -319,13 +330,6 @@ const ButtonContainer = styled.div`
   gap: 15px;
   margin-top: 40px;
   padding: 30px 0;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s, transform 0.7s;
-  &.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
@@ -355,23 +359,30 @@ const Shape = styled.img`
 const Hero = () => {
   const { theme, isDarkTheme } = useTheme();
   const [showTitle, setShowTitle] = useState(false);
+  const [typingKey, setTypingKey] = useState(0);
   const [showHighlight, setShowHighlight] = useState(false);
   const [showDesc, setShowDesc] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
   const [descTyped, setDescTyped] = useState(false);
+  const [revealImageActive, setRevealImageActive] = useState(false);
+  const imageRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => setShowTitle(true), 300);
+            setTimeout(() => {
+              setShowTitle(true);
+              setTypingKey(prev => prev + 1);
+            }, 300);
             setTimeout(() => setShowHighlight(true), 1100);
             setTimeout(() => {
               setShowDesc(true);
               setShowButtons(true);
             }, 2100);
             setDescTyped(false);
+            setRevealImageActive(true);
           } else {
             setShowTitle(false);
             setShowHighlight(false);
@@ -394,6 +405,12 @@ const Hero = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!revealImageActive) return;
+    const timer = setTimeout(() => setRevealImageActive(false), 1200);
+    return () => clearTimeout(timer);
+  }, [revealImageActive]);
+
   // Prevent TypingText from re-typing after buttons appear
   const handleTypingEnd = () => {
     if (!showButtons) setShowButtons(true);
@@ -413,23 +430,33 @@ const Hero = () => {
         </SocialIcons>
         <SideText></SideText>
         <HeroImageWrapper>
-          <AnimatedBgShape src={backgroundShapes} alt="OPTIMUS Shape" />
+          <AnimatedBgShape
+            ref={imageRef}
+            src={backgroundShapes}
+            alt="OPTIMUS Shape"
+            className={revealImageActive ? 'reveal' : ''}
+          />
         </HeroImageWrapper>
-        <HeroContent data-aos="fade-right" data-aos-duration="1000">
-          <Title className={showTitle ? 'show' : ''}>Welcome To</Title>
+        <HeroContent>
+          <Title>
+            <TypingText key={typingKey} text="Welcome To" speed={80} cursor={true} />
+          </Title>
           <Highlight className={showHighlight ? 'show' : ''}>OPTIMUS</Highlight>
           <Description className={showDesc ? 'show' : ''}>
             A vibrant community empowering creativity, leadership, and collaboration to drive innovation and meaningful change.
           </Description>
-          <ButtonContainer className={showButtons ? 'show' : ''}>
-            <StyledButton as="a"
+          <ButtonContainer>
+            <StyledButton
+              as="a"
               href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
               target="_blank"
+              className={showButtons ? 'reveal' : ''}
             >
               LET'S CONNECT
             </StyledButton>
             <StyledButton
               to="/events"
+              className={showButtons ? 'reveal' : ''}
             >
               EXPLORE EVENTS
             </StyledButton>

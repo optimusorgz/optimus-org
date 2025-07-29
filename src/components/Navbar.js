@@ -1,10 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faHome, faUsers, faImages, faCalendarAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+
+const fadeDown = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+const fadeRight = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+const fadeLeft = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
 
 const Nav = styled.nav`
   position: fixed;
@@ -13,7 +45,11 @@ const Nav = styled.nav`
   top: 0;
   left: 0;
   backdrop-filter: blur(20px);
-  
+  opacity: 0;
+  transform: translateY(-40px);
+  &.fade-down {
+    animation: ${fadeDown} 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
 `;
 
 const Container = styled.div`
@@ -28,6 +64,17 @@ const Logo = styled(Link)`
   font-size: 1.5rem;
   color: ${props => props.theme.primary};
   text-decoration: none;
+`;
+
+const LogoImg = styled.img`
+  height: 40px;
+  opacity: 0;
+  transform: translateX(-40px);
+  &.fade-right {
+    animation: ${fadeRight} 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+    opacity: 1;
+    transform: translateX(0);
+  }
 `;
 
 const NavLinks = styled.ul`
@@ -80,12 +127,17 @@ const JoinButton = styled.a`
   border-radius: 25px;
   transition: all 0.3s ease;
   margin-left: 2rem;
-
+  opacity: 0;
+  transform: translateX(40px);
+  &.fade-left {
+    animation: ${fadeLeft} 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+    opacity: 1;
+    transform: translateX(0);
+  }
   &:hover {
     background: ${props => props.theme.primary};
     color: ${props => props.theme.background};
   }
-
   @media (max-width: 768px) {
     display: none;
   }
@@ -136,6 +188,12 @@ const Drawer = styled.nav`
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  opacity: 0;
+  &.fade-left {
+    animation: ${fadeLeft} 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+    opacity: 1;
+    transform: translateX(0);
+  }
   @media (min-width: 769px) {
     display: none !important;
   }
@@ -167,7 +225,21 @@ const Navbar = () => {
   const { theme } = useTheme();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [fadeDown, setFadeDown] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
+  const [showJoin, setShowJoin] = useState(false);
+  const [showDrawerAnim, setShowDrawerAnim] = useState(false);
   const drawerRef = useRef(null);
+
+  useEffect(() => {
+    setFadeDown(true);
+    const logoTimer = setTimeout(() => setShowLogo(true), 800); // match fadeDown duration
+    const joinTimer = setTimeout(() => setShowJoin(true), 1000); // show join button after fadeDown
+    return () => {
+      clearTimeout(logoTimer);
+      clearTimeout(joinTimer);
+    };
+  }, []);
 
   // Trap focus inside drawer when open
   useEffect(() => {
@@ -217,9 +289,13 @@ const Navbar = () => {
   const handleLinkClick = () => setIsOpen(false);
 
   return (
-    <Nav theme={theme}>
+    <Nav theme={theme} className={fadeDown ? 'fade-down' : ''}>
       <Container>
-        <img src={require('../assets/symbol.png')} alt="logo" height="40" />
+        <LogoImg
+          src={require('../assets/symbol.png')}
+          alt="logo"
+          className={showLogo ? 'fade-right' : ''}
+        />
         {/* Desktop NavLinks */}
         <NavLinks theme={theme}>
           <li><NavLink to="/" theme={theme} className={location.pathname === '/' ? 'active' : ''}>HOME</NavLink></li>
@@ -228,11 +304,12 @@ const Navbar = () => {
           <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''}>EVENTS</NavLink></li>
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <JoinButton 
-            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" 
-            target="_blank" 
+          <JoinButton
+            href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
+            target="_blank"
             rel="noopener noreferrer"
             theme={theme}
+            className={showJoin ? 'fade-left' : ''}
           >
             Join us
           </JoinButton>
@@ -255,11 +332,11 @@ const Navbar = () => {
         style={{ outline: 'none' }}
       >
         <DrawerLinks>
-          <li><FontAwesomeIcon icon={faHome} style={{marginRight:'0.7em'}} /><NavLink to="/" theme={theme} className={location.pathname === '/' ? 'active' : ''} onClick={handleLinkClick}>HOME</NavLink></li>
-          <li><FontAwesomeIcon icon={faUsers} style={{marginRight:'0.7em'}} /><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={handleLinkClick}>TEAM</NavLink></li>
-          <li><FontAwesomeIcon icon={faImages} style={{marginRight:'0.7em'}} /><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={handleLinkClick}>GALLERY</NavLink></li>
-          <li><FontAwesomeIcon icon={faCalendarAlt} style={{marginRight:'0.7em'}} /><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={handleLinkClick}>EVENTS</NavLink></li>
-          <li><FontAwesomeIcon icon={faUserPlus} style={{marginRight:'0.7em'}} /><a href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>JOIN US</a></li>
+          <li><FontAwesomeIcon icon={faHome} style={{ marginRight: '0.7em' }} /><NavLink to="/" theme={theme} className={location.pathname === '/' ? 'active' : ''} onClick={handleLinkClick}>HOME</NavLink></li>
+          <li><FontAwesomeIcon icon={faUsers} style={{ marginRight: '0.7em' }} /><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={handleLinkClick}>TEAM</NavLink></li>
+          <li><FontAwesomeIcon icon={faImages} style={{ marginRight: '0.7em' }} /><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={handleLinkClick}>GALLERY</NavLink></li>
+          <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={handleLinkClick}>EVENTS</NavLink></li>
+          <li><FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '0.7em' }} /><a href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>JOIN US</a></li>
         </DrawerLinks>
       </Drawer>
     </Nav>
