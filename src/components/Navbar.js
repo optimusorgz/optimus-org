@@ -126,7 +126,7 @@ const JoinButton = styled.a`
   border: 2px solid ${props => props.theme.primary};
   border-radius: 25px;
   transition: all 0.3s ease;
-  margin-left: 2rem;
+  margin-left: 1rem;
   opacity: 0;
   transform: translateX(40px);
   &.fade-left {
@@ -136,6 +136,32 @@ const JoinButton = styled.a`
   }
   &:hover {
     background: ${props => props.theme.primary};
+    color: ${props => props.theme.background};
+  }
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+`;
+
+const FeedbackButton = styled.a`
+  color: #00ffffff;
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 2px solid #00ffffff;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  margin-left: 0;
+  margin-right: 1rem;
+  opacity: 0;
+  transform: translateX(40px);
+  &.fade-left {
+    animation: ${fadeLeft} 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  &:hover {
+    background: #00ffffff;
     color: ${props => props.theme.background};
   }
   @media (max-width: 768px) {
@@ -224,15 +250,18 @@ const Navbar = () => {
   const [fadeDown, setFadeDown] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [showDrawerAnim, setShowDrawerAnim] = useState(false);
   const drawerRef = useRef(null);
 
   useEffect(() => {
     setFadeDown(true);
     const logoTimer = setTimeout(() => setShowLogo(true), 800); // match fadeDown duration
+    const feedbackTimer = setTimeout(() => setShowFeedback(true), 950); // show feedback before join
     const joinTimer = setTimeout(() => setShowJoin(true), 1000); // show join button after fadeDown
     return () => {
       clearTimeout(logoTimer);
+      clearTimeout(feedbackTimer);
       clearTimeout(joinTimer);
     };
   }, []);
@@ -300,6 +329,15 @@ const Navbar = () => {
           <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''}>EVENTS</NavLink></li>
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          <FeedbackButton
+            href="https://script.google.com/macros/s/AKfycbyBTnla-KU1yl1_6kFNqoalVUuJGR9Brx0F_XOVnccwLBikOuhYs7NP6uIIdqRx-DUj/exec"
+            target="_blank"
+            rel="noopener noreferrer"
+            theme={theme}
+            className={showFeedback ? 'fade-left' : ''}
+          >
+            Feedback
+          </FeedbackButton>
           <JoinButton
             href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
             target="_blank"
@@ -333,6 +371,7 @@ const Navbar = () => {
           <li><FontAwesomeIcon icon={faImages} style={{ marginRight: '0.7em' }} /><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={handleLinkClick}>GALLERY</NavLink></li>
           <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={handleLinkClick}>EVENTS</NavLink></li>
           <li><FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '0.7em' }} /><a href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>JOIN US</a></li>
+          <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em', color: '#ff9800' }} /><a href="https://script.google.com/macros/s/AKfycbyBTnla-KU1yl1_6kFNqoalVUuJGR9Brx0F_XOVnccwLBikOuhYs7NP6uIIdqRx-DUj/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>FEEDBACK</a></li>
         </DrawerLinks>
       </Drawer>
     </Nav>
