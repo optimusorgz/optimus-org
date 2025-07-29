@@ -27,7 +27,6 @@ function AppContent() {
   }, []);
 
   
-  
   return (
     <AppContainer theme={theme} isDarkTheme={theme.isDarkTheme}>
       <GlobalStyles theme={theme} />
