@@ -308,22 +308,24 @@ const Footer = () => {
             <span
               className="footer-typing-text"
               style={{
-                fontSize: '2.6rem',
+                fontSize: '1.9rem',
                 fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
                 fontWeight: 700,
                 letterSpacing: '1px',
                 display: 'block',
                 textAlign: 'center',
+                zIndex: 4,
               }}
             >
               <span
                 style={{
-                  fontSize: '2.6rem',
+                  fontSize: '1.9rem',
                   fontFamily: 'Montserrat, Arial, Helvetica, sans-serif',
                   fontWeight: 700,
                   letterSpacing: '1px',
                   display: 'block',
                   textAlign: 'center',
+                  zIndex: 4,
                 }}
                 className="footer-typing-text-responsive"
               >
@@ -333,7 +335,8 @@ const Footer = () => {
                 
                 @media (min-width: 601px) {
                   .footer-typing-text-responsive {
-                    font-size: 2.1rem !important;
+                    font-size: 2.9rem !important;
+                    z-index: 4;
                   }
                 }
               `}</style>

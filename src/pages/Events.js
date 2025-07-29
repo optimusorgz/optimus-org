@@ -20,7 +20,7 @@ const pulseGradient = keyframes`
 `;
 
 const EventsContainer = styled.div`
-  height: 100%;
+  min-height: 100vh;
   padding-top: 0;
   position: relative;
   background: radial-gradient(
@@ -35,30 +35,31 @@ const EventsContainer = styled.div`
   background-position: left top;
   background-size: 100% 100%;
   animation: ${pulseGradient} 5s ease-in-out infinite;
-  align-items: stretch;
   transition: background-color 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 
 const EventGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   gap: 30px;
-  justify-items: center;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 24px 40px 24px;
+  padding: 40px 24px;
   box-sizing: border-box;
 `;
 
 const EventCard = styled.div`
-  background: ${props => props.theme.cardBackground};
-
-border: 1px solid ${props => props.theme.cardBorder};
+  background: rgba(28, 28, 48, 0.5);
+  padding: 20px;
+  border: 1px solid ${props => props.theme.cardBorder};
   border-radius: 15px;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -71,7 +72,7 @@ border: 1px solid ${props => props.theme.cardBorder};
   }
 
   .event-content {
-    padding: 0px;
+    padding: 0 10px;
   }
 
   .event-status {
