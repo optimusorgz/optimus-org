@@ -6,6 +6,7 @@ import { PageWrapper, Header } from '../components/common/PageWrapper';
 import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import TypingText from '../components/TypingText';
 
 const pulseGradient = keyframes`
   0% {
@@ -87,18 +88,20 @@ const GallerySection = styled.section`
 const GalleryGrid = styled.div`
   column-count: 4;
   column-gap: 5px;
-  padding: 7px;
+  padding:  0 5%;
   background: transparent;
   border-radius: 10px;
   @media (max-width: 1400px) {
     column-count: 3;
-  }
-  @media (max-width: 1024px) {
+    }
+    @media (max-width: 1024px) {
+    padding:  0 4%;
     column-count: 3;
     column-gap: 0px;
-  }
-  @media (max-width: 700px) {
-    column-count: 3;
+    }
+    @media (max-width: 700px) {
+    padding:  0 2%;
+    column-count: 2;
     column-gap: 0px;
   }
 `;
@@ -156,23 +159,24 @@ const ModalImage = styled.img`
 `;
 
 const ArrowButton = styled.button`
-  width: 70px;
-  height: 70px;
+  width: 10%;
+  height: 10%;
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(0,0,0,0.5);
   border: none;
   color: #fff;
-  font-size: 3rem;
-  padding: 0 22px;
+  font-size: 2rem;
+  padding: 0 auto;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 1101;
-  &:hover {
-    background: #00FFFF;
-    color: #111;
-  }
+  z-index: 10;
+    @media (max-width: 600px) {
+    width: 7%;
+    height: 7%;
+    top: 90%;
+    padding: 0 auto;
 `;
 
 const CloseButton = styled.button`
@@ -194,6 +198,16 @@ const CloseButton = styled.button`
   &:hover {
     background: #00FFFF;
     color: #111;
+  }
+`;
+
+const GalleryHeading = styled.h2`
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 1.2em;
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin-bottom: 0.7em;
   }
 `;
 
@@ -228,22 +242,29 @@ function GalleryPage() {
     700: 1
   };
 
+  // Typing effect for heading
+  const [headingKey, setHeadingKey] = useState(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      const header = document.getElementById('gallery-heading');
+      if (!header) return;
+      const rect = header.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setHeadingKey(prev => prev + 1);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <PageWrapper theme={theme}>
       <GalleryContainer theme={theme}>
         <GallerySection>
           <Header theme={theme}>
-            <h2
-              style={{
-                fontSize: '2.5rem',
-                marginTop: 0,
-                marginBottom: '1.2em',
-                ...(window.innerWidth <= 600 ? { fontSize: '1.5rem', marginBottom: '0.7em' } : {})
-              }}
-              data-aos="fade-up"
-            >
-              Gallery
-            </h2>
+            <GalleryHeading id="gallery-heading" data-aos="fade-up">
+              <TypingText key={headingKey} text="Gallery" speed={80} cursor={true} loop={true} />
+            </GalleryHeading>
           </Header>
           <GalleryGrid>
             {images.map((img, idx) => (

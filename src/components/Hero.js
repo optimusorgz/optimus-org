@@ -109,9 +109,9 @@ const HeroImageWrapper = styled.div`
   grid-row: 1;
   grid-column: 2;
   padding-top: 60px; /* Add space below navbar */
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
     order: -1;
-    padding: 80px 0 0 0; /* More space for mobile */
+    padding: 60px 0 0 0; /* More space for mobile */
     justify-content: center;
     align-items: center;
     grid-row: 1;
@@ -138,7 +138,7 @@ const HeroContent = styled.div`
 
   @media (max-width: 900px) {
     margin : 0;
-    padding: 24px 5% 0 5%;
+    padding: 0 5%;
     align-items: center;
     text-align: center;
     max-width: 100%;
