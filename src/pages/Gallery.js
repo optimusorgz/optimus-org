@@ -1,25 +1,32 @@
+/**
+ * @file src/pages/Gallery.js
+ * @description Gallery page component displaying a collection of images in a responsive grid
+ * and providing a modal view for individual images with navigation.
+ */
+
+// --- React Imports ---
 import React, { useEffect, useState } from 'react';
-// import Masonry from 'react-masonry-css';
-import styled, { keyframes } from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
+
+// --- Component Imports ---
+// import Masonry from 'react-masonry-css'; // Masonry component is commented out, consider removal if not used.
 import { PageWrapper, Header } from '../components/common/PageWrapper';
+import TypingText from '../components/TypingText';
+// Footer is imported but not used directly in the return JSX of Gallery component. Consider removing if truly unused.
 import Footer from '../components/Footer';
+
+// --- Style Imports ---
+import styled from 'styled-components';
+import { useTheme } from '../context/ThemeContext';
+import { pulseGradient } from '../styles/GlobalStyles'; // Import pulseGradient from GlobalStyles
+
+// --- External Library Imports ---
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import TypingText from '../components/TypingText';
 
-const pulseGradient = keyframes`
-  0% {
-    background-size: 100% 100%;
-  }
-  50% {
-    background-size: 140% 140%;
-  }
-  100% {
-    background-size: 100% 100%;
-  }
-`;
-
+/**
+ * Array of image paths for the gallery.
+ * @type {string[]}
+ */
 const images = [
   require('../assets/gallary/IMG_0314.jpg'),
   require('../assets/gallary/IMG_0325.jpg'),
@@ -40,6 +47,13 @@ const images = [
   require('../assets/gallary/IMG_5780.JPG'),
 ];
 
+/**
+ * `GalleryContainer` styled component.
+ * Styles the main container for the Gallery page, including background gradients and animations.
+ * Uses `pulseGradient` for an animated background effect.
+ * @param {object} props - Styled component props.
+ * @param {object} props.theme - The theme object from ThemeContext.
+ */
 const GalleryContainer = styled.div`
   min-height: 100%;
   padding-top: 0px;
@@ -55,7 +69,7 @@ const GalleryContainer = styled.div`
   background-color: rgba(12,12,29,255);
   background-position: left top;
   background-size: 100% 100%;
-  animation: ${pulseGradient} 5s ease-in-out infinite;
+  animation: ${pulseGradient} 5s ease-in-out infinite; /* Using imported pulseGradient */
   align-items: stretch;
   transition: background-color 0.3s ease;
   &::before {
@@ -76,6 +90,10 @@ const GalleryContainer = styled.div`
   }
 `;
 
+/**
+ * `GallerySection` styled component.
+ * Defines padding and positioning for the gallery content section.
+ */
 const GallerySection = styled.section`
   padding: 100px 0%;
   position: relative;
@@ -85,6 +103,10 @@ const GallerySection = styled.section`
   }
 `;
 
+/**
+ * `GalleryGrid` styled component.
+ * Arranges gallery images in a multi-column layout with responsive adjustments.
+ */
 const GalleryGrid = styled.div`
   column-count: 4;
   column-gap: 5px;
@@ -106,6 +128,10 @@ const GalleryGrid = styled.div`
   }
 `;
 
+/**
+ * `GalleryCard` styled component.
+ * Styles individual gallery image containers.
+ */
 const GalleryCard = styled.div`
   background: transparent;
   border-radius: 0px;
@@ -118,6 +144,10 @@ const GalleryCard = styled.div`
   align-items: center;
 `;
 
+/**
+ * `GalleryImage` styled component.
+ * Styles individual images within the gallery, including hover effects.
+ */
 const GalleryImage = styled.img`
   width: 100%;
   height: auto;
@@ -134,7 +164,10 @@ const GalleryImage = styled.img`
   }
 `;
 
-
+/**
+ * `ModalOverlay` styled component.
+ * Full-screen overlay for displaying the modal image.
+ */
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -148,6 +181,10 @@ const ModalOverlay = styled.div`
   justify-content: center;
 `;
 
+/**
+ * `ModalImage` styled component.
+ * Styles the image displayed within the modal, ensuring it fits the screen.
+ */
 const ModalImage = styled.img`
   max-width: 100vw;
   max-height: 100vh;
@@ -158,6 +195,10 @@ const ModalImage = styled.img`
   display: block;
 `;
 
+/**
+ * `ArrowButton` styled component.
+ * Styles navigation arrows within the modal for previous/next image.
+ */
 const ArrowButton = styled.button`
   width: 10%;
   height: 10%;
@@ -179,6 +220,10 @@ const ArrowButton = styled.button`
     padding: 0 auto;
 `;
 
+/**
+ * `CloseButton` styled component.
+ * Styles the close button for the modal.
+ */
 const CloseButton = styled.button`
   position: fixed;
   top: 24px;
@@ -201,6 +246,10 @@ const CloseButton = styled.button`
   }
 `;
 
+/**
+ * `GalleryHeading` styled component.
+ * Styles the heading text for the gallery.
+ */
 const GalleryHeading = styled.h2`
   font-size: 1.1rem;
   margin-top: 0;
@@ -211,30 +260,54 @@ const GalleryHeading = styled.h2`
   }
 `;
 
+/**
+ * `GalleryPage` functional component.
+ * Displays a responsive image gallery with a modal for full-screen viewing and navigation.
+ * Integrates AOS for scroll animations and TypingText for the heading.
+ * @returns {JSX.Element} The Gallery page.
+ */
 function GalleryPage() {
   const { theme } = useTheme();
+  // State for controlling the visibility of the image modal
   const [modalOpen, setModalOpen] = useState(false);
+  // State for tracking the index of the currently displayed image in the modal
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Initialize AOS (Animate On Scroll) library once on component mount.
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
 
+  /**
+   * Opens the modal with the clicked image.
+   * @param {number} idx - The index of the image to display in the modal.
+   */
   const openModal = idx => {
     setCurrentIndex(idx);
     setModalOpen(true);
   };
+  /**
+   * Closes the image modal.
+   */
   const closeModal = () => setModalOpen(false);
+  /**
+   * Navigates to the previous image in the modal.
+   * @param {React.MouseEvent} e - The click event to stop propagation.
+   */
   const showPrev = e => {
     e.stopPropagation();
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
+  /**
+   * Navigates to the next image in the modal.
+   * @param {React.MouseEvent} e - The click event to stop propagation.
+   */
   const showNext = e => {
     e.stopPropagation();
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  // Masonry breakpoints
+  // Masonry breakpoints (currently commented out in imports, but defined here if needed later)
   const breakpointColumnsObj = {
     default: 4,
     1400: 3,
@@ -242,31 +315,40 @@ function GalleryPage() {
     700: 1
   };
 
-  // Typing effect for heading
+  // State for forcing `TypingText` re-render on scroll for the heading.
   const [headingKey, setHeadingKey] = useState(0);
+  /**
+   * Effect to trigger `TypingText` animation when the gallery heading enters the viewport.
+   * Adds and removes a scroll event listener.
+   */
   useEffect(() => {
     const handleScroll = () => {
       const header = document.getElementById('gallery-heading');
       if (!header) return;
       const rect = header.getBoundingClientRect();
+      // Check if the header is in the viewport
       if (rect.top < window.innerHeight && rect.bottom > 0) {
-        setHeadingKey(prev => prev + 1);
+        setHeadingKey(prev => prev + 1); // Increment key to restart typing animation
       }
     };
+    // Add scroll event listener
     window.addEventListener('scroll', handleScroll);
+    // Cleanup function: remove event listener on component unmount
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
 
   return (
     <PageWrapper theme={theme}>
       <GalleryContainer theme={theme}>
         <GallerySection>
           <Header theme={theme}>
+            {/* Gallery heading with typing effect */}
             <GalleryHeading id="gallery-heading" data-aos="fade-up">
               <TypingText key={headingKey} text="Gallery" speed={80} cursor={true} loop={true} />
             </GalleryHeading>
           </Header>
           <GalleryGrid>
+            {/* Map through images to render individual gallery cards */}
             {images.map((img, idx) => (
               <GalleryCard key={idx}>
                 <GalleryImage
@@ -278,11 +360,16 @@ function GalleryPage() {
             ))}
           </GalleryGrid>
         </GallerySection>
+        {/* Modal for full-screen image view, conditionally rendered */}
         {modalOpen && (
           <ModalOverlay onClick={closeModal}>
+            {/* Close button */}
             <CloseButton onClick={closeModal} title="Close">×</CloseButton>
+            {/* Previous image button */}
             <ArrowButton style={{ left: 0 }} onClick={showPrev} title="Previous">&#60;</ArrowButton>
+            {/* Current image in modal */}
             <ModalImage src={images[currentIndex]} alt={`Gallery ${currentIndex + 1}`} onClick={e => e.stopPropagation()} />
+            {/* Next image button */}
             <ArrowButton style={{ right: 0 }} onClick={showNext} title="Next">&#62;</ArrowButton>
           </ModalOverlay>
         )}
@@ -290,6 +377,5 @@ function GalleryPage() {
     </PageWrapper>
   );
 }
-
 
 export default GalleryPage;

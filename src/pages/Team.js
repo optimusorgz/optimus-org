@@ -1,26 +1,36 @@
+/**
+ * @file src/pages/Team.js
+ * @description Team page component displaying a list of team members with their roles and social links.
+ * It integrates global theming, infinite typing text for the heading, and AOS for scroll animations.
+ */
+
+// --- React Imports ---
 import React, { useEffect } from 'react';
+
+// --- Component Imports ---
 import InfiniteTypingText from '../components/InfiniteTypingText';
-import styled, { keyframes } from 'styled-components';
-import { useTheme } from '../context/ThemeContext';
 import { PageWrapper, ContentContainer, Section, Header } from '../components/common/PageWrapper';
+// Footer is imported but not used directly in the return JSX of Team component. Consider removing if truly unused.
 import Footer from '../components/Footer';
+
+// --- Style Imports ---
+import styled from 'styled-components';
+import { useTheme } from '../context/ThemeContext';
+import { pulseGradient } from '../styles/GlobalStyles'; // Import pulseGradient from GlobalStyles
+
+// --- External Library Imports ---
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
-const pulseGradient = keyframes`
-  0% {
-    background-size: 100% 100%;
-  }
-  50% {
-    background-size: 140% 140%;
-  }
-  100% {
-    background-size: 100% 100%;
-  }
-`;
-
+/**
+ * `TeamContainer` styled component.
+ * Styles the main container for the Team page, including background gradients and animations.
+ * Uses `pulseGradient` for an animated background effect.
+ * @param {object} props - Styled component props.
+ * @param {object} props.theme - The theme object from ThemeContext.
+ */
 const TeamContainer = styled.div`
   min-height: 100%;
   padding-top: 0px;
@@ -36,7 +46,7 @@ const TeamContainer = styled.div`
   background-color: rgba(12,12,29,255);
   background-position: left top;
   background-size: 100% 100%;
-  animation: ${pulseGradient} 5s ease-in-out infinite;
+  animation: ${pulseGradient} 5s ease-in-out infinite; /* Using imported pulseGradient */
   align-items: stretch;
   transition: background-color 0.3s ease;
 
@@ -59,6 +69,10 @@ const TeamContainer = styled.div`
   }
 `;
 
+/**
+ * `TeamSection` styled component.
+ * Defines padding and positioning for the team members section.
+ */
 const TeamSection = styled.section`
   padding: 100px 5%;
   position: relative;
@@ -68,6 +82,10 @@ const TeamSection = styled.section`
   }
 `;
 
+/**
+ * `TeamGrid` styled component.
+ * Arranges team member cards in a responsive grid layout.
+ */
 const TeamGrid = styled.div`
   display: grid;
   text-align: center;
@@ -83,6 +101,10 @@ const TeamGrid = styled.div`
   }
 `;
 
+/**
+ * `TeamMemberImg` styled component.
+ * Styles the image of a team member with a circular shape and responsive sizing.
+ */
 const TeamMemberImg = styled.img`
     width: 170px;
     height: 170px;
@@ -97,11 +119,22 @@ const TeamMemberImg = styled.img`
     margin-bottom: 8px;
   }
   `;
+
+/**
+ * `TeamMemberContent` styled component.
+ * Styles the text content area for a team member, including name and position.
+ */
 const TeamMemberContent = styled.div`
   text-align: center;
   padding: 0 8px;
 `;
 
+/**
+ * `SocialLinks` styled component.
+ * Styles the container for social media icons, including theming for link colors and hover effects.
+ * @param {object} props - Styled component props.
+ * @param {object} props.theme - The theme object from ThemeContext, used for link and hover colors.
+ */
 const SocialLinks = styled.div`
   display: flex;
   gap: 12px;
@@ -138,9 +171,15 @@ const SocialLinks = styled.div`
   }
 `;
 
+/**
+ * `Team` functional component.
+ * Displays a grid of team members with their details and links to social media profiles.
+ * @returns {JSX.Element} The Team page.
+ */
 const Team = () => {
   const { theme } = useTheme();
 
+  // Initialize AOS (Animate On Scroll) library once on component mount.
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -148,6 +187,7 @@ const Team = () => {
     });
   }, []);
 
+  // Sample team members data - replace with actual data fetching in a real application.
   const teamMembers = [
     {
       name: "Charchit",
@@ -188,7 +228,7 @@ const Team = () => {
       name: "Ayush Yadav",
       position: "Social Media Head",
       image: require("../assets/team/ayush yadav.JPEG"),
-      instagram: "https://www.instagram.com/ayusx_h",
+      instagram: "https://www.instagram.com/a_yo_shhhh?igsh=cDN0NTk0aGgwMDR1",
       linkedin: "https://www.linkedin.com/in/ayush-kumar-5228a2298?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
@@ -234,6 +274,7 @@ const Team = () => {
       <TeamContainer theme={theme}>
         <TeamSection>
           <Header theme={theme}>
+            {/* Dynamic typing text for the heading */}
             <h2
               style={{
                 fontSize: '2.5rem',
@@ -247,6 +288,7 @@ const Team = () => {
             </h2>
           </Header>
           <TeamGrid>
+            {/* Map through teamMembers data to render individual team member cards */}
             {teamMembers.map((member, index) => (
               <div
                 key={index}

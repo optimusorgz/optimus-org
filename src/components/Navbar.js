@@ -327,6 +327,7 @@ const Navbar = () => {
           <li><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''}>TEAM</NavLink></li>
           <li><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''}>GALLERY</NavLink></li>
           <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''}>EVENTS</NavLink></li>
+          <li><NavLink to="/post" theme={theme} className={location.pathname === '/post' ? 'active' : ''}>POSTS</NavLink></li>
         </NavLinks>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <FeedbackButton
@@ -370,8 +371,9 @@ const Navbar = () => {
           <li><FontAwesomeIcon icon={faUsers} style={{ marginRight: '0.7em' }} /><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={handleLinkClick}>TEAM</NavLink></li>
           <li><FontAwesomeIcon icon={faImages} style={{ marginRight: '0.7em' }} /><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={handleLinkClick}>GALLERY</NavLink></li>
           <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={handleLinkClick}>EVENTS</NavLink></li>
-          <li><FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '0.7em' }} /><a href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>JOIN US</a></li>
-          <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em', color: '#ff9800' }} /><a href="https://script.google.com/macros/s/AKfycbyBTnla-KU1yl1_6kFNqoalVUuJGR9Brx0F_XOVnccwLBikOuhYs7NP6uIIdqRx-DUj/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>FEEDBACK</a></li>
+          <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/post" theme={theme} className={location.pathname === '/post' ? 'active' : ''} onClick={handleLinkClick}>POSTS</NavLink></li>
+          <li><FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '0.7em' }} /><a style={{ color: 'while' }} href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>JOIN US</a></li>
+          <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><a style={{ color: 'while' }} href="https://script.google.com/macros/s/AKfycbyBTnla-KU1yl1_6kFNqoalVUuJGR9Brx0F_XOVnccwLBikOuhYs7NP6uIIdqRx-DUj/exec" target="_blank" rel="noopener noreferrer" theme={theme} onClick={handleLinkClick}>FEEDBACK</a></li>
         </DrawerLinks>
       </Drawer>
     </Nav>
