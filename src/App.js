@@ -53,11 +53,6 @@ const AppContainer = styled.div`
   }
 `;
 
-/**
- * AppContent component.
- * Manages theme application, initializes AOS animations, and defines the main routing structure.
- * @returns {JSX.Element} The main content of the application.
- */
 function AppContent() {
   const { theme, isDarkTheme } = useTheme();
 
@@ -65,7 +60,7 @@ function AppContent() {
     AOS.init({
       duration: 1000,
       once: true,
-      mirror: false
+      mirror: false,
     });
   }, []);
 
