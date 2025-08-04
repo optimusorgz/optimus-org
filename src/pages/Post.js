@@ -144,7 +144,7 @@ const GradientBackground = styled.div`
     min-height: 100vh;
   }
   @media (max-width: 768px) {
-    padding: 60px 5%;
+    padding: 60px 0;
   }
 
   &:hover {
@@ -198,7 +198,7 @@ const VideoWithSound = ({ src }) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               video.muted = false;
-              video.play().catch(() => {});
+              video.play().catch(() => { });
             } else {
               video.pause();
               video.currentTime = 0;
@@ -255,12 +255,15 @@ const VideoWithSound = ({ src }) => {
 };
 
 const ContentContainer = styled.div`
-  padding: 20px;
   width: 100%;
   max-width: 900px;
   /* Re-added background color */
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 900px) {
+    max-width: 100%;
+  }
+  
 `;
 
 const PostCard = styled.div`
@@ -279,6 +282,7 @@ const PostCard = styled.div`
 
   @media (max-width: 900px) {
     max-width: 100%;
+    border-radius: 10px;
   }
 `;
 
@@ -473,6 +477,7 @@ const ModalDetailsContainer = styled.div`
   @media (max-width: 768px) {
     border-left: none;
     border-top: 1px solid #eee;
+    background: transparent; /* Changed to transparent background */
   }
 `;
 
