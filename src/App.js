@@ -53,6 +53,7 @@ const AppContainer = styled.div`
   }
 `;
 
+
 function AppContent() {
   const { theme, isDarkTheme } = useTheme();
 
