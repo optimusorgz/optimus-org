@@ -11,6 +11,11 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "aos": "^2.3.4",
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.17.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -24,10 +29,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "client": "react-scripts start",
+    "dev": "npm run client"
   },
   "eslintConfig": {
     "extends": [
@@ -46,5 +49,21 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "description": "Optimus Website is the official site for OPTIMUS, a dynamic technical club dedicated to fostering innovation, technical excellence, and community among students at Lovely Professional University (LPU). The website serves as a digital hub for sharing the club's mission, showcasing events, highlighting team members, and engaging the student community through interactive features and resources.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/optimusorgz/optimus-org.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/optimusorgz/optimus-org/issues"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10"
   }
 }

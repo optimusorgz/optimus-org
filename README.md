@@ -1,70 +1,47 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Optimus Website
 
-## Available Scripts
+Optimus Website is the official site for OPTIMUS, a dynamic technical club dedicated to fostering innovation, technical excellence, and community among students at Lovely Professional University (LPU). The website serves as a digital hub for sharing the club's mission, showcasing events, highlighting team members, and engaging the student community through interactive features and resources.
 
-In the project directory, you can run:
+## What is the Website For?
 
-### `npm start`
+The website is designed to:
+- Present the club's mission, vision, and core values.
+- Announce and detail upcoming and past events, workshops, and hackathons.
+- Showcase a gallery of club activities and achievements.
+- Introduce the team members and their roles.
+- Share posts and updates relevant to the club and its members.
+- Provide contact and social media links for outreach and engagement.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Main Pages
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Home**: Features a hero section, highlights of club activities (workshops, hackathons, team projects, tech talks), and the club's mission, vision, and core values.
+- **Team**: Displays a list of team members with their roles, photos, and social media links.
+- **Gallery**: A responsive image gallery with modal viewing, highlighting events and club moments.
+- **Events**: Information about upcoming and past events, including workshops and hackathons.
+- **Posts**: Section for sharing news, updates, and multimedia posts.
+- **Contact/Footer**: Club contact information, address, and social media links.
 
-### `npm test`
+## Main Components
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `Navbar`: Navigation bar for switching between pages.
+- `Hero`: Welcome section with animated text and call-to-action buttons.
+- `HighlightsAndMission`: Highlights club activities, mission, vision, and core values.
+- `Gallery`: Image gallery with modal and slider features.
+- `Team`: Team member cards with social links.
+- `Footer`: Contact info, about section, and social media links.
+- `ThemeToggle`: Switch between light and dark themes.
+- `ScrollToTop`: Ensures smooth navigation experience.
 
-### `npm run build`
+## Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- React (Create React App)
+- React Router for page navigation
+- Styled-components for styling
+- FontAwesome for icons
+- Swiper for gallery slider
+- AOS (Animate On Scroll) for animations
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
