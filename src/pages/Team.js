@@ -201,7 +201,7 @@ const Team = () => {
       name: "Ayush Samant",
       position: "COO",
       image: require("../assets/team/ayush_samant.jpg"),
-      instagram: "https://www.instagram.com/soul.sync___?igsh=N20xa29mYnp0ZzZz",
+      instagram: "https://www.instagram.com/yadorawa?igsh=MTBibndiZ3pqdmRpNA==",
       linkedin: "https://www.linkedin.com/in/ayushsamant/"
     },
     {
@@ -243,7 +243,7 @@ const Team = () => {
       name: "Shailaja Singh",
       position: "Student Relation Coordinator",
       image: require("../assets/team/shailaja.jpeg"),
-      instagram: "https://www.instagram.com/soul.sync___?igsh=N20xa29mYnp0ZzZz",
+      instagram: "https://www.instagram.com/yadorawa?igsh=MTBibndiZ3pqdmRpNA==",
       linkedin: "https://www.linkedin.com/in/shailaja-singh2004?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
