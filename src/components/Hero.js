@@ -467,7 +467,7 @@ const Hero = () => {
           <ButtonContainer>
             <StyledButton
               as="a"
-              href="https://script.google.com/macros/s/AKfycbyNXloPFC_uqhAFbFkTDSDiwWE3zQeTYfAEULkfOj216o-NhCI64NMpOM8QJo1YIJyg/exec"
+              href="https://script.google.com/macros/s/AKfycbzadR11t3TfmOFgPl_fgEWO8Hk6qoz8CmhqXYHr1Lunj2vcsX1TbD9-4eXPci7fRTc8/exec"
               target="_blank"
               className={showButtons ? 'reveal' : ''}
             >
