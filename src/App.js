@@ -29,7 +29,6 @@ import Gallery from './pages/Gallery';
 import Events from './pages/Events';
 import Post from './pages/Post';
 
-
 // Styled component for the main application container
 const AppContainer = styled.div`
   min-height: 100vh;
