@@ -13,6 +13,7 @@ import 'aos/dist/aos.css';
 // Context Imports
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
+
 // Style Imports
 import { GlobalStyles } from './styles/GlobalStyles';
 
