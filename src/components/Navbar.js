@@ -324,7 +324,7 @@ const Navbar = () => {
         {/* Desktop NavLinks */}
         <NavLinks theme={theme}>
           <li><NavLink to="/" theme={theme} className={location.pathname === '/' ? 'active' : ''}>HOME</NavLink></li>
-          <li><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''}>TEAM</NavLink></li>
+          {/* <li><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''}>TEAM</NavLink></li> */}
           <li><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''}>GALLERY</NavLink></li>
           <li><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''}>EVENTS</NavLink></li>
           <li><NavLink to="/post" theme={theme} className={location.pathname === '/post' ? 'active' : ''}>POSTS</NavLink></li>
@@ -368,7 +368,7 @@ const Navbar = () => {
       >
         <DrawerLinks>
           <li><FontAwesomeIcon icon={faHome} style={{ marginRight: '0.7em' }} /><NavLink to="/" theme={theme} className={location.pathname === '/' ? 'active' : ''} onClick={handleLinkClick}>HOME</NavLink></li>
-          <li><FontAwesomeIcon icon={faUsers} style={{ marginRight: '0.7em' }} /><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={handleLinkClick}>TEAM</NavLink></li>
+          {/* <li><FontAwesomeIcon icon={faUsers} style={{ marginRight: '0.7em' }} /><NavLink to="/team" theme={theme} className={location.pathname === '/team' ? 'active' : ''} onClick={handleLinkClick}>TEAM</NavLink></li> */}
           <li><FontAwesomeIcon icon={faImages} style={{ marginRight: '0.7em' }} /><NavLink to="/gallery" theme={theme} className={location.pathname === '/gallery' ? 'active' : ''} onClick={handleLinkClick}>GALLERY</NavLink></li>
           <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/events" theme={theme} className={location.pathname === '/events' ? 'active' : ''} onClick={handleLinkClick}>EVENTS</NavLink></li>
           <li><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.7em' }} /><NavLink to="/post" theme={theme} className={location.pathname === '/post' ? 'active' : ''} onClick={handleLinkClick}>POSTS</NavLink></li>
