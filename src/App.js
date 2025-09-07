@@ -90,6 +90,7 @@ function AppContent() {
   );
 }
 
+
 /**
  * App component.
  * Serves as the root component, providing ThemeProvider and BrowserRouter to the application.
