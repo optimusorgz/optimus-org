@@ -10,7 +10,6 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-<<<<<<< HEAD
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -68,7 +67,7 @@
     "vaul": "^0.9.9",
     "xlsx": "^0.18.5",
     "zod": "^3.25.76"
-=======
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -86,7 +85,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-    
   },
   "description": "Optimus Website is the official site for OPTIMUS, a dynamic technical club dedicated to fostering innovation, technical excellence, and community among students at Lovely Professional University (LPU). The website serves as a digital hub for sharing the club's mission, showcasing events, highlighting team members, and engaging the student community through interactive features and resources.",
   "main": "index.js",
@@ -99,7 +97,6 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/optimusorgz/optimus-org/issues"
->>>>>>> 1f27e853fa47413f2cd157668ffd9cac4175ecf0
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
