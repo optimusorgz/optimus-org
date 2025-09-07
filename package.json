@@ -10,7 +10,6 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-<<<<<<< HEAD
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
@@ -68,7 +67,6 @@
     "vaul": "^0.9.9",
     "xlsx": "^0.18.5",
     "zod": "^3.25.76"
-=======
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -99,7 +97,7 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/optimusorgz/optimus-org/issues"
->>>>>>> 1f27e853fa47413f2cd157668ffd9cac4175ecf0
+
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
