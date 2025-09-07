@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruit Registration</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script>
+    // 🔹 Replace with your Supabase Project URL + Anon Key
+    const supabaseUrl = "https://whcoayuuwebcpbgyesej.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoY29heXV1d2ViY3BiZ3llc2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDQ4NTAsImV4cCI6MjA3MDY4MDg1MH0.ILDUqhQbMKa3VbuoFF5t_TFe9sr8rV6DdhZkwDcSZTA";
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  </script>
+</head>
+<body>
+  <h2>Membership Application</h2>
+
+  <form id="recruitForm">
+    <h3>Personal Information</h3>
+    <input type="text" id="name" placeholder="Full Name" required><br>
+    <input type="email" id="Email" placeholder="Email Address" required><br>
+    <input type="number" id="Phone_Numbe" placeholder="Phone Number" required><br>
+    <input type="number" id="WhatsApp" placeholder="WhatsApp Number" required><br>
+    <input type="date" id="dob" required><br>
+
+    <label>Gender:</label>
+    <select id="Gender" required>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select><br>
+
+    <input type="text" id="Residence" placeholder="City, State" required><br>
+
+    <h3>Academic Information</h3>
+    <input type="text" id="Branch" placeholder="Branch/Department" required><br>
+    <input type="text" id="Course_Year" placeholder="Course Year" required><br>
+
+    <h3>Areas of Interest</h3>
+    <input type="text" id="Domain" placeholder="e.g. Web Dev, AI, Blockchain" required><br>
+
+    <h3>Experience & Motivation</h3>
+    <label>Have you participated before?</label>
+    <select id="experience" required>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select><br>
+
+    <textarea id="motivation" placeholder="Why do you want to join Optimus?" required></textarea><br>
+
+    <input type="text" id="Part_of_other_o" placeholder="Part of other orgs"><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById("recruitForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const recruitData = {
+        name: document.getElementById("name").value,
+        Email: document.getElementById("Email").value,
+        "Phone Numbe": document.getElementById("Phone_Numbe").value,
+        WhatsApp: document.getElementById("WhatsApp").value,
+        dob: document.getElementById("dob").value,
+        Gender: document.getElementById("Gender").value,
+        Residence: document.getElementById("Residence").value,
+        Branch: document.getElementById("Branch").value,
+        "Course Year": document.getElementById("Course_Year").value,
+        Domain: document.getElementById("Domain").value,
+        experience: document.getElementById("experience").value,
+        motivation: document.getElementById("motivation").value,
+        "Part of other o": document.getElementById("Part_of_other_o").value
+      };
+
+      const { data, error } = await supabase
+        .from("Recruites")
+        .insert([recruitData]);
+
+      if (error) {
+        console.error(error);
+        alert("❌ Error: " + error.message);
+      } else {
+        alert("✅ Submitted successfully!");
+        document.getElementById("recruitForm").reset();
+      }
+    });
+  </script>
+</body>
+</html>

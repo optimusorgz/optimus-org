@@ -1,47 +1,73 @@
+# Welcome to your Lovable project
 
-# Optimus Website
+## Project info
 
-Optimus Website is the official site for OPTIMUS, a dynamic technical club dedicated to fostering innovation, technical excellence, and community among students at Lovely Professional University (LPU). The website serves as a digital hub for sharing the club's mission, showcasing events, highlighting team members, and engaging the student community through interactive features and resources.
+**URL**: https://lovable.dev/projects/f0dbdbf8-246f-4cf6-b65f-545644c73768
 
-## What is the Website For?
+## How can I edit this code?
 
-The website is designed to:
-- Present the club's mission, vision, and core values.
-- Announce and detail upcoming and past events, workshops, and hackathons.
-- Showcase a gallery of club activities and achievements.
-- Introduce the team members and their roles.
-- Share posts and updates relevant to the club and its members.
-- Provide contact and social media links for outreach and engagement.
+There are several ways of editing your application.
 
-## Main Pages
+**Use Lovable**
 
-- **Home**: Features a hero section, highlights of club activities (workshops, hackathons, team projects, tech talks), and the club's mission, vision, and core values.
-- **Team**: Displays a list of team members with their roles, photos, and social media links.
-- **Gallery**: A responsive image gallery with modal viewing, highlighting events and club moments.
-- **Events**: Information about upcoming and past events, including workshops and hackathons.
-- **Posts**: Section for sharing news, updates, and multimedia posts.
-- **Contact/Footer**: Club contact information, address, and social media links.
+Simply visit the [Lovable Project](https://lovable.dev/projects/f0dbdbf8-246f-4cf6-b65f-545644c73768) and start prompting.
 
-## Main Components
+Changes made via Lovable will be committed automatically to this repo.
 
-- `Navbar`: Navigation bar for switching between pages.
-- `Hero`: Welcome section with animated text and call-to-action buttons.
-- `HighlightsAndMission`: Highlights club activities, mission, vision, and core values.
-- `Gallery`: Image gallery with modal and slider features.
-- `Team`: Team member cards with social links.
-- `Footer`: Contact info, about section, and social media links.
-- `ThemeToggle`: Switch between light and dark themes.
-- `ScrollToTop`: Ensures smooth navigation experience.
+**Use your preferred IDE**
 
-## Technologies Used
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-- React (Create React App)
-- React Router for page navigation
-- Styled-components for styling
-- FontAwesome for icons
-- Swiper for gallery slider
-- AOS (Animate On Scroll) for animations
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
----
+Follow these steps:
 
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
+
+# Step 3: Install the necessary dependencies.
+npm i
+
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
+
+**Edit a file directly in GitHub**
+
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
+
+**Use GitHub Codespaces**
+
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
+
+## What technologies are used for this project?
+
+This project is built with:
+
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/f0dbdbf8-246f-4cf6-b65f-545644c73768) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
