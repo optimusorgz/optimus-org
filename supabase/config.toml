@@ -1,0 +1,4 @@
+project_id = "whcoayuuwebcpbgyesej"
+
+[functions.paytm-generate-token]
+verify_jwt = false
