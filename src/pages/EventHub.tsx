@@ -38,7 +38,7 @@ const EventHub = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
-  // Removed categoryFilter
+  const [showAllEvents, setShowAllEvents] = useState(false);
   const [sortBy, setSortBy] = useState("date");
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +86,11 @@ const EventHub = () => {
         `);
 
       // Removed status filter
+
+      // Apply upcoming/all events filter
+      if (!showAllEvents) {
+        query = query.gte("start_date", new Date().toISOString());
+      }
 
       // Apply price filter
       if (selectedFilter === "free") {
@@ -220,13 +225,13 @@ const EventHub = () => {
   return (
     <div className="min-h-screen pt-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 flex justify-between items-start">
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-glow mb-2">Optimus Events Hub</h1>
-            <p className="text-muted-foreground">Discover amazing events and join the community</p>
+            <h1 className="text-2xl md:text-4xl font-bold text-glow mb-2">Optimus Events Hub</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Discover amazing events and join the community</p>
           </div>
           {user && (
-            <Button onClick={() => navigate('/create-event')} className="btn-hero">
+            <Button onClick={() => navigate('/create-event')} className="btn-hero w-full md:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Create Event
             </Button>
@@ -247,9 +252,27 @@ const EventHub = () => {
           </div>
 
           {/* Filter Row */}
-          <div className="flex flex-wrap gap-4">
-            {/* Price Filters */}
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Upcoming/All Events Toggle */}
             <div className="flex gap-2">
+              <Button
+                variant={!showAllEvents ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowAllEvents(false)}
+              >
+                Upcoming Events
+              </Button>
+              <Button
+                variant={showAllEvents ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowAllEvents(true)}
+              >
+                All Events
+              </Button>
+            </div>
+
+            {/* Price Filters */}
+            <div className="flex flex-wrap gap-2">
               {priceFilters.map((filter) => (
                 <Button
                   key={filter.id}
@@ -268,7 +291,7 @@ const EventHub = () => {
 
             {/* Sort Filter */}
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -339,13 +362,16 @@ const EventHub = () => {
           </div>
         ) : (
           /* Events Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
             {events.map((event) => {
               const { status, color, disabled } = getEventStatus(event);
+              const isUpcoming = new Date(event.start_date) >= new Date();
               return (
                 <Card
                   key={event.id}
-                  className="cursor-pointer hover:scale-[1.02] hover:shadow-lg transition-all duration-200 overflow-hidden group"
+                  className={`cursor-pointer hover:scale-[1.02] hover:shadow-lg transition-all duration-200 overflow-hidden group ${
+                    isUpcoming ? 'ring-2 ring-primary/20 shadow-lg' : 'opacity-75'
+                  }`}
                   onClick={() => handleEventClick(event.id)}
                 >
                   {/* Event Banner */}

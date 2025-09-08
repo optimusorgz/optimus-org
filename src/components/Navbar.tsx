@@ -47,9 +47,9 @@ const Navbar = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Events", path: "/events" },
-    { name: "Posts", path: "/posts" },
-    { name: "Gallery", path: "/gallery" },
-    { name: "Team", path: "/team" },
+    // { name: "Posts", path: "/posts" },
+    // { name: "Gallery", path: "/gallery" },
+    // { name: "Team", path: "/team" },
     { name: "Join Us", path: "/join-us" },
   ];
 
@@ -141,12 +141,7 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -156,9 +151,7 @@ const Navbar = () => {
               </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button asChild variant="ghost">
-                  <Link to="/auth">Sign In</Link>
-                </Button>
+                
                 <Button asChild className="btn-hero">
                   <Link to="/auth">Join Us</Link>
                 </Button>
