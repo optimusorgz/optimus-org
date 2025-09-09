@@ -37,17 +37,18 @@ const EventHub = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("upcoming");
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [sortBy, setSortBy] = useState("date");
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   const priceFilters = [
-    { id: "all", label: "All Events" },
-    { id: "free", label: "Free" },
-    { id: "paid", label: "Paid" },
-  ];
+  { id: "upcoming", label: "Upcoming" },
+  { id: "all", label: "All Events" },
+  { id: "free", label: "Free" },
+  { id: "paid", label: "Paid" },
+];
 
   // Removed categoryFilters
 
@@ -88,11 +89,15 @@ const EventHub = () => {
       // Removed status filter
 
       // Apply upcoming/all events filter
-      if (!showAllEvents) {
+     // Upcoming filter
+      if (selectedFilter === "all") {
+  // Show all events (no date filter)
+      } else {
+        // Default = upcoming
         query = query.gte("start_date", new Date().toISOString());
       }
 
-      // Apply price filter
+      // Apply filters
       if (selectedFilter === "free") {
         query = query.or("ticket_price.is.null,ticket_price.eq.0");
       } else if (selectedFilter === "paid") {
@@ -255,7 +260,7 @@ const EventHub = () => {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Upcoming/All Events Toggle */}
             <div className="flex gap-2">
-              <Button
+              {/* <Button
                 variant={!showAllEvents ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowAllEvents(false)}
@@ -268,7 +273,7 @@ const EventHub = () => {
                 onClick={() => setShowAllEvents(true)}
               >
                 All Events
-              </Button>
+              </Button> */}
             </div>
 
             {/* Price Filters */}

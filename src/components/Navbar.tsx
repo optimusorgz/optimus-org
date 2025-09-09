@@ -48,7 +48,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Events", path: "/events" },
     // { name: "Posts", path: "/posts" },
-    // { name: "Gallery", path: "/gallery" },
+    { name: "Gallery", path: "/gallery" },
     // { name: "Team", path: "/team" },
     { name: "Join Us", path: "/join-us" },
   ];
@@ -153,7 +153,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-2">
                 
                 <Button asChild className="btn-hero">
-                  <Link to="/auth">Join Us</Link>
+                  <Link to="/auth">Sign In</Link>
                 </Button>
               </div>
             )}
