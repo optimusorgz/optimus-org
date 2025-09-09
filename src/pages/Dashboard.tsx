@@ -258,12 +258,7 @@ const Dashboard = () => {
           transition={{ duration: 0.6 }}
           className="space-y-8"
         >
-          {/* Profile Card */}
-          <ProfileCard 
-            profile={profile}
-            onUpdateProfile={handleUpdateProfile}
-          />
-
+         
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
@@ -291,6 +286,13 @@ const Dashboard = () => {
               )}
             </div>
           </div>
+
+           {/* Profile Card */}
+          <ProfileCard 
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
+          />
+
 
           {/* Stats Cards - 2x2 Grid */}
           <div className="grid grid-cols-2 gap-4 lg:gap-6 mb-8">
