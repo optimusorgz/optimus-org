@@ -9,7 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import EditProfileModal from '@/components/EditProfileModal';
+import ProfileCard from '@/components/ProfileCard';
+import MyEventsTicket from '@/components/MyEventsTicket';
 
 interface UserProfile {
   name: string;
@@ -39,11 +40,11 @@ interface EventRegistration {
   name: string;
   email: string;
   phone: string;
-  event?: {
+  event: {
     title: string;
     start_date: string;
     location: string;
-  };
+  } | null;
 }
 
 const Dashboard = () => {
@@ -51,10 +52,14 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<EventRegistration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTicketEvent, setSelectedTicketEvent] = useState<{
+    eventId: string;
+    eventTitle: string;
+    registrationId?: string;
+  } | null>(null);
   const [stats, setStats] = useState({
     eventsParticipated: 0,
     totalEventsParticipated: 0,
@@ -122,12 +127,19 @@ const Dashboard = () => {
           name,
           email,
           phone,
-          event:events(title, start_date, location)
+          events!inner(title, start_date, location)
         `)
         .eq("user_id", user.id);
 
       if (error) throw error;
-      setRegisteredEvents(data || []);
+      
+      // Transform the data to match our interface
+      const transformedData = data?.map(item => ({
+        ...item,
+        event: Array.isArray(item.events) ? item.events[0] : item.events
+      })) || [];
+      
+      setRegisteredEvents(transformedData);
     } catch (error) {
       console.error("Error fetching registered events:", error);
       toast({
@@ -145,7 +157,7 @@ const Dashboard = () => {
       // Events participated (registered for)
       const { data: registrations } = await supabase
         .from("event_registrations")
-        .select("id, event_id, event:events!inner(start_date, end_date)")
+        .select("id, event_id, events!inner(start_date, end_date)")
         .eq("user_id", user.id);
 
       // Events organised by user
@@ -155,9 +167,10 @@ const Dashboard = () => {
         .eq("created_by", user.id);
 
       const totalEventsParticipated = registrations?.length || 0;
-      const completedEventsParticipated = registrations?.filter(reg => 
-        reg.event && new Date(reg.event.end_date) < new Date()
-      ).length || 0;
+      const completedEventsParticipated = registrations?.filter(reg => {
+        const event = Array.isArray(reg.events) ? reg.events[0] : reg.events;
+        return event && new Date(event.end_date) < new Date();
+      }).length || 0;
       const activeEventsOrganised = organisedEvents?.filter(event =>
         event.status === 'approved' && new Date(event.start_date) > new Date()
       ).length || 0;
@@ -245,18 +258,24 @@ const Dashboard = () => {
           transition={{ duration: 0.6 }}
           className="space-y-8"
         >
+          {/* Profile Card */}
+          <ProfileCard 
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
+          />
+
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
               <h1 className="text-2xl md:text-4xl font-bold text-glow mb-2">
-                Welcome back, {profile?.name || user?.user_metadata?.name || 'User'}!
+                Dashboard Overview
               </h1>
               <p className="text-sm md:text-lg text-muted-foreground">
-                Manage your events and track your impact on the community.
+                Track your events and community impact.
               </p>
             </div>
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <Button onClick={() => navigate('/create-event')} className="btn-hero">
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-4 md:mt-0">
+              <Button onClick={() => navigate('/create-event')} className="btn-hero w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Event
               </Button>
@@ -265,7 +284,7 @@ const Dashboard = () => {
                 <Button
                   onClick={() => navigate('/admin-dashboard')}
                   variant="secondary"
-                  className="ml-2"
+                  className="w-full sm:w-auto"
                 >
                   Admin Dashboard
                 </Button>
@@ -273,8 +292,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+          {/* Stats Cards - 2x2 Grid */}
+          <div className="grid grid-cols-2 gap-4 lg:gap-6 mb-8">
             <Card className="hover-scale">
               <CardContent className="p-4 lg:p-6">
                 <div className="flex items-center justify-between">
@@ -361,14 +380,28 @@ const Dashboard = () => {
                             {event.event?.start_date ? formatDate(event.event.start_date) : 'N/A'}
                           </td>
                           <td className="p-2 md:p-3">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {/* TODO: Open ticket modal */}}
-                            >
-                              <Ticket className="h-4 w-4 mr-1" />
-                              Ticket
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedTicketEvent({
+                                  eventId: event.event_id,
+                                  eventTitle: event.event?.title || 'Unknown Event',
+                                  registrationId: event.id
+                                })}
+                              >
+                                <Ticket className="h-4 w-4 mr-1" />
+                                Ticket
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => navigate(`/events/${event.event_id}`)}
+                              >
+                                <Eye className="h-4 w-4 mr-1" />
+                                View
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -432,13 +465,16 @@ const Dashboard = () => {
           </Card>
         </motion.div>
 
-        <EditProfileModal
-          isOpen={isEditProfileModalOpen}
-          onClose={() => setIsEditProfileModalOpen(false)}
-          user={user}
-          profile={profile ? { name: profile.name, avatar_url: null } : null}
-          onUpdateProfile={handleUpdateProfile}
-        />
+        {selectedTicketEvent && (
+          <MyEventsTicket
+            eventId={selectedTicketEvent.eventId}
+            userId={user?.id || ''}
+            eventTitle={selectedTicketEvent.eventTitle}
+            registrationId={selectedTicketEvent.registrationId}
+            isOpen={!!selectedTicketEvent}
+            onClose={() => setSelectedTicketEvent(null)}
+          />
+        )}
       </div>
     </div>
   );

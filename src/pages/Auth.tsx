@@ -8,13 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Eye, EyeOff, Mail, Lock, User, Chrome } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/AuthContext';
-import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
-
-interface UserInfo {
-  name: string;
-  email: string;
-  picture: string;
-}
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -23,8 +16,6 @@ const Auth = () => {
   
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleUser, setGoogleUser] = useState<TokenResponse | null>(null);
-  const [profile, setProfile] = useState<UserInfo | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -38,44 +29,6 @@ const Auth = () => {
       navigate('/dashboard');
     }
   }, [user, navigate]);
-
-  useEffect(() => {
-    if (googleUser) {
-      fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${googleUser.access_token}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setProfile(data);
-          toast({
-            title: "Google Sign In Successful",
-            description: `Welcome, ${data.name}!`, 
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          toast({
-            title: "Error fetching Google user info",
-            description: err.message,
-            variant: "destructive",
-          });
-        });
-    }
-  }, [googleUser, toast]);
-
-  const login = useGoogleLogin({
-    onSuccess: (codeResponse) => {
-      setGoogleUser(codeResponse);
-      setLoading(false);
-    },
-    onError: (error) => {
-      console.log('Login Failed:', error);
-      toast({
-        title: "Google Sign In Failed",
-        description: error.error_description || "An unknown error occurred.",
-        variant: "destructive",
-      });
-      setLoading(false);
-    },
-  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -157,7 +110,24 @@ const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    login();
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast({
+          title: "Google Sign In Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -185,25 +155,17 @@ const Auth = () => {
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
-              {profile ? (
-                <div className="flex flex-col items-center justify-center p-4 mb-6 space-y-4">
-                  <img src={profile.picture} alt="User Profile" className="w-24 h-24 rounded-full shadow-lg" />
-                  <h2 className="text-xl font-semibold">Welcome, {profile.name}!</h2>
-                  <p className="text-muted-foreground">{profile.email}</p>
-                  <Button onClick={() => setProfile(null)} className="mt-4">Sign Out Google</Button>
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="w-full mb-6 h-12"
-                  onClick={handleGoogleSignIn}
-                  disabled={loading}
-                >
-                  <Chrome className="h-5 w-5 mr-2" />
-                  Continue with Google
-                </Button>
-              )}
-              
+              {/* Google Sign In Button */}
+              <Button
+                variant="outline"
+                className="w-full mb-6 h-12"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+              >
+                <Chrome className="h-5 w-5 mr-2" />
+                Continue with Google
+              </Button>
+
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />

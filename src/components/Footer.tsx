@@ -1,3 +1,4 @@
+import { table } from "console";
 import { Github, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -9,20 +10,18 @@ const Footer = () => {
       { name: "Home", path: "/" },
       { name: "Events", path: "/events" },
       { name: "Gallery", path: "/gallery" },
-      { name: "Team", path: "/team" },
+      
     ],
     "Community": [
       { name: "Join Us", path: "/join" },
-      { name: "Posts", path: "/posts" },
       { name: "Dashboard", path: "/dashboard" },
       { name: "Support", path: "#" },
     ],
   };
 
   const socialLinks = [
-    { name: "GitHub", icon: Github, url: "#" },
-    { name: "LinkedIn", icon: Linkedin, url: "#" },
-    { name: "Instagram", icon: Instagram, url: "#" },
+    { name: "LinkedIn", icon: Linkedin,  url: "https://www.linkedin.com/company/optimus16/posts/" },
+    { name: "Instagram", icon: Instagram, url: "https://www.instagram.com/optimus.orgz/" },
   ];
 
   return (
@@ -46,6 +45,7 @@ const Footer = () => {
                 <a
                   key={social.name}
                   href={social.url}
+                  target="_blank"
                   className="w-10 h-10 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                   aria-label={social.name}
                 >
@@ -84,11 +84,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-muted-foreground text-sm">
                 <Phone className="h-4 w-4 text-primary" />
-                <span>+91 98765 43210</span>
+                <span>+91 8755026400</span>
               </div>
               <div className="flex items-center space-x-3 text-muted-foreground text-sm">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>contact@optimus.club</span>
+                <span>optimus.orgz@gmail.com</span>
               </div>
             </div>
           </div>

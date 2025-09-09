@@ -1,4 +1,4 @@
-"use client";
+
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -273,7 +273,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white overflow-x-hidden">
 
       {/* ENHANCED HERO SECTION WITH CAROUSEL */}
-      <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 bg-gradient-to-br from-blue-50 via-indigo-100 to-blue-50 dark:from-black dark:via-zinc-900 dark:to-black overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-4 sm:px-6 bg-gradient-to-br from-blue-50 via-indigo-100 to-blue-50 dark:from-black dark:via-zinc-900 dark:to-black overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_70%)] dark:bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1),transparent_70%)]" />
 
         {/* Floating particles effect */}
@@ -292,8 +292,8 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative z-10 slide-transition">
-          <h1 className="text-6xl md:text-7xl font-extrabold mb-6 dark:animate-gradient">
+        <div className="relative z-10 slide-transition max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 dark:animate-gradient">
             <span className="animate-gradient-light dark:animate-gradient">
               {heroSlides[currentSlide].title.split(' ')[0]}
             </span>{' '}
@@ -302,46 +302,41 @@ export default function Home() {
             </span>
           </h1>
 
-          <p className="text-xl font-medium mb-4 text-blue-700 dark:text-blue-200 animate-fade-in">
+          <p className="text-lg sm:text-xl font-medium mb-4 text-blue-700 dark:text-blue-200 animate-fade-in">
             {heroSlides[currentSlide].subtitle}
           </p>
 
-          <p className="text-lg max-w-2xl mb-8 text-gray-600 dark:text-gray-300 animate-fade-in">
+          <p className="text-base sm:text-lg max-w-2xl mx-auto mb-8 text-gray-600 dark:text-gray-300 animate-fade-in">
             {heroSlides[currentSlide].description}
           </p>
 
         </div>
 
-        <div className="flex gap-4 relative z-10 animate-fade-in-up mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 relative z-10 animate-fade-in-up mb-8">
           <Button
             size="lg"
             onClick={() => navigate('/create-event')}
-            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white hover-lift text-xl font-bold glow-effect-light dark:glow-effect shadow-lg"
+            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white hover-lift text-lg sm:text-xl font-bold glow-effect-light dark:glow-effect shadow-lg px-6 py-3"
           >
             Want to Host?
-            <br />
-
           </Button>
           <Button
             size="lg"
             onClick={() => navigate('/event-hub')}
-            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 hover-lift text-white text-xl font-bold glow-effect-light dark:glow-effect shadow-lg"
+            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:blue-500 hover-lift text-white text-lg sm:text-xl font-bold glow-effect-light dark:glow-effect shadow-lg px-6 py-3"
           >
             Want to Attend?
-            <br />
-
           </Button>
         </div>
 
-        <div className="flex gap-4 relative z-10 animate-fade-in-up">
+        <div className="flex justify-center relative z-10 animate-fade-in-up">
           <Button
             size="lg"
             onClick={() => navigate('/join-us')}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover-lift glow-effect-light dark:glow-effect shadow-lg"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover-lift glow-effect-light dark:glow-effect shadow-lg px-6 py-3"
           >
             {heroSlides[currentSlide].cta} <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
-
         </div>
 
         {/* Carousel Indicators */}
@@ -536,6 +531,33 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      {/* ENHANCED FINAL CTA */}
+      <section className="py-20 px-6 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-600 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
+        <div className="relative z-10 animate-fade-in-up">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Ready to power your events with{' '}
+            <span className="bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-transparent">
+              OPTIMUS
+            </span>
+            ?
+          </h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Join thousands of successful event organizers and attendees worldwide
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              onClick={() => navigate('/join-us')}
+              className="bg-white text-blue-600 hover:bg-gray-100 dark:bg-black dark:text-white dark:hover:bg-zinc-900 hover-lift glow-effect-light dark:glow-effect shadow-lg font-semibold"
+            >
+              Get Started Now <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+
+          </div>
+        </div>
+      </section>
 
       {/* ENHANCED FAQ */}
       <section className="py-20 px-6 bg-white dark:bg-black max-w-4xl mx-auto">
@@ -568,32 +590,8 @@ export default function Home() {
         </Accordion>
       </section>
 
-      {/* ENHANCED FINAL CTA */}
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-600 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
-        <div className="relative z-10 animate-fade-in-up">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Ready to power your events with{' '}
-            <span className="bg-gradient-to-r from-yellow-300 to-yellow-100 bg-clip-text text-transparent">
-              OPTIMUS
-            </span>
-            ?
-          </h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of successful event organizers and attendees worldwide
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={() => navigate('/join-us')}
-              className="bg-white text-blue-600 hover:bg-gray-100 dark:bg-black dark:text-white dark:hover:bg-zinc-900 hover-lift glow-effect-light dark:glow-effect shadow-lg font-semibold"
-            >
-              Get Started Now <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-
-          </div>
-        </div>
-      </section>
+      
+      
     </div>
   );
 }

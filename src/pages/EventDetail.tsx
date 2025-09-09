@@ -415,20 +415,20 @@ const EventDetail = () => {
                   </Button>
                 )}
                 
-                {event.registration_link && (
+                {/* {event.registration_link && (
                   <Button 
                     variant="outline"
                     className="w-full"
                     onClick={() => window.open(event.registration_link!, "_blank")}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    External Registration
+                    
                   </Button>
                 )}
-                
+                 */}
                 <Button 
                   variant="outline" 
-                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
+                  className="w-full border-gray-300 text-gray-200 hover:bg-gray-50"
                   onClick={handleShare}
                 >
                   <Share className="h-4 w-4 mr-2" />
