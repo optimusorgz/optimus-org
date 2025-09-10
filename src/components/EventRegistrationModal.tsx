@@ -7,6 +7,35 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => any;
+  }
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: string;
+  currency: string;
+  name: string;
+  description: string;
+  image?: string;
+  order_id: string;
+  handler: (response: any) => void;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  notes: {
+    address: string;
+  };
+  theme: {
+    color: string;
+  };
+}
 
 interface EventRegistrationModalProps {
   isOpen: boolean;
@@ -20,13 +49,12 @@ interface EventRegistrationModalProps {
 const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPrice = 0, customQuestions = [] }: EventRegistrationModalProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    mobileNumber: "",
-    registrationNumber: "",
     customAnswers: {} as Record<string, string>,
   });
 
@@ -41,43 +69,16 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
     }
   }, [user, isOpen]);
 
-  const handlePaytmPayment = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('paytm-generate-token', {
-        body: {
-          eventId,
-          amount: eventPrice * 100, // Convert to paisa
-          userInfo: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.mobileNumber,
-          },
-        },
-      });
+  // Remove handlePaytmPayment as it's no longer needed
+  // const handlePaytmPayment = async () => {
+  //   // ... existing code ...
+  // };
 
-      if (error) throw error;
-
-      const { orderId, txnToken, amount } = data;
-
-      // Mock Paytm payment success for demo
-      toast({
-        title: "Payment Simulation",
-        description: "Payment successful! (Demo mode)",
-      });
-
-      // Create registration after successful payment
-      await createRegistration();
-    } catch (error) {
-      console.error("Payment error:", error);
-      toast({
-        title: "Payment Failed",
-        description: "Payment could not be processed. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const createRegistration = async () => {
+  const createRegistration = async (razorpayPaymentDetails?: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }) => {
     try {
       const { data: registration, error } = await supabase
         .from("event_registrations")
@@ -87,8 +88,6 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
           name: formData.name,
           email: formData.email,
           phone: formData.phone || null,
-          mobile_number: formData.mobileNumber,
-          registration_number: formData.registrationNumber,
           custom_answers: formData.customAnswers,
         })
         .select()
@@ -127,10 +126,41 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
         name: "", 
         email: "", 
         phone: "", 
-        mobileNumber: "", 
-        registrationNumber: "", 
         customAnswers: {} 
       });
+
+      // Redirect to receipt page after successful payment and registration
+      if (razorpayPaymentDetails) {
+        const params = new URLSearchParams({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          amount: eventPrice.toString(),
+          orderId: razorpayPaymentDetails.razorpay_order_id,
+          paymentId: razorpayPaymentDetails.razorpay_payment_id,
+          date: new Date().toISOString(),
+        }).toString();
+        navigate(`/receipt?${params}`);
+
+        // Trigger email receipt
+        await supabase.functions.invoke('send-email-receipt', {
+          body: {
+            to: formData.email,
+            subject: `Receipt for ${eventTitle} Registration`,
+            templateData: {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              amount: eventPrice.toString(),
+              orderId: razorpayPaymentDetails.razorpay_order_id,
+              paymentId: razorpayPaymentDetails.razorpay_payment_id,
+              date: new Date().toLocaleString(),
+              eventTitle,
+            },
+          },
+        });
+
+      }
     } catch (error) {
       console.error("Registration error:", error);
       toast({
@@ -138,6 +168,8 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
         description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false); // Ensure loading is set to false even if registration fails
     }
   };
 
@@ -147,10 +179,88 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
 
     try {
       if (eventPrice > 0) {
-        await handlePaytmPayment();
+        // Razorpay integration
+        const { data, error } = await supabase.functions.invoke('create-order', {
+          body: { amount: eventPrice * 100 }, // Amount in paisa
+        });
+
+        if (error) throw error;
+        const { order_id, currency, amount } = data;
+
+        const options: RazorpayOptions = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Your Razorpay Key ID
+          amount: amount.toString(),
+          currency: currency,
+          name: "Event Registration",
+          description: `Registration for ${eventTitle}`,
+          order_id: order_id,
+          handler: async (response: any) => {
+            // Verify payment on backend
+            const { data: verificationData, error: verificationError } = await supabase.functions.invoke('verify-payment', {
+              body: {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                formData: formData,
+              },
+            });
+
+            if (verificationError) throw verificationError;
+
+            if (verificationData.verified) {
+              toast({
+                title: "Payment Successful!",
+                description: "Your payment has been successfully processed.",
+              });
+              await createRegistration({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+            } else {
+              toast({
+                title: "Payment Verification Failed",
+                description: "There was an issue verifying your payment. Please contact support.",
+                variant: "destructive",
+              });
+            }
+          },
+          prefill: {
+            name: formData.name,
+            email: formData.email,
+            contact: formData.phone,
+          },
+          notes: {
+            address: "Event Registration",
+          },
+          theme: {
+            color: "#3399CC",
+          },
+        };
+
+        const rzp1 = new window.Razorpay(options);
+        rzp1.on('payment.failed', function (response: any){
+          toast({
+            title: "Payment Failed",
+            description: response.error.description,
+            variant: "destructive",
+          });
+          console.error("Razorpay Error:", response.error);
+          setLoading(false); // Reset loading on failure
+        });
+        rzp1.open();
+
+
       } else {
         await createRegistration();
       }
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast({
+        title: "Registration Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -200,33 +310,13 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone">Phone Number *</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange("phone", e.target.value)}
-              placeholder="Enter your phone number (optional)"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="mobileNumber">Mobile Number *</Label>
-            <Input
-              id="mobileNumber"
-              type="tel"
-              value={formData.mobileNumber}
-              onChange={(e) => handleInputChange("mobileNumber", e.target.value)}
-              placeholder="Enter your mobile number"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="registrationNumber">Registration Number *</Label>
-            <Input
-              id="registrationNumber"
-              value={formData.registrationNumber}
-              onChange={(e) => handleInputChange("registrationNumber", e.target.value)}
-              placeholder="Enter your registration number"
+              placeholder="Enter your phone number"
               required
             />
           </div>
