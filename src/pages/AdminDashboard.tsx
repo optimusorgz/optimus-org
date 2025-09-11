@@ -467,21 +467,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const getStatusRowStyle = (status: string) => {
-    switch (status) {
-      case "Active":
-      case "Existing Member":
-        return "border-l-4 border-yellow-400 bg-yellow-50";
-      case "Recently Added":
-        return "border-l-4 border-blue-400 bg-blue-50";
-      case "Discontinued":
-        return "border-l-4 border-red-400 bg-red-50";
-      case "Shadow Member":
-        return "border-l-4 border-green-400 bg-green-50";
-      default:
-        return "border-l-4 border-gray-400 bg-gray-50";
-    }
-  };
 
   const viewEventRegistrations = (eventId: string, eventTitle: string) => {
     setSelectedEventId(eventId);
@@ -541,7 +526,7 @@ const AdminDashboard = () => {
           >
             {/* Join Management Box */}
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-3">
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
@@ -626,7 +611,7 @@ const AdminDashboard = () => {
                     </TableHeader>
                     <TableBody>
                       {filteredApplications.map((application) => (
-                        <TableRow key={application.id} className={getStatusRowStyle(application.action)}>
+                        <TableRow key={application.id} className="rounded-md border overflow-hidden">
                           <TableCell className="font-medium">{application.full_name}</TableCell>
                           <TableCell>{application.email}</TableCell>
                           <TableCell>{application.branch}</TableCell>

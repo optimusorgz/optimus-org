@@ -346,7 +346,7 @@ const Dashboard = () => {
           </div>
 
           {/* My Registered Events Section */}
-          <Card className="card-modern">
+          <Card className="card-modern px-0 md:px-4">
             <CardHeader>
               <CardTitle className="text-lg md:text-xl">My Registered Events</CardTitle>
             </CardHeader>
@@ -360,19 +360,19 @@ const Dashboard = () => {
                   </Button>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto px-4 md:px-0">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border/50">
-                        <th className="text-left p-2 md:p-3 font-medium">Event</th>
-                        <th className="text-left p-2 md:p-3 font-medium">Date</th>
-                        <th className="text-left p-2 md:p-3 font-medium">Actions</th>
+                        <th className="text-left p-0 md:p-1 font-medium">Event</th>
+                        <th className="text-left p-0 md:p-1 font-medium">Date</th>
+                        <th className="text-left p-0 md:p-1 font-medium">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {registeredEvents.map((event) => (
                         <tr key={event.id} className="border-b border-border/30 hover:bg-muted/50 transition-colors">
-                          <td className="p-2 md:p-3">
+                          <td className="p-2 md:p-1">
                             <div>
                               <p className="font-medium text-sm md:text-base">{event.event?.title || 'Unknown Event'}</p>
                               <p className="text-xs md:text-sm text-muted-foreground">{event.event?.location}</p>
@@ -395,14 +395,7 @@ const Dashboard = () => {
                                 <Ticket className="h-4 w-4 mr-1" />
                                 Ticket
                               </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => navigate(`/events/${event.event_id}`)}
-                              >
-                                <Eye className="h-4 w-4 mr-1" />
-                                View
-                              </Button>
+                              
                             </div>
                           </td>
                         </tr>
