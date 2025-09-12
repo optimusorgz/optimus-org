@@ -47,12 +47,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (error) {
       console.error('AuthContext: Error fetching profile for user', userId, ':', error);
-      setProfile(null);
-      setUserRole(null);
+      // If profile doesn't exist, create it
+      if (error.code === 'PGRST116') {
+        await createUserProfile(userId);
+      } else {
+        setProfile(null);
+        setUserRole(null);
+      }
     } else {
       setProfile(data);
       setUserRole(data.role);
       console.log("AuthContext: User role fetched from profiles table for user", userId, ":", data.role);
+    }
+  };
+
+  // Function to create user profile on first login
+  const createUserProfile = async (userId: string) => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData.user;
+      
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+          role: 'user'
+        })
+        .select('id, name, role')
+        .single();
+
+      if (error) {
+        console.error('Error creating profile:', error);
+        setProfile(null);
+        setUserRole(null);
+      } else {
+        setProfile(data);
+        setUserRole(data.role);
+        console.log("AuthContext: Profile created for user", userId, ":", data.role);
+      }
+    } catch (error) {
+      console.error('Error in createUserProfile:', error);
+      setProfile(null);
+      setUserRole(null);
     }
   };
 

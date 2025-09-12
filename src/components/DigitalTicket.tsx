@@ -121,16 +121,18 @@ const DigitalTicket = ({ registration, ticket }: DigitalTicketProps) => {
           <div className="p-4 bg-white rounded-lg border">
             <QRCodeSVG
               value={ticket.qr_code_data}
-              size={150}
+              size={180}
               level="H"
               includeMargin={true}
+              fgColor="#000000"
+              bgColor="#FFFFFF"
             />
           </div>
         </div>
 
         {/* Instructions */}
         <div className="text-center text-xs text-muted-foreground">
-          Present this QR code at the venue for entry
+          Present this QR code at the venue for check-in
         </div>
 
         {/* Download Button */}

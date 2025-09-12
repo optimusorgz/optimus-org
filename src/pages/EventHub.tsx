@@ -84,9 +84,9 @@ const EventHub = () => {
           created_at,
           organization_id,
           status
-        `);
-
-      // Removed status filter
+        `)
+        .eq('status', 'approved')
+        .eq('is_published', true);
 
       // Apply upcoming/all events filter
      // Upcoming filter

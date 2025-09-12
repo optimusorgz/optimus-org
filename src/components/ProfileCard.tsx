@@ -50,6 +50,49 @@ const ProfileCard = ({ profile, onUpdateProfile }: ProfileCardProps) => {
       });
     } catch (error) {
       console.error('Error registering organization:', error);
+      
+      // Handle duplicate organization name
+      if (error.code === '23505' || error.message?.includes('organizations_name_unique')) {
+        toast({
+          title: "Organization Name Taken",
+          description: "An organization with this name already exists. Please choose a different name.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to register organization.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  // Check if user has organization on component mount
+  useEffect(() => {
+    const checkUserOrganization = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('organizations')
+          .select('id, status')
+          .eq('owner_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error checking organization:', error);
+          return;
+        }
+
+        setHasOrganization(!!data);
+      } catch (error) {
+        console.error('Error in checkUserOrganization:', error);
+      }
+    };
+
+    checkUserOrganization();
+  }, [user]);
       toast({
         title: "Error",
         description: "Failed to register organization.",

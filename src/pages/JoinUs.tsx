@@ -43,28 +43,34 @@ const JoinUs = () => {
     try {
       const { data, error } = await supabase
         .from("optimus_applications")
-        .select("is_active")
+        .select("is_active, id")
+        .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
+        console.error("Error checking recruitment status:", error);
         throw error;
       }
 
       setRecruitmentActive(data?.is_active ?? true);
     } catch (error) {
       console.error("Error checking recruitment status:", error);
+      // Default to active if we can't check status
+      setRecruitmentActive(true);
     } finally {
       setCheckingStatus(false);
     }
   };
 
   const toggleRecruitment = async () => {
+    if (!user) return;
+    
     try {
       const { error } = await supabase
         .from("optimus_applications")
         .update({ is_active: !recruitmentActive })
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all records
+        .gte('created_at', '2020-01-01'); // Update all records (safer than neq with dummy id)
 
       if (error) throw error;
 
@@ -130,6 +136,23 @@ const JoinUs = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Check for duplicate registration first
+      const { data: existingApplication } = await supabase
+        .from("optimus_applications")
+        .select("id")
+        .eq("registration_number", formData.regNo)
+        .single();
+
+      if (existingApplication) {
+        toast({
+          title: "Already Registered",
+          description: "You are already registered with this registration number.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.from("optimus_applications").insert({
         full_name: formData.name,
         registration_number: formData.regNo,
@@ -145,11 +168,15 @@ const JoinUs = () => {
         participated_before: formData.lpuParticipation === "yes",
         motivation: formData.motivation
       });
+      
       if (error) throw error;
+      
       toast({
         title: "Application Submitted!",
         description: "Thank you for your interest in joining Optimus. We'll review your application and get back to you soon.",
       });
+      
+      // Reset form
       setFormData({
         name: "",
         regNo: "",
@@ -166,6 +193,26 @@ const JoinUs = () => {
         motivation: ""
       });
     } catch (error: any) {
+      console.error("Application submission error:", error);
+      
+      // Handle duplicate registration number error
+      if (error.code === '23505' || error.message?.includes('registration_number')) {
+        toast({
+          title: "Already Registered",
+          description: "You are already registered with this registration number.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Submission Failed",
+          description: error.message || "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
       toast({
         title: "Submission Failed",
         description: error.message || "Something went wrong. Please try again.",

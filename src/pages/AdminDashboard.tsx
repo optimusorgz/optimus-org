@@ -123,7 +123,6 @@ const AdminDashboard = () => {
   const [showRegistrations, setShowRegistrations] = useState(false);
   const [selectedEventTitle, setSelectedEventTitle] = useState("");
   const [selectedEventId, setSelectedEventId] = useState("");
-  {/* Remove recruitment toggle from AdminDashboard - now in JoinUs.tsx */}
   
   // Filter states
   const [dateFilter, setDateFilter] = useState({ start: "", end: "" });

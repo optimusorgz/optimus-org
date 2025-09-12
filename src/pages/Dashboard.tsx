@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Plus, Calendar, Users, Activity, CheckCircle, Edit3, Eye, Ticket } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProfileCard from '@/components/ProfileCard';
 import MyEventsTicket from '@/components/MyEventsTicket';
+import RegisterOrganizationModal from '@/components/RegisterOrganizationModal';
 
 interface UserProfile {
   name: string;
@@ -60,6 +62,8 @@ const Dashboard = () => {
     eventTitle: string;
     registrationId?: string;
   } | null>(null);
+  const [showOrgModal, setShowOrgModal] = useState(false);
+  const [userOrganization, setUserOrganization] = useState<any>(null);
   const [stats, setStats] = useState({
     eventsParticipated: 0,
     totalEventsParticipated: 0,
@@ -73,9 +77,109 @@ const Dashboard = () => {
       fetchUserEvents();
       fetchRegisteredEvents();
       fetchStats();
+      fetchUserOrganization();
     }
   }, [user]);
 
+  const fetchUserOrganization = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from('organizations')
+        .select('*')
+        .eq('owner_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching organization:', error);
+        return;
+      }
+
+      setUserOrganization(data);
+    } catch (error) {
+      console.error('Error in fetchUserOrganization:', error);
+    }
+  };
+
+  const handleCreateEventClick = () => {
+    if (!userOrganization) {
+      toast({
+        title: "Organization Required",
+        description: "You need to register an organization before creating events.",
+        variant: "destructive",
+      });
+      setShowOrgModal(true);
+      return;
+    }
+
+    if (userOrganization.status === 'pending') {
+      toast({
+        title: "Organization Pending",
+        description: "Your organization is pending approval. Please wait for admin approval.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (userOrganization.status === 'rejected') {
+      toast({
+        title: "Organization Rejected",
+        description: "Your organization was rejected. Please contact admin for more information.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    navigate('/create-event');
+  };
+
+  const handleRegisterOrganization = async (orgData: {
+    name: string;
+    description: string;
+    website: string;
+    contact_email: string;
+    phone_number: string;
+  }) => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('organizations')
+        .insert({
+          name: orgData.name,
+          description: orgData.description,
+          owner_id: user.id,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setUserOrganization(data);
+      setShowOrgModal(false);
+      toast({
+        title: "Success",
+        description: "Organization registered successfully! Awaiting approval.",
+      });
+    } catch (error) {
+      console.error('Error registering organization:', error);
+      
+      if (error.code === '23505' || error.message?.includes('organizations_name_unique')) {
+        toast({
+          title: "Organization Name Taken",
+          description: "An organization with this name already exists. Please choose a different name.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to register organization.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
   const fetchProfile = async () => {
     if (!user) return;
     try {
@@ -270,7 +374,7 @@ const Dashboard = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-4 md:mt-0">
-              <Button onClick={() => navigate('/create-event')} className="btn-hero w-full sm:w-auto">
+              <Button onClick={handleCreateEventClick} className="btn-hero w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Event
               </Button>
@@ -293,6 +397,32 @@ const Dashboard = () => {
             onUpdateProfile={handleUpdateProfile}
           />
 
+          {/* Organization Status Card */}
+          {userOrganization && (
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">Organization Status</h3>
+                    <p className="text-muted-foreground">{userOrganization.name}</p>
+                  </div>
+                  <Badge 
+                    variant={
+                      userOrganization.status === 'approved' ? 'default' : 
+                      userOrganization.status === 'pending' ? 'secondary' : 'destructive'
+                    }
+                  >
+                    {userOrganization.status}
+                  </Badge>
+                </div>
+                {userOrganization.status === 'pending' && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Your organization is pending approval. You'll be able to create events once approved.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Stats Cards - 2x2 Grid */}
           <div className="grid grid-cols-2 gap-4 lg:gap-6 mb-8">
@@ -395,7 +525,6 @@ const Dashboard = () => {
                                 <Ticket className="h-4 w-4 mr-1" />
                                 Ticket
                               </Button>
-                              
                             </div>
                           </td>
                         </tr>
@@ -417,7 +546,7 @@ const Dashboard = () => {
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">You haven't created any events yet.</p>
-                  <Button onClick={() => navigate('/create-event')} className="mt-4 btn-hero">
+                  <Button onClick={handleCreateEventClick} className="mt-4 btn-hero">
                     Create Your First Event
                   </Button>
                 </div>
@@ -451,6 +580,16 @@ const Dashboard = () => {
                           <Eye className="h-4 w-4 mr-1" />
                           View
                         </Button>
+                        {event.created_by === user?.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/scanner/${event.id}`)}
+                          >
+                            <Camera className="h-4 w-4 mr-1" />
+                            Scanner
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -472,6 +611,13 @@ const Dashboard = () => {
         )}
       </div>
     </div>
+
+    {/* Organization Registration Modal */}
+    <RegisterOrganizationModal
+      isOpen={showOrgModal}
+      onClose={() => setShowOrgModal(false)}
+      onRegisterOrganization={handleRegisterOrganization}
+    />
   );
 };
 

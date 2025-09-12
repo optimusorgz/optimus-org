@@ -255,6 +255,8 @@ const CreateEvent = () => {
         const { error } = await supabase.from("events").insert({
           ...commonData,
           organization_id: organization.id,
+          created_by: user?.id,
+          is_published: true,
           status: 'pending'
         });
 

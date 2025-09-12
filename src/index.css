@@ -216,3 +216,35 @@
   white-space: nowrap;
   animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
 }
+
+/* Mobile responsive utilities */
+@layer utilities {
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-[1.02];
+  }
+  
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-text {
+    @apply text-sm sm:text-base;
+  }
+  
+  .mobile-grid {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+}
+
+/* QR Scanner styles */
+#qr-reader {
+  border: none !important;
+}
+
+#qr-reader__dashboard_section {
+  display: none !important;
+}
+
+#qr-reader__camera_selection {
+  display: none !important;
+}

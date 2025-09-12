@@ -87,7 +87,8 @@ const EventDetail = () => {
           created_by,
           created_at,
           organization_id,
-          status
+          status,
+          questions
         `)
         .eq("id", id)
         .single();
@@ -108,7 +109,7 @@ const EventDetail = () => {
       }
 
       // Check if event is accessible (approved or user's own event)
-      if (eventData.status !== "approved") {
+      if (eventData.status !== "approved" && eventData.created_by !== user?.id) {
         toast({
           title: "Event not available",
           description: "This event is not currently available for public viewing.",
@@ -141,10 +142,10 @@ const EventDetail = () => {
         .select("*")
         .eq("event_id", id)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") {
-        // PGRST116 means no rows found, which is fine.
+      if (error) {
+        console.error("Error fetching registration status:", error);
         throw error;
       }
 
@@ -157,11 +158,9 @@ const EventDetail = () => {
       }
     } catch (error) {
       console.error("Error fetching registration status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load registration status.",
-        variant: "destructive",
-      });
+      // Don't show error toast for registration status check
+      setIsRegistered(false);
+      setRegistrationData(null);
     }
   };
 

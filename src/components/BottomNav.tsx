@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 export default function BottomNav() {
   const navItems = [
     { to: "/", label: "Home", icon: Home },
-    { to: "/gallery", label: "Gallery", icon: Image },
     { to: "/events", label: "Events", icon: Calendar },
+    { to: "/gallery", label: "Gallery", icon: Image },
     { to: "/join-us", label: "Join Us", icon: UserPlus },
   ];
 

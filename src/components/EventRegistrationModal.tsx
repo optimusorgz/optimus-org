@@ -80,6 +80,26 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
     razorpay_signature: string;
   }) => {
     try {
+      // Check if user is already registered for this event
+      if (user) {
+        const { data: existingRegistration } = await supabase
+          .from("event_registrations")
+          .select("id")
+          .eq("event_id", eventId)
+          .eq("user_id", user.id)
+          .single();
+
+        if (existingRegistration) {
+          toast({
+            title: "Already Registered",
+            description: "You are already registered for this event.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       const { data: registration, error } = await supabase
         .from("event_registrations")
         .insert({
@@ -102,6 +122,7 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
         eventId,
         registrationId: registration.id,
         ticketNumber,
+        timestamp: Date.now(),
       });
 
       const { error: ticketError } = await supabase
