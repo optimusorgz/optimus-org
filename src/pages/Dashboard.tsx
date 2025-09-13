@@ -350,10 +350,10 @@ const Dashboard = () => {
           </div>
 
           {/* Profile Card */}
-          {/* <ProfileCard 
+          <ProfileCard 
             profile={profile}
             onUpdateProfile={handleUpdateProfile}
-          /> */}
+          />
 
           {/* Organization Status Card */}
           {userOrganization && (

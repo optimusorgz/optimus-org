@@ -21,13 +21,13 @@ interface EditProfileModalProps {
   user: User | null;
   profile: { 
     name: string; 
-    photo: string | null;
+    avatar_url: string | null;
     phone_number: string | null;
     organisation: string | null;
   } | null;
   onUpdateProfile: (updatedProfile: {
     name: string;
-    photo: string | null;
+    avatar_url: string | null;
     phone_number: string | null;
   }) => void;
 }
@@ -41,7 +41,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const [name, setName] = useState(profile?.name || "");
   const [phoneNumber, setPhoneNumber] = useState(profile?.phone_number || "");
-  const [photoUrl, setPhotoUrl] = useState(profile?.photo || "");
+  const [photoUrl, setPhotoUrl] = useState(profile?.avatar_url || "");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -51,7 +51,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     if (profile) {
       setName(profile.name || "");
       setPhoneNumber(profile.phone_number || "");
-      setPhotoUrl(profile.photo || "");
+      setPhotoUrl(profile.avatar_url || "");
     }
   }, [profile]);
 
@@ -94,8 +94,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       const filePath = `${user.id}/${fileName}`;
 
       // Delete existing photo if any
-      if (profile?.photo) {
-        const oldPath = profile.photo.split('/').slice(-2).join('/');
+      if (profile?.avatar_url) {
+        const oldPath = profile.avatar_url.split('/').slice(-2).join('/');
         await supabase.storage
           .from("profile_photos")
           .remove([oldPath]);
@@ -162,7 +162,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       onUpdateProfile({
         name: name.trim(),
         phone_number: phoneNumber.trim() || null,
-        photo: newPhotoUrl || null,
+        avatar_url: newPhotoUrl || null,
       });
 
       toast({

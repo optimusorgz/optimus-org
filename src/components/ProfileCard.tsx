@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,12 +8,13 @@ import EditProfileModal from '@/components/profile/EditProfileModal';
 import OrganisationRegistrationModal from '@/components/organisation/OrganisationRegistrationModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 interface ProfileCardProps {
   profile: any;
   onUpdateProfile: (data: { 
     name: string; 
-    photo: string | null;
+    avatar_url: string | null;
     phone_number: string | null;
   }) => void;
 }
@@ -147,7 +148,7 @@ const ProfileCard = ({ profile, onUpdateProfile }: ProfileCardProps) => {
         user={user}
         profile={profile ? { 
           name: profile.name, 
-          photo: profile.photo || null,
+          avatar_url: profile.photo || null,
           phone_number: profile.phone_number || null,
           organisation: profile.organisation || null
         } : null}

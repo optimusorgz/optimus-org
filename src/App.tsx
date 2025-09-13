@@ -45,13 +45,23 @@ const App = () => (
                   <Route path="/events/:id" element={<EventDetail />} />
                   
                   <Route
-                      path="/edit-event/:id"
-                      element={
-                        <ProtectedRoute>
-                          <CreateEvent />
-                        </ProtectedRoute>
-                      }
-                    />
+                    path="/create-event"
+                    element={
+                      <ProtectedRoute>
+                        <CreateEvent />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Edit Event */}
+                  <Route
+                    path="/edit-event/:id"
+                    element={
+                      <ProtectedRoute>
+                        <CreateEvent />
+                      </ProtectedRoute>
+                    }
+                  />
 
                   {/* Dashboard */}
                   <Route
