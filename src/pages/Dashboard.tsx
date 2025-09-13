@@ -560,26 +560,13 @@ const Dashboard = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/dashboard/scanner/${event.id}`)}
+                            onClick={() => navigate(`/dashboard/events/${event.id}/checkin`)}
                           >
                             <Camera className="h-4 w-4 mr-1" />
-                            Scanner
+                            Check-in Dashboard
                           </Button>
                         )}
 
-                        {/* Registrations */}
-                        {event.created_by === user?.id && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              navigate(`/dashboard/registrations/${event.id}`)
-                            }
-                          >
-                            <FileText className="h-4 w-4 mr-1" />
-                            Registrations
-                          </Button>
-                        )}
                       </div>
                     </div>
                   ))}

@@ -748,10 +748,10 @@ const AdminDashboard = () => {
                           </Button>
                           <Button
                             size="sm"
-                            onClick={() => navigate(`/check-in/${event.id}`)}
+                            onClick={() => navigate(`/dashboard/events/${event.id}/checkin`)}
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
-                            Check In
+                            Check-in Dashboard
                           </Button>
                           {event.status === "pending" && (
                             <>

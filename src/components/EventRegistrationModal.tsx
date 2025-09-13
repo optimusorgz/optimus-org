@@ -118,10 +118,10 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
       // Generate digital ticket
       const ticketNumber = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
       const qrCodeData = JSON.stringify({
-        userId: user?.id,
-        eventId,
-        registrationId: registration.id,
-        ticketNumber,
+        user_id: user?.id,
+        event_id: eventId,
+        registration_id: registration.id,
+        ticket_number: ticketNumber,
         timestamp: Date.now(),
       });
 
