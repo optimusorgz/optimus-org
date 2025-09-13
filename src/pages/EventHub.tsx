@@ -83,7 +83,8 @@ const EventHub = () => {
           created_at,
           organization_id,
           status
-        `);
+        `)
+        .eq("status", "approved");
 
       // Removed status filter
 
