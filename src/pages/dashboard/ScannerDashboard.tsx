@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import EventScanner from '@/components/events/ScannerDashboard';
+import ScannerDashboard from '@/components/events/ScannerDashboard';
 
-const EventScannerPage = () => {
+const ScannerDashboardPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { user, userRole } = useAuth();
@@ -35,7 +36,7 @@ const EventScannerPage = () => {
 
       if (eventError) {
         toast({
-          title: "Event Not Found",
+          title: "Event not found",
           description: "The event you're trying to scan for doesn't exist.",
           variant: "destructive",
         });
@@ -51,7 +52,7 @@ const EventScannerPage = () => {
 
       if (!isEventCreator && !isAdmin) {
         toast({
-          title: "Access Denied",
+          title: "Access denied",
           description: "You don't have permission to scan tickets for this event.",
           variant: "destructive",
         });
@@ -86,7 +87,9 @@ const EventScannerPage = () => {
       <div className="min-h-screen pt-6 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
-          <p className="text-muted-foreground mb-4">You don't have permission to access this scanner.</p>
+          <p className="text-muted-foreground mb-4">
+            You don't have permission to access this scanner.
+          </p>
           <Button onClick={() => navigate('/dashboard')}>
             Return to Dashboard
           </Button>
@@ -97,7 +100,7 @@ const EventScannerPage = () => {
 
   return (
     <div className="min-h-screen pt-6">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -108,13 +111,13 @@ const EventScannerPage = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Ticket Scanner</h1>
-            <p className="text-muted-foreground">Scan attendee tickets for check-in</p>
+            <h1 className="text-2xl font-bold">Scanner Dashboard</h1>
+            <p className="text-muted-foreground">{event.title}</p>
           </div>
         </div>
 
         {/* Scanner Component */}
-        <EventScanner
+        <ScannerDashboard
           eventId={eventId!}
           eventTitle={event.title}
           onClose={() => navigate('/dashboard')}
@@ -124,4 +127,4 @@ const EventScannerPage = () => {
   );
 };
 
-export default EventScannerPage;
+export default ScannerDashboardPage;

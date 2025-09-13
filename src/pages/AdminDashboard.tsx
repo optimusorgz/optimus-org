@@ -746,6 +746,13 @@ const AdminDashboard = () => {
                             <Eye className="h-4 w-4 mr-1" />
                             View Registrations
                           </Button>
+                          <Button
+                            size="sm"
+                            onClick={() => navigate(`/check-in/${event.id}`)}
+                          >
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Check In
+                          </Button>
                           {event.status === "pending" && (
                             <>
                               <Button

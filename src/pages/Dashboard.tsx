@@ -1,24 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Plus, Calendar, Users, Activity, CheckCircle, Edit3, Eye, Ticket } from 'lucide-react';
-import { Camera } from 'lucide-react';
+import { Plus, Calendar, Users, Activity, CheckCircle, Eye, Ticket, Camera, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProfileCard from '@/components/ProfileCard';
 import MyEventsTicket from '@/components/MyEventsTicket';
-import RegisterOrganizationModal from '@/components/RegisterOrganizationModal';
 
 interface UserProfile {
   name: string;
   role: string;
   location?: string;
-  phone_number?: string;
+  phone_number?: string | null;
+  avatar_url?: string | null;
+  organisation?: string;
 }
 
 interface Event {
@@ -33,6 +32,7 @@ interface Event {
   max_participants: number;
   ticket_price: number;
   status: string;
+  created_by: string;
 }
 
 interface EventRegistration {
@@ -62,7 +62,6 @@ const Dashboard = () => {
     eventTitle: string;
     registrationId?: string;
   } | null>(null);
-  const [showOrgModal, setShowOrgModal] = useState(false);
   const [userOrganization, setUserOrganization] = useState<any>(null);
   const [stats, setStats] = useState({
     eventsParticipated: 0,
@@ -104,18 +103,18 @@ const Dashboard = () => {
   const handleCreateEventClick = () => {
     if (!userOrganization) {
       toast({
-        title: "Organization Required",
-        description: "You need to register an organization before creating events.",
+        title: "Organisation Required",
+        description: "You need to register an organisation before creating events.",
         variant: "destructive",
       });
-      setShowOrgModal(true);
+      navigate('/create-event');
       return;
     }
 
     if (userOrganization.status === 'pending') {
       toast({
-        title: "Organization Pending",
-        description: "Your organization is pending approval. Please wait for admin approval.",
+        title: "Organisation Pending",
+        description: "Your organisation is pending approval. Please wait for admin approval.",
         variant: "destructive",
       });
       return;
@@ -123,8 +122,8 @@ const Dashboard = () => {
 
     if (userOrganization.status === 'rejected') {
       toast({
-        title: "Organization Rejected",
-        description: "Your organization was rejected. Please contact admin for more information.",
+        title: "Organisation Rejected",
+        description: "Your organisation was rejected. Please contact admin for more information.",
         variant: "destructive",
       });
       return;
@@ -133,53 +132,6 @@ const Dashboard = () => {
     navigate('/create-event');
   };
 
-  const handleRegisterOrganization = async (orgData: {
-    name: string;
-    description: string;
-    website: string;
-    contact_email: string;
-    phone_number: string;
-  }) => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('organizations')
-        .insert({
-          name: orgData.name,
-          description: orgData.description,
-          owner_id: user.id,
-          status: 'pending'
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setUserOrganization(data);
-      setShowOrgModal(false);
-      toast({
-        title: "Success",
-        description: "Organization registered successfully! Awaiting approval.",
-      });
-    } catch (error) {
-      console.error('Error registering organization:', error);
-      
-      if (error.code === '23505' || error.message?.includes('organizations_name_unique')) {
-        toast({
-          title: "Organization Name Taken",
-          description: "An organization with this name already exists. Please choose a different name.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to register organization.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
   const fetchProfile = async () => {
     if (!user) return;
     try {
@@ -236,13 +188,12 @@ const Dashboard = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      
-      // Transform the data to match our interface
+
       const transformedData = data?.map(item => ({
         ...item,
         event: Array.isArray(item.events) ? item.events[0] : item.events
       })) || [];
-      
+
       setRegisteredEvents(transformedData);
     } catch (error) {
       console.error("Error fetching registered events:", error);
@@ -256,15 +207,13 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     if (!user) return;
-    
+
     try {
-      // Events participated (registered for)
       const { data: registrations } = await supabase
         .from("event_registrations")
         .select("id, event_id, events!inner(start_date, end_date)")
         .eq("user_id", user.id);
 
-      // Events organised by user
       const { data: organisedEvents } = await supabase
         .from("events")
         .select("id, start_date, end_date, status")
@@ -290,7 +239,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleUpdateProfile = async (updatedData: { name: string; avatar_url: string | null }) => {
+  const handleUpdateProfile = async (updatedData: { name: string; avatar_url: string | null; phone_number: string | null }) => {
     if (!user) return;
 
     try {
@@ -298,12 +247,20 @@ const Dashboard = () => {
         .from('profiles')
         .update({
           name: updatedData.name,
+          avatar_url: updatedData.avatar_url,   // ✅ match DB column
+          phone_number: updatedData.phone_number,
         })
         .eq('user_id', user.id);
 
       if (error) throw error;
 
-      setProfile(prev => prev ? { ...prev, name: updatedData.name } : null);
+      setProfile(prev => prev ? {
+        ...prev,
+        name: updatedData.name,
+        avatar_url: updatedData.avatar_url,    // ✅ consistent field
+        phone_number: updatedData.phone_number,
+      } : null);
+
       toast({
         title: "Success",
         description: "Profile updated successfully!",
@@ -353,6 +310,7 @@ const Dashboard = () => {
     );
   }
 
+
   return (
     <div className="min-h-screen pt-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -362,7 +320,7 @@ const Dashboard = () => {
           transition={{ duration: 0.6 }}
           className="space-y-8"
         >
-         
+
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
@@ -391,11 +349,11 @@ const Dashboard = () => {
             </div>
           </div>
 
-           {/* Profile Card */}
-          <ProfileCard 
+          {/* Profile Card */}
+          {/* <ProfileCard 
             profile={profile}
             onUpdateProfile={handleUpdateProfile}
-          />
+          /> */}
 
           {/* Organization Status Card */}
           {userOrganization && (
@@ -403,13 +361,13 @@ const Dashboard = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold">Organization Status</h3>
+                    <h3 className="text-lg font-semibold">Organisation Status</h3>
                     <p className="text-muted-foreground">{userOrganization.name}</p>
                   </div>
-                  <Badge 
+                  <Badge
                     variant={
-                      userOrganization.status === 'approved' ? 'default' : 
-                      userOrganization.status === 'pending' ? 'secondary' : 'destructive'
+                      userOrganization.status === 'approved' ? 'default' :
+                        userOrganization.status === 'pending' ? 'secondary' : 'destructive'
                     }
                   >
                     {userOrganization.status}
@@ -417,14 +375,14 @@ const Dashboard = () => {
                 </div>
                 {userOrganization.status === 'pending' && (
                   <p className="text-sm text-muted-foreground mt-2">
-                    Your organization is pending approval. You'll be able to create events once approved.
+                    Your organisation is pending approval. You'll be able to create events once approved.
                   </p>
                 )}
               </CardContent>
             </Card>
           )}
 
-          {/* Stats Cards - 2x2 Grid */}
+          {/* Stats Cards */}
           <div className="grid grid-cols-2 gap-4 lg:gap-6 mb-8">
             <Card className="hover-scale">
               <CardContent className="p-4 lg:p-6">
@@ -545,7 +503,9 @@ const Dashboard = () => {
               {events.length === 0 ? (
                 <div className="text-center py-8">
                   <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">You haven't created any events yet.</p>
+                  <p className="text-muted-foreground">
+                    You haven't created any events yet.
+                  </p>
                   <Button onClick={handleCreateEventClick} className="mt-4 btn-hero">
                     Create Your First Event
                   </Button>
@@ -557,37 +517,67 @@ const Dashboard = () => {
                       key={event.id}
                       className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 border border-border/50 rounded-lg hover:bg-muted/20 transition-colors"
                     >
+                      {/* Event Info */}
                       <div className="flex-1 mb-2 md:mb-0">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-sm md:text-base">{event.title}</h4>
-                          <Badge className={getCategoryColor(event.category || 'Workshop')}>
-                            {event.category || 'Workshop'}
+                          <h4 className="font-semibold text-sm md:text-base">
+                            {event.title}
+                          </h4>
+                          <Badge className={getCategoryColor(event.category || "Workshop")}>
+                            {event.category || "Workshop"}
                           </Badge>
                           {event.ticket_price && event.ticket_price > 0 && (
                             <Badge variant="outline">₹{event.ticket_price}</Badge>
                           )}
                         </div>
                         <p className="text-xs md:text-sm text-muted-foreground">
-                          {formatDate(event.start_date)} • {event.location || 'Online'}
+                          {formatDate(event.start_date)} • {event.location || "Online"}
                         </p>
                       </div>
+
+                      {/* Action Buttons */}
                       <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => navigate(`/events/${event.id}`)}
-                        >
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
+                        
+
+                        {/* Edit */}
                         {event.created_by === user?.id && (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/scanner/${event.id}`)}
+                            onClick={() =>
+                              navigate(`/edit-event/${event.id}`, {
+                                state: { eventData: event },
+                              })
+                            }
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Edit
+                          </Button>
+                        )}
+
+                        {/* Scanner */}
+                        {event.created_by === user?.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/dashboard/scanner/${event.id}`)}
                           >
                             <Camera className="h-4 w-4 mr-1" />
                             Scanner
+                          </Button>
+                        )}
+
+                        {/* Registrations */}
+                        {event.created_by === user?.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              navigate(`/dashboard/registrations/${event.id}`)
+                            }
+                          >
+                            <FileText className="h-4 w-4 mr-1" />
+                            Registrations
                           </Button>
                         )}
                       </div>
@@ -597,28 +587,23 @@ const Dashboard = () => {
               )}
             </CardContent>
           </Card>
-        </motion.div>
 
-        {selectedTicketEvent && (
-          <MyEventsTicket
-            eventId={selectedTicketEvent.eventId}
-            userId={user?.id || ''}
-            eventTitle={selectedTicketEvent.eventTitle}
-            registrationId={selectedTicketEvent.registrationId}
-            isOpen={!!selectedTicketEvent}
-            onClose={() => setSelectedTicketEvent(null)}
-          />
-        )}
-      </div>
-    </div>
-
-    {/* Organization Registration Modal */}
-    <RegisterOrganizationModal
-      isOpen={showOrgModal}
-      onClose={() => setShowOrgModal(false)}
-      onRegisterOrganization={handleRegisterOrganization}
-    />
+          {/* Ticket Modal */}
+          {selectedTicketEvent && (
+            <MyEventsTicket
+              eventId={selectedTicketEvent.eventId}
+              userId={user?.id || ""}
+              eventTitle={selectedTicketEvent.eventTitle}
+              registrationId={selectedTicketEvent.registrationId}
+              isOpen={!!selectedTicketEvent}
+              onClose={() => setSelectedTicketEvent(null)}
+            />
+          )}
+            </motion.div>
+          </div>
+        </div>
   );
 };
+    
 
 export default Dashboard;

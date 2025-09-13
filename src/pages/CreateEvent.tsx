@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/components/AuthContext";
-import { useLocation } from "react-router-dom";
+import OrganisationRegistrationModal from "@/components/organisation/OrganisationRegistrationModal";
+import { useLocation, useParams } from "react-router-dom";
 
 interface Organization {
   id: string;
@@ -41,6 +42,8 @@ interface Event {
   organization_id: string;
 }
 
+
+
 const CreateEvent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -53,6 +56,7 @@ const CreateEvent = () => {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [loadingOrg, setLoadingOrg] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [showOrgModal, setShowOrgModal] = useState(false);
 
   // Event form data
   const [eventData, setEventData] = useState({
@@ -256,8 +260,7 @@ const CreateEvent = () => {
           ...commonData,
           organization_id: organization.id,
           created_by: user?.id,
-          is_published: true,
-          status: 'pending'
+          status: "pending", 
         });
 
         if (error) throw error;
@@ -325,8 +328,8 @@ const CreateEvent = () => {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-glow">Register Organization</h1>
-              <p className="text-muted-foreground">Register your organization to create events</p>
+              <h1 className="text-3xl font-bold text-glow">Register Organisation</h1>
+              <p className="text-muted-foreground">Register your organisation to create events</p>
             </div>
           </motion.div>
 
@@ -334,46 +337,29 @@ const CreateEvent = () => {
             <Alert className="mb-6">
               <Building2 className="h-4 w-4" />
               <AlertDescription>
-                You need to register an organization before creating events. Once registered, your organization will be reviewed by our admin team.
+                You need to register an organisation before creating events. Once registered, your organisation will be reviewed by our admin team.
               </AlertDescription>
             </Alert>
 
-            <Card className="card-modern">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-primary" />
-                  Organization Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleOrgSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="orgName">Organization Name *</Label>
-                    <Input
-                      id="orgName"
-                      value={orgData.name}
-                      onChange={(e) => handleOrgInputChange("name", e.target.value)}
-                      placeholder="Enter organization name"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="orgDescription">Description</Label>
-                    <Textarea
-                      id="orgDescription"
-                      value={orgData.description}
-                      onChange={(e) => handleOrgInputChange("description", e.target.value)}
-                      placeholder="Describe your organization..."
-                      rows={4}
-                    />
-                  </div>
-                  <Button type="submit" disabled={isLoading} className="w-full">
-                    {isLoading ? "Registering..." : "Register Organization"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <Button 
+                onClick={() => setShowOrgModal(true)}
+                className="btn-hero"
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Register Organisation
+              </Button>
+            </div>
           </motion.div>
+
+          <OrganisationRegistrationModal
+            isOpen={showOrgModal}
+            onClose={() => setShowOrgModal(false)}
+            onSuccess={(org) => {
+              setOrganization(org);
+              setShowOrgModal(false);
+            }}
+          />
         </div>
       </div>
     );
@@ -406,7 +392,7 @@ const CreateEvent = () => {
           <Alert className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your organization <strong>{organization.name}</strong> is pending approval. You can create/edit events, but they will only be visible once your organization is approved.
+              Your organisation <strong>{organization.name}</strong> is pending approval. You can create/edit events, but they will only be visible once your organisation is approved.
             </AlertDescription>
           </Alert>
         )}
@@ -414,7 +400,7 @@ const CreateEvent = () => {
           <Alert className="mb-6">
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>
-              Creating event for organization: <strong>{organization.name}</strong>
+              Creating event for organisation: <strong>{organization.name}</strong>
             </AlertDescription>
           </Alert>
         )}
