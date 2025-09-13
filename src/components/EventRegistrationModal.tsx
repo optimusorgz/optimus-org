@@ -99,6 +99,9 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
           return;
         }
       }
+      
+      const ticketNumber = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+      const qrCodeData = ticketNumber;
 
       const { data: registration, error } = await supabase
         .from("event_registrations")
@@ -109,21 +112,15 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
           email: formData.email,
           phone: formData.phone || null,
           custom_answers: formData.customAnswers,
+          ticket_code: ticketNumber,
         })
+
         .select()
         .single();
 
       if (error) throw error;
 
       // Generate digital ticket
-      const ticketNumber = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-      const qrCodeData = JSON.stringify({
-        user_id: user?.id,
-        event_id: eventId,
-        registration_id: registration.id,
-        ticket_number: ticketNumber,
-        timestamp: Date.now(),
-      });
 
       const { error: ticketError } = await supabase
         .from("digital_tickets")

@@ -1,130 +1,104 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/components/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import ScannerDashboard from '@/components/events/ScannerDashboard';
+import React, { useState } from "react";
+import QrReader from "react-qr-reader-es6"; // ✅ works with React 18
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
-const ScannerDashboardPage = () => {
-  const { eventId } = useParams<{ eventId: string }>();
-  const navigate = useNavigate();
-  const { user, userRole } = useAuth();
+interface ScannerDashboardProps {
+  eventId: string;
+  eventTitle: string;
+  onClose: () => void;
+}
+
+const ScannerDashboard: React.FC<ScannerDashboardProps> = ({
+  eventId,
+  eventTitle,
+  onClose,
+}) => {
   const { toast } = useToast();
-  const [event, setEvent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [hasAccess, setHasAccess] = useState(false);
+  const [scanning, setScanning] = useState(true);
 
-  useEffect(() => {
-    if (user && eventId) {
-      checkAccess();
+  const handleScan = async (scannedData: string | null) => {
+  if (!scannedData) return;
+
+  try {
+    // scannedData now = ticket_number (short string)
+    const ticketNumber = scannedData.trim();
+
+    const { data: ticket, error } = await supabase
+      .from("digital_tickets")
+      .select("id, user_id, event_id, ticket_number, checked_in")
+      .eq("ticket_number", ticketNumber)
+      .single();
+
+    if (error || !ticket) {
+      toast({ title: "Invalid Ticket", variant: "destructive" });
+      return;
     }
-  }, [user, eventId]);
 
-  const checkAccess = async () => {
-    if (!user || !eventId) return;
-
-    try {
-      // Fetch event details
-      const { data: eventData, error: eventError } = await supabase
-        .from('events')
-        .select('id, title, created_by')
-        .eq('id', eventId)
-        .single();
-
-      if (eventError) {
-        toast({
-          title: "Event not found",
-          description: "The event you're trying to scan for doesn't exist.",
-          variant: "destructive",
-        });
-        navigate('/dashboard');
-        return;
-      }
-
-      setEvent(eventData);
-
-      // Check if user has access (event creator or admin/organiser)
-      const isEventCreator = eventData.created_by === user.id;
-      const isAdmin = userRole === 'admin' || userRole === 'organiser';
-
-      if (!isEventCreator && !isAdmin) {
-        toast({
-          title: "Access denied",
-          description: "You don't have permission to scan tickets for this event.",
-          variant: "destructive",
-        });
-        navigate('/dashboard');
-        return;
-      }
-
-      setHasAccess(true);
-    } catch (error) {
-      console.error('Error checking access:', error);
-      toast({
-        title: "Error",
-        description: "Failed to verify access permissions.",
-        variant: "destructive",
-      });
-      navigate('/dashboard');
-    } finally {
-      setLoading(false);
+    if (ticket.event_id !== eventId) {
+      toast({ title: "Wrong Event", variant: "destructive" });
+      return;
     }
+
+    if (ticket.checked_in) {
+      toast({ title: "Already Checked In", variant: "destructive" });
+      return;
+    }
+
+    // Mark as checked in
+    await supabase
+      .from("digital_tickets")
+      .update({ checked_in: true })
+      .eq("id", ticket.id);
+
+    toast({
+      title: "Check-in Successful 🎉",
+      description: `Ticket: ${ticket.ticket_number}`,
+    });
+  } catch (err) {
+    console.error("Scan error:", err);
+    toast({ title: "Scan Error", variant: "destructive" });
+  }
+};
+
+
+  const handleError = (err: any) => {
+    console.error("QR Reader Error:", err);
+    toast({
+      title: "Camera Error",
+      description: err.message,
+      variant: "destructive",
+    });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-6 flex items-center justify-center">
-        <div className="animate-pulse text-lg">Loading scanner...</div>
-      </div>
-    );
-  }
-
-  if (!hasAccess || !event) {
-    return (
-      <div className="min-h-screen pt-6 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
-          <p className="text-muted-foreground mb-4">
-            You don't have permission to access this scanner.
-          </p>
-          <Button onClick={() => navigate('/dashboard')}>
-            Return to Dashboard
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen pt-6">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => navigate('/dashboard')}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold">Scanner Dashboard</h1>
-            <p className="text-muted-foreground">{event.title}</p>
-          </div>
-        </div>
+    <div className="w-full flex flex-col items-center gap-4">
+      <h2 className="text-xl font-semibold">
+        Scan Tickets for {eventTitle}
+      </h2>
 
-        {/* Scanner Component */}
-        <ScannerDashboard
-          eventId={eventId!}
-          eventTitle={event.title}
-          onClose={() => navigate('/dashboard')}
+      {scanning ? (
+        <QrReader
+          delay={300}
+          onScan={handleScan}
+          onError={handleError}
+          style={{ width: "100%" }}
         />
+      ) : (
+        <p className="text-muted-foreground">Scanner Paused</p>
+      )}
+
+      <div className="flex gap-2 mt-4">
+        <Button onClick={() => setScanning(!scanning)}>
+          {scanning ? "Pause Scanner" : "Resume Scanner"}
+        </Button>
+        <Button variant="outline" onClick={onClose}>
+          Close
+        </Button>
       </div>
     </div>
   );
 };
 
-export default ScannerDashboardPage;
+export default ScannerDashboard;

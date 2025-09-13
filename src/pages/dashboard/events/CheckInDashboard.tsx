@@ -32,15 +32,15 @@ interface Registration {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
   checked_in: boolean;
   checked_in_at: string | null;
   created_at: string;
   user_id: string | null;
-  ticket_code: string;
-  profiles?: {
-    organisation?: string;
-  };
+  ticket_code: string | null;
+  registration_number?: string | null;
+  mobile_number?: string | null;
+  custom_answers?: Record<string, any>;
 }
 
 interface ScanResult {
@@ -214,13 +214,16 @@ const CheckInDashboard = () => {
           user_id,
           registration_number,
           mobile_number,
-          custom_answers
+          custom_answers,
+          checked_in,
+          checked_in_at,
+          ticket_code
         `)
         .eq('event_id', eventId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRegistrations(data || []);
+      setRegistrations( (data as Registration[]) || []);
     } catch (error) {
       console.error('Error fetching registrations:', error);
       toast({
@@ -266,92 +269,108 @@ const CheckInDashboard = () => {
         qrbox: { width: 250, height: 250 },
         disableFlip: false,
         aspectRatio: 1.0,
-        facingMode: isMobile ? "environment" : "user", // Back camera on mobile
-        supportedScanTypes: [0, 1] // QR and barcode
+        
       },
       false
     );
 
     qrCodeScannerRef.current.render(onScanSuccess, onScanError);
-    setScanning(true);
+    
+    if (isMobile) {
+      navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          const backCamera = devices.find(d => d.kind === 'videoinput' && d.label.toLowerCase().includes('back'));
+          if (backCamera) {
+            // Restart scanner with back camera
+            qrCodeScannerRef.current?.clear().then(() => {
+              qrCodeScannerRef.current?.render(onScanSuccess, onScanError);
+            });
+          }
+        })
+        .catch(console.error);
+    }
   };
 
   const onScanSuccess = async (decodedText: string) => {
-    const now = Date.now();
-    if (now - lastScanTimeRef.current < SCAN_COOLDOWN_MS) {
-      return;
-    }
-    lastScanTimeRef.current = now;
+  const now = Date.now();
+  if (now - lastScanTimeRef.current < SCAN_COOLDOWN_MS) {
+    return;
+  }
+  lastScanTimeRef.current = now;
 
-    try {
-      let ticketData: any;
-      
-      try {
-        ticketData = JSON.parse(decodedText);
-      } catch {
-        setScanResult({
-          success: false,
-          message: "Invalid QR code format",
-        });
-        return;
-      }
+  try {
+    const ticketCode = decodedText.trim();
 
-      // Verify ticket data structure
-      if (!ticketData.user_id || !ticketData.event_id) {
-        setScanResult({
-          success: false,
-          message: "Invalid ticket data",
-        });
-        return;
-      }
+    // Find the registration by ticket_code
+    const { data: registration, error } = await supabase
+      .from("event_registrations")
+      .select("id, name, email, checked_in, checked_in_at, ticket_code")
+      .eq("ticket_code", ticketCode)
+      .eq("event_id", eventId)
+      .single();
 
-      // Verify event ID matches
-      if (ticketData.event_id !== eventId) {
-        setScanResult({
-          success: false,
-          message: "Ticket is for a different event",
-        });
-        return;
-      }
-
-      // Call check-in function
-      const { data, error } = await supabase.rpc('check_in_attendee', {
-        p_event_id: eventId,
-        p_user_id: ticketData.user_id,
-        p_scanned_by: user?.id || null
-      });
-
-      if (error) throw error;
-
-      setScanResult(data);
-
-      if (data.success) {
-        // Refresh registrations
-        fetchRegistrations();
-        toast({
-          title: "✅ Check-in successful",
-          description: `${data.data.name} has been checked in.`,
-        });
-      } else {
-        toast({
-          title: data.message.includes('already') ? "⚠️ Already checked in" : "❌ Invalid ticket",
-          description: data.message,
-          variant: data.message.includes('already') ? "default" : "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('Error processing scan:', error);
-      setScanResult({
-        success: false,
-        message: "Error processing ticket",
-      });
+    if (error || !registration) {
+      setScanResult({ success: false, message: "Invalid or unknown ticket" });
       toast({
-        title: "Error",
-        description: "Failed to process ticket scan.",
+        title: "❌ Invalid ticket",
+        description: "This ticket does not exist in the system.",
         variant: "destructive",
       });
+      return;
     }
-  };
+
+    if (registration.checked_in) {
+      setScanResult({
+        success: false,
+        message: "Already checked in",
+        data: {
+          name: registration.name,
+          email: registration.email,
+          checked_in_at: registration.checked_in_at || undefined,
+        },
+      });
+      toast({
+        title: "⚠️ Already checked in",
+        description: `${registration.name} has already been checked in.`,
+      });
+      return;
+    }
+
+    // Mark as checked in
+    const { error: updateError } = await supabase
+      .from("event_registrations")
+      .update({ checked_in: true, checked_in_at: new Date().toISOString() })
+      .eq("id", registration.id);
+
+    if (updateError) throw updateError;
+
+    setScanResult({
+      success: true,
+      message: "Check-in successful",
+      data: {
+        name: registration.name,
+        email: registration.email,
+      },
+    });
+
+    toast({
+      title: "✅ Check-in successful",
+      description: `${registration.name} has been checked in.`,
+    });
+
+    // Refresh the list
+    fetchRegistrations();
+  } catch (error) {
+    console.error("Error processing scan:", error);
+    setScanResult({ success: false, message: "Error processing ticket" });
+    toast({
+      title: "Error",
+      description: "Failed to process ticket scan.",
+      variant: "destructive",
+    });
+  }
+};
+
 
   const onScanError = (errorMessage: string) => {
     console.debug('QR scan error:', errorMessage);
@@ -363,13 +382,7 @@ const CheckInDashboard = () => {
         Name: reg.name,
         Email: reg.email,
         Phone: reg.phone || 'N/A',
-        Organisation: reg.profiles?.organisation || 'N/A',
-        'Registration Date': new Date(reg.created_at).toLocaleDateString(),
-        'Check-in Status': reg.checked_in ? 'Checked In' : 'Pending',
-        'Check-in Time': reg.checked_in_at 
-          ? new Date(reg.checked_in_at).toLocaleString()
-          : 'N/A',
-        'Ticket Code': reg.ticket_code
+        
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -670,12 +683,7 @@ const CheckInDashboard = () => {
                             {registration.phone}
                           </div>
                         )}
-                        {registration.profiles?.organisation && (
-                          <div className="flex items-center gap-1">
-                            <Building className="h-3 w-3" />
-                            {registration.profiles.organisation}
-                          </div>
-                        )}
+                        
                       </div>
                     </div>
                     <div className="text-right text-sm text-muted-foreground">
