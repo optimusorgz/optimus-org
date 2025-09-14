@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from "html5-qrcode";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -71,11 +71,15 @@ const CheckInDashboard = () => {
   const [statusFilter, setStatusFilter] = useState<'all' | 'checked-in' | 'pending'>('all');
   const [showShareModal, setShowShareModal] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [showCameraPermission, setShowCameraPermission] = useState(false);
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+
   
-  const qrCodeScannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const qrCodeScannerRef = useRef<Html5Qrcode | null>(null);
   const lastScanTimeRef = useRef<number>(0);
   const SCAN_COOLDOWN_MS = 2000;
 
+  
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {
@@ -85,20 +89,54 @@ const CheckInDashboard = () => {
       checkUserAccess();
     }
   }, [user, eventId, searchParams]);
-
+  
   useEffect(() => {
     if (hasAccess && eventId) {
       fetchEventDetails();
       fetchRegistrations();
-      setupScanner();
-    }
 
-    return () => {
-      if (qrCodeScannerRef.current) {
-        qrCodeScannerRef.current.clear().catch(console.error);
+      // Check permission status first (if available)
+      navigator.permissions
+        ?.query({ name: "camera" as PermissionName })
+        .then((result) => {
+          if (result.state === "granted") {
+            setCameraAllowed(true);
+            // don't auto-start unless you want to:
+            // startScanner();
+          } else {
+            setShowCameraPermission(true);
+          }
+        })
+        .catch(() => {
+          // Permissions API not available -> show our popup
+          setShowCameraPermission(true);
+        });
       }
-    };
-  }, [hasAccess, eventId]);
+      
+      const handleAllowCamera = async () => {
+        try {
+          await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+          setCameraAllowed(true);
+          setShowCameraPermission(false);
+          startScanner(); // ✅ start when allowed
+        } catch (err) {
+          console.error("getUserMedia denied:", err);
+          toast({
+            title: "Camera Permission Denied",
+            description: "We need camera access to scan QR codes.",
+            variant: "destructive",
+          });
+          setShowCameraPermission(false);
+        }
+      };
+      
+    return () => {
+    // call stopScanner but don't await in cleanup (cannot return async)
+    stopScanner().catch((e) => {
+      console.error("Error while cleaning up scanner:", e);
+    });
+  };
+}, [hasAccess, eventId]);
 
   useEffect(() => {
     filterRegistrations();
@@ -255,39 +293,57 @@ const CheckInDashboard = () => {
     setFilteredRegistrations(filtered);
   };
 
-  const setupScanner = () => {
-    if (qrCodeScannerRef.current) {
-      qrCodeScannerRef.current.clear().catch(console.error);
+  const startScanner = async () => {
+    try {
+      if (!qrCodeScannerRef.current) {
+        qrCodeScannerRef.current = new Html5Qrcode("qr-code-reader");
+      }
+
+      await qrCodeScannerRef.current.start(
+        { facingMode: "environment" }, // ✅ back camera
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        onScanSuccess,
+        onScanError
+      );
+
+      setScanning(true);
+    } catch (err) {
+      console.error("Error starting scanner:", err);
+      toast({
+        title: "Camera Error",
+        description: "Could not access camera. Please check permissions.",
+        variant: "destructive",
+      });
     }
+  };
 
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    qrCodeScannerRef.current = new Html5QrcodeScanner(
-      "qr-code-reader",
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        disableFlip: false,
-        aspectRatio: 1.0,
-        
-      },
-      false
-    );
+  const stopScanner = async () => {
+    try {
+      if (!qrCodeScannerRef.current) return;
 
-    qrCodeScannerRef.current.render(onScanSuccess, onScanError);
-    
-    if (isMobile) {
-      navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-          const backCamera = devices.find(d => d.kind === 'videoinput' && d.label.toLowerCase().includes('back'));
-          if (backCamera) {
-            // Restart scanner with back camera
-            qrCodeScannerRef.current?.clear().then(() => {
-              qrCodeScannerRef.current?.render(onScanSuccess, onScanError);
-            });
-          }
-        })
-        .catch(console.error);
+      // stop camera streaming
+      await qrCodeScannerRef.current.stop();
+
+      // clear any internal UI elements if library provides clear()
+      if (typeof qrCodeScannerRef.current.clear === "function") {
+        try {
+          qrCodeScannerRef.current.clear();
+        } catch (e) {
+          // non-fatal: proceed to manual cleanup
+          console.debug("clear() threw:", e);
+        }
+      } else {
+        // fallback: remove video/canvas nodes in container
+        const el = document.getElementById("qr-code-reader");
+        if (el) el.innerHTML = "";
+      }
+
+      // release reference
+      qrCodeScannerRef.current = null;
+    } catch (err) {
+      console.error("stopScanner error:", err);
+    } finally {
+      setScanning(false);
     }
   };
 
@@ -530,79 +586,116 @@ const CheckInDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Scanner */}
-              <div>
-                <div id="qr-code-reader" className="w-full max-w-md mx-auto"></div>
-                
-                {/* Upload option for desktop */}
-                <div className="hidden md:block mt-4">
-                  <Label htmlFor="qr-upload" className="cursor-pointer">
-                    <Button asChild variant="outline" className="w-full">
-                      <span>
-                        <Upload className="h-4 w-4 mr-2" />
-                        Upload QR Code Image
-                      </span>
-                    </Button>
-                  </Label>
-                  <Input
-                    id="qr-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file && qrCodeScannerRef.current) {
-                        // Html5QrcodeScanner doesn't support file upload directly
-                        // You would need to implement this separately
-                        toast({
-                          title: "Feature coming soon",
-                          description: "Image upload scanning will be available soon.",
-                        });
-                      }
-                    }}
-                  />
-                </div>
-              </div>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {/* Scanner */}
+    <div className="flex flex-col items-center">
+      {/* Camera feed */}
+      <div id="qr-code-reader" className="w-full max-w-md mx-auto mb-4"></div>
 
-              {/* Scan Result */}
-              <div>
-                {scanResult && (
-                  <Alert className={`${scanResult.success ? 'border-green-500 bg-green-50 dark:bg-green-950' : 'border-red-500 bg-red-50 dark:bg-red-950'}`}>
-                    <div className="flex items-center gap-3">
-                      {scanResult.success ? (
-                        <CheckCircle2 className="h-6 w-6 text-green-600" />
-                      ) : (
-                        <XCircle className="h-6 w-6 text-red-600" />
-                      )}
-                      <div className="flex-1">
-                        <p className={`font-medium ${scanResult.success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}`}>
-                          {scanResult.message}
-                        </p>
-                        {scanResult.data && (
-                          <div className="mt-2 space-y-1 text-sm">
-                            <p><strong>Name:</strong> {scanResult.data.name}</p>
-                            <p><strong>Email:</strong> {scanResult.data.email}</p>
-                            {scanResult.data.checked_in_at && (
-                              <p><strong>Checked in at:</strong> {new Date(scanResult.data.checked_in_at).toLocaleString()}</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Alert>
-                )}
-                
-                {!scanResult && (
-                  <div className="text-center text-muted-foreground">
-                    <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Point the camera at a QR code to scan</p>
-                    <p className="text-sm mt-2">Make sure the QR code is well-lit and clearly visible</p>
-                  </div>
-                )}
-              </div>
+      {/* Start/Stop Buttons */}
+      <div className="flex justify-center gap-3 mb-4">
+        {!scanning ? (
+          <Button onClick={startScanner}>
+            <Camera className="h-4 w-4 mr-2" />
+            Start Scanning
+          </Button>
+        ) : (
+          <Button variant="destructive" onClick={stopScanner}>
+            <XCircle className="h-4 w-4 mr-2" />
+            Stop Scanning
+          </Button>
+        )}
+      </div>
+
+      {/* Upload option for desktop */}
+      <div className="hidden md:block w-full">
+        <Label htmlFor="qr-upload" className="cursor-pointer">
+          <Button asChild variant="outline" className="w-full">
+            <span>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload QR Code Image
+            </span>
+          </Button>
+        </Label>
+        <Input
+          id="qr-upload"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file && qrCodeScannerRef.current) {
+              toast({
+                title: "Feature coming soon",
+                description:
+                  "Image upload scanning will be available soon.",
+              });
+            }
+          }}
+        />
+      </div>
+    </div>
+
+    {/* Scan Result */}
+    <div>
+      {scanResult ? (
+        <Alert
+          className={`${
+            scanResult.success
+              ? "border-green-500 bg-green-50 dark:bg-green-950"
+              : "border-red-500 bg-red-50 dark:bg-red-950"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            {scanResult.success ? (
+              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            ) : (
+              <XCircle className="h-6 w-6 text-red-600" />
+            )}
+            <div className="flex-1">
+              <p
+                className={`font-medium ${
+                  scanResult.success
+                    ? "text-green-800 dark:text-green-200"
+                    : "text-red-800 dark:text-red-200"
+                }`}
+              >
+                {scanResult.message}
+              </p>
+              {scanResult.data && (
+                <div className="mt-2 space-y-1 text-sm">
+                  <p>
+                    <strong>Name:</strong> {scanResult.data.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {scanResult.data.email}
+                  </p>
+                  {scanResult.data.checked_in_at && (
+                    <p>
+                      <strong>Checked in at:</strong>{" "}
+                      {new Date(
+                        scanResult.data.checked_in_at
+                      ).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
-          </CardContent>
+          </div>
+        </Alert>
+      ) : (
+        <div className="text-center text-muted-foreground">
+          <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <p>Point the camera at a QR code to scan</p>
+          <p className="text-sm mt-2">
+            Make sure the QR code is well-lit and clearly visible
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</CardContent>
+
         </Card>
 
         {/* Registrations Section */}
