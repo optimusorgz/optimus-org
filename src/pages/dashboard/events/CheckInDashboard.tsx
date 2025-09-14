@@ -356,6 +356,7 @@ const CheckInDashboard = () => {
 
   try {
     const ticketCode = decodedText.trim();
+    console.log("[scan] decodedText:", ticketCode);
 
     // Find the registration by ticket_code
     const { data: registration, error } = await supabase
@@ -364,6 +365,8 @@ const CheckInDashboard = () => {
       .eq("ticket_code", ticketCode)
       .eq("event_id", eventId)
       .single();
+
+    console.log("[scan] fetched registration:", registration, "fetchError:", error);
 
     if (error || !registration) {
       setScanResult({ success: false, message: "Invalid or unknown ticket" });
@@ -392,13 +395,31 @@ const CheckInDashboard = () => {
       return;
     }
 
-    // Mark as checked in
-    const { error: updateError } = await supabase
-      .from("event_registrations")
-      .update({ checked_in: true, checked_in_at: new Date().toISOString() })
-      .eq("id", registration.id);
+    console.log("[scan] fetched registration:", registration, "fetchError:", error);
 
-    if (updateError) throw updateError;
+    // Mark as checked in
+    const nowIso = new Date().toISOString();
+    const { data: updatedRow, error: updateError } = await supabase
+      .from("event_registrations")
+      .update({
+        checked_in: true,
+        checked_in_at: nowIso,
+      })
+      .eq("id", registration.id)
+      .select()
+      .single(); // return single updated row
+
+    console.log("[scan] update result:", { updatedRow, updateError });
+
+    if (updateError) {
+      console.error("Supabase update error:", updateError);
+      toast({
+        title: "Update failed",
+        description: "Could not update check-in status.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setScanResult({
       success: true,
@@ -406,6 +427,7 @@ const CheckInDashboard = () => {
       data: {
         name: registration.name,
         email: registration.email,
+        checked_in_at: updatedRow?.checked_in_at ?? nowIso,
       },
     });
 
@@ -414,10 +436,26 @@ const CheckInDashboard = () => {
       description: `${registration.name} has been checked in.`,
     });
 
+    setRegistrations((prev) =>
+      prev.map((r) =>
+        r.id === registration.id
+          ? { ...r, checked_in: true, checked_in_at: updatedRow?.checked_in_at ?? nowIso }
+          : r
+      )
+    );  
+
+    setFilteredRegistrations(prev =>
+      prev.map(r =>
+        r.id === registration.id
+          ? { ...r, checked_in: true, checked_in_at: updatedRow?.checked_in_at ?? nowIso }
+          : r
+      )
+    );    
+
     // Refresh the list
     fetchRegistrations();
-  } catch (error) {
-    console.error("Error processing scan:", error);
+  } catch (err) {
+    console.error("Error processing scan:", err);
     setScanResult({ success: false, message: "Error processing ticket" });
     toast({
       title: "Error",
@@ -685,11 +723,9 @@ const CheckInDashboard = () => {
         </Alert>
       ) : (
         <div className="text-center text-muted-foreground">
-          <Camera className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          
           <p>Point the camera at a QR code to scan</p>
-          <p className="text-sm mt-2">
-            Make sure the QR code is well-lit and clearly visible
-          </p>
+          
         </div>
       )}
     </div>
@@ -700,7 +736,7 @@ const CheckInDashboard = () => {
 
         {/* Registrations Section */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-row flex-wrap gap-1 items-center justify-between">
             <CardTitle>Event Registrations</CardTitle>
             <Button onClick={downloadRegistrationsExcel}>
               <Download className="h-4 w-4 mr-2" />
@@ -776,15 +812,16 @@ const CheckInDashboard = () => {
                             {registration.phone}
                           </div>
                         )}
+                        <div className="text-right text-sm text-muted-foreground">
+                        <p>Registered: {new Date(registration.created_at).toLocaleDateString()}</p>
+                        {registration.checked_in_at && (
+                          <p>Checked in: {new Date(registration.checked_in_at).toLocaleString()}</p>
+                        )}
+                    </div>
                         
                       </div>
                     </div>
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>Registered: {new Date(registration.created_at).toLocaleDateString()}</p>
-                      {registration.checked_in_at && (
-                        <p>Checked in: {new Date(registration.checked_in_at).toLocaleString()}</p>
-                      )}
-                    </div>
+                    
                   </div>
                 ))
               )}

@@ -556,15 +556,7 @@ const CreateEvent = () => {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Registration Link</Label>
-                  <Input 
-                    type="url"
-                    value={eventData.registration_link} 
-                    onChange={(e) => handleEventInputChange("registration_link", e.target.value)} 
-                    placeholder="https://registration-link.com"
-                  />
-                </div>
+                
               </CardContent>
             </Card>
           </motion.div>
