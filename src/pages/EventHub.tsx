@@ -44,7 +44,6 @@ const EventHub = () => {
   const [loading, setLoading] = useState(true);
 
   const priceFilters = [
-    { id: "all", label: "All Events" },
     { id: "free", label: "Free" },
     { id: "paid", label: "Paid" },
   ];
@@ -264,13 +263,6 @@ const EventHub = () => {
                 onClick={() => setShowAllEvents(false)}
               >
                 Upcoming Events
-              </Button>
-              <Button
-                variant={showAllEvents ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowAllEvents(true)}
-              >
-                All Events
               </Button>
             </div>
 

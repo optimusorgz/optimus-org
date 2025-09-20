@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, Settings, Shield } from "lucide-react";
+import { Menu, X, User, LogOut, Shield } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "./AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -33,7 +33,7 @@ const Navbar = () => {
             .select("role")
             .eq("user_id", user.id)
             .single();
-          
+
           setIsAdmin(profile?.role === "admin");
         } catch (error) {
           console.error("Error checking admin status:", error);
@@ -43,15 +43,6 @@ const Navbar = () => {
 
     checkAdminStatus();
   }, [user]);
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Events", path: "/events" },
-    // { name: "Posts", path: "/posts" },
-    { name: "Gallery", path: "/gallery" },
-    // { name: "Team", path: "/team" },
-    { name: "Join Us", path: "/join-us" },
-  ];
 
   const handleSignOut = async () => {
     try {
@@ -90,39 +81,28 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`transition-all duration-300 hover:text-primary relative ${
-                  isActive(item.path) ? "text-primary text-glow" : "text-foreground"
-                }`}
-              >
-                {item.name}
-                {isActive(item.path) && (
-                  <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full" />
-                )}
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.name || user.email} />
-                      <AvatarFallback>{(user.user_metadata?.name || user.email || '').charAt(0).toUpperCase()}</AvatarFallback>
+                      <AvatarImage
+                        src={user.user_metadata?.avatar_url}
+                        alt={user.user_metadata?.name || user.email}
+                      />
+                      <AvatarFallback>
+                        {(user.user_metadata?.name || user.email || "").charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.user_metadata?.name || 'User'}</p>
+                      <p className="text-sm font-medium leading-none">
+                        {user.user_metadata?.name || "User"}
+                      </p>
                       <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                     </div>
                   </DropdownMenuLabel>
@@ -141,7 +121,6 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -150,87 +129,68 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-2">
-                
-                <Button asChild className="btn-hero">
-                  <Link to="/auth">Sign In</Link>
-                </Button>
-              </div>
+              <Button asChild className="btn-hero ">
+                <Link to="/auth">Sign In</Link>
+              </Button>
             )}
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground"
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage
+                        src={user.user_metadata?.avatar_url}
+                        alt={user.user_metadata?.name || user.email}
+                      />
+                      <AvatarFallback>
+                        {(user.user_metadata?.name || user.email || "").charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex flex-col items-center space-y-2 px-4 py-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage
+                        src={user.user_metadata?.avatar_url}
+                        alt={user.user_metadata?.name || user.email}
+                      />
+                      <AvatarFallback>
+                        {(user.user_metadata?.name || user.email || "").charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-lg font-medium">{user.user_metadata?.name || "User"}</p>
+                    <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+
+                    <Button asChild variant="outline" className="w-full mt-2">
+                      <Link to="/dashboard">Dashboard</Link>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleSignOut}
+                    >
+                      Sign Out
+                    </Button>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+              asChild
+              className="btn-hero border border-primary px-4 py-2 bg-primary text-black rounded-lg hover:bg-primary/90"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <Link to="/auth">Sign In</Link>
             </Button>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden bg-card/95 backdrop-blur-md border-t border-border/50">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`block px-3 py-2 rounded-lg transition-all duration-300 ${
-                  isActive(item.path)
-                    ? "bg-primary/20 text-primary"
-                    : "text-foreground hover:bg-muted"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            
-            <div className="pt-4 border-t border-border/10">
-              {user ? (
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-primary/10">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.name || user.email} />
-                      <AvatarFallback>{(user.user_metadata?.name || user.email || '').charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{user.user_metadata?.name || 'User'}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                    </div>
-                  </div>
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to="/dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                  </Button>
-                  {isAdmin && (
-                    <Button asChild variant="outline" className="w-full">
-                      <Link to="/admin" onClick={() => setIsOpen(false)}>Admin Dashboard</Link>
-                    </Button>
-                  )}
-                  <Button variant="outline" className="w-full" onClick={() => { handleSignOut(); setIsOpen(false); }}>
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to="/auth" onClick={() => setIsOpen(false)}>Sign In</Link>
-                  </Button>
-                  <Button asChild className="w-full btn-hero">
-                    <Link to="/auth" onClick={() => setIsOpen(false)}>Join Us</Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };
