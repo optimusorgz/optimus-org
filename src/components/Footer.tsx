@@ -1,5 +1,4 @@
-import { table } from "console";
-import { Github, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Github, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -10,17 +9,15 @@ const Footer = () => {
       { name: "Home", path: "/" },
       { name: "Events", path: "/events" },
       { name: "Gallery", path: "/gallery" },
-      
     ],
     "Community": [
-      { name: "Join Us", path: "/join" },
+      { name: "Join Us", path: "/join-us" },
       { name: "Dashboard", path: "/dashboard" },
-     
     ],
   };
 
   const socialLinks = [
-    { name: "LinkedIn", icon: Linkedin,  url: "https://www.linkedin.com/company/optimus16/posts/" },
+    { name: "LinkedIn", icon: Linkedin, url: "https://www.linkedin.com/company/optimus16/posts/" },
     { name: "Instagram", icon: Instagram, url: "https://www.instagram.com/optimus.orgz/" },
   ];
 
@@ -46,6 +43,7 @@ const Footer = () => {
                   key={social.name}
                   href={social.url}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-muted/30 rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                   aria-label={social.name}
                 >
@@ -80,7 +78,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-muted-foreground text-sm">
                 <MapPin className="h-4 w-4 text-primary" />
-                <span>Block - 13 ,LPU Campus, Punjab, India</span>
+                <span>Block - 13, LPU Campus, Punjab, India</span>
               </div>
               
               <div className="flex items-center space-x-3 text-muted-foreground text-sm">
