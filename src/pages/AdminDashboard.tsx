@@ -149,7 +149,7 @@ const AdminDashboard = () => {
       return;
     }
 
-    if (userRole !== "organiser") {
+    if (userRole === "organiser") {
       toast({
         title: "Access Denied",
         description: "You don't have organiser privileges.",
