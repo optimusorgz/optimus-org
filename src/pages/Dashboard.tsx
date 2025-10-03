@@ -337,7 +337,7 @@ const Dashboard = () => {
                 Create Event
               </Button>
 
-              {(profile?.role === 'organiser' && profile?.role === 'admin') && (
+              
                 <Button
                   onClick={() => navigate('/admin-dashboard')}
                   variant="secondary"
@@ -345,7 +345,7 @@ const Dashboard = () => {
                 >
                   Admin Dashboard
                 </Button>
-              )}
+              
             </div>
           </div>
 
