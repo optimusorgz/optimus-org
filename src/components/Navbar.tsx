@@ -67,6 +67,13 @@ const Navbar = () => {
     return false;
   };
 
+   const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Events", path: "/events" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Team", path: "/team" },
+  ];
+
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,6 +88,17 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive(link.path) ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
             <ThemeToggle />
             {user ? (
               <DropdownMenu>
