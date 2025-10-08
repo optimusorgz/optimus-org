@@ -5,7 +5,7 @@ export default function BottomNav() {
   const navItems = [
     { to: "/", label: "Home", icon: Home },
     { to: "/events", label: "Events", icon: Calendar },
-    { to: "/gallery", label: "Gallery", icon: Image },
+    { to: "/posts", label: "Post", icon: Image },
     { to: "/join-us", label: "Join Us", icon: UserPlus },
   ];
 
