@@ -1,4 +1,10 @@
 project_id = "whcoayuuwebcpbgyesej"
 
+[functions.create-order]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
 [functions.paytm-generate-token]
 verify_jwt = false

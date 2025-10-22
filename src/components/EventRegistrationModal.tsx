@@ -161,22 +161,7 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
         navigate(`/receipt?${params}`);
 
         // Trigger email receipt
-        await supabase.functions.invoke('send-email-receipt', {
-          body: {
-            to: formData.email,
-            subject: `Receipt for ${eventTitle} Registration`,
-            templateData: {
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              amount: eventPrice.toString(),
-              orderId: razorpayPaymentDetails.razorpay_order_id,
-              paymentId: razorpayPaymentDetails.razorpay_payment_id,
-              date: new Date().toLocaleString(),
-              eventTitle,
-            },
-          },
-        });
+       
 
       }
     } catch (error) {

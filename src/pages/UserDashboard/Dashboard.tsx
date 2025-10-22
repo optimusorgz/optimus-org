@@ -337,14 +337,15 @@ const Dashboard = () => {
                 Create Event
               </Button>
 
-              
+              {profile.role === "organiser" && (
                 <Button
-                  onClick={() => navigate('/admin-dashboard')}
-                  variant="secondary"
-                  className="w-full sm:w-auto"
+                onClick={() => navigate('/admin-dashboard')}
+                variant="secondary"
+                className="w-full sm:w-auto"
                 >
                   Admin Dashboard
                 </Button>
+              )}              
               
             </div>
           </div>

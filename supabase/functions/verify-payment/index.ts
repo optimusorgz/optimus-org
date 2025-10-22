@@ -1,76 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createHmac } from "https://deno.land/std@0.190.0/hash/mod.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-};
-
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+serve(async (req: Request) => {
   try {
-    const { 
-      razorpay_order_id, 
-      razorpay_payment_id, 
-      razorpay_signature,
-      formData 
-    } = await req.json();
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json() as {
+      razorpay_order_id: string;
+      razorpay_payment_id: string;
+      razorpay_signature: string;
+    };
 
-    // In a real implementation, you would:
-    // 1. Verify the payment signature using Razorpay's webhook signature verification
-    // 2. Check payment status with Razorpay API
-    // 3. Ensure the payment amount matches expected amount
-    
-    // For now, we'll mock the verification
-    const isValidSignature = true; // Replace with actual signature verification
-    
-    if (!isValidSignature) {
-      return new Response(
-        JSON.stringify({ 
-          verified: false, 
-          error: 'Invalid payment signature' 
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 400,
-        }
-      );
-    }
+    const key_secret = Deno.env.get("RAZORPAY_KEY_SECRET")!;
+    const hmac = createHmac("sha256", key_secret);
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const digest = hmac.toString(); // hex string
 
-    // Log payment verification for debugging
-    console.log('Payment verified:', {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      formData
-    });
+    const verified = digest === razorpay_signature;
 
-    return new Response(
-      JSON.stringify({ 
-        verified: true,
-        payment_id: razorpay_payment_id,
-        order_id: razorpay_order_id
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
-  } catch (error) {
-    console.error('Error verifying payment:', error);
-    return new Response(
-      JSON.stringify({ 
-        verified: false,
-        error: 'Payment verification failed',
-        message: error.message 
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
-    );
+    return new Response(JSON.stringify({ verified }), { status: 200 });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 });

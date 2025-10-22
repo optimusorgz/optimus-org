@@ -405,10 +405,19 @@ const EventHub = () => {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4 flex-shrink-0" />
-                        <span>{formatDate(event.start_date)}</span>
+                        <span>{new Date(event.start_date).toLocaleDateString('en-GB')}</span>
+
                         <Clock className="h-4 w-4 ml-2 flex-shrink-0" />
-                        <span>{formatTime(event.start_date)}</span>
+                        <span>
+                          {(() => {
+                            const date = new Date(event.start_date);
+                            const hours = date.getUTCHours().toString().padStart(2, '0');
+                            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+                            return `${hours}:${minutes}`;
+                          })()}
+                        </span>
                       </div>
+
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <MapPin className="h-4 w-4 flex-shrink-0" />
                         <span className="line-clamp-1">{event.location}</span>

@@ -215,11 +215,13 @@ const EventDetail = () => {
           month: "short",
           day: "numeric",
           year: "numeric",
+          timeZone: "UTC", // 👈 keep UTC
         }),
         time: date.toLocaleTimeString("en-US", {
-          hour: "numeric",
+          hour: "2-digit",
           minute: "2-digit",
           hour12: true,
+          timeZone: "UTC", // 👈 important
         }),
       };
     } catch {
