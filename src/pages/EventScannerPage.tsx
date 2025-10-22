@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import EventScanner from '@/components/events/ScannerDashboard';
+import CheckInDashboard from '@/pages/CheckInDashboard';
 
 const EventScannerPage = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -114,11 +114,7 @@ const EventScannerPage = () => {
         </div>
 
         {/* Scanner Component */}
-        <EventScanner
-          eventId={eventId!}
-          eventTitle={event.title}
-          onClose={() => navigate('/dashboard')}
-        />
+        <CheckInDashboard />
       </div>
     </div>
   );

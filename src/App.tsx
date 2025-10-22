@@ -7,26 +7,30 @@ import ScrollToTop from "./components/ScrollToTop";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { AuthProvider } from "./components/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import BottomNav from "./components/BottomNav";
+import Navbar from "./components/Navbar&Foter/Navbar";
+import Footer from "./components/Navbar&Foter/Footer";
+import BottomNav from "./components/Navbar&Foter/BottomNav";
+import CreatePost from "./components/CreatePost"; // Import it
 
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Auth from "./pages/Auth";
-import EventHub from "./pages/EventHub";
-import EventDetail from "./pages/EventDetail";
-import CreateEvent from "./pages/CreateEvent";
-import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import Posts from "./pages/Posts";
-import Gallery from "./pages/Gallery";
-import Team from "./pages/Team";
-import JoinUs from "./pages/JoinUs";
+import EventHub from "./pages/Events/EventHub";
+import EventDetail from "./pages/Events/EventDetail";
+import CreateEvent from "./pages/Events/CreateEvent";
+import Dashboard from "./pages/UserDashboard/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import OrganisationDashboard from "./pages/OrganisationDashboard";
+import OrganizationRegister from "./components/OrganizationRegister";
+import Posts from "./pages/Post/Posts";
+import Gallery from "./pages/Gallary/Gallery";
+import Team from "./pages/Team/Team";
+import JoinUs from "./pages/Joinus/JoinUs";
 import Receipt from "./pages/Receipt";
-import CheckInDashboard from "./pages/dashboard/events/CheckInDashboard";
+import CheckInDashboard from "./pages/CheckInDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -79,8 +83,18 @@ const App = () => (
                   <Route
                     path="/admin-dashboard"
                     element={
-                      <ProtectedRoute >
+                      <ProtectedRoute roles={["organiser"]}>
                         <AdminDashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Organisation Dashboard */}
+                  <Route
+                    path="/organisation-dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <OrganisationDashboard />
                       </ProtectedRoute>
                     }
                   />
@@ -89,6 +103,16 @@ const App = () => (
                   <Route path="/gallery" element={<Gallery />} />
                   <Route path="/team" element={<Team />} />
                   <Route path="/join-us" element={<JoinUs />} />
+                  
+                  {/* Organization Registration */}
+                  <Route
+                    path="/register-organization"
+                    element={
+                      <ProtectedRoute>
+                        <OrganizationRegister />
+                      </ProtectedRoute>
+                    }
+                  />
 
                   {/* Scanners */}
                   <Route
@@ -107,6 +131,14 @@ const App = () => (
                       </ProtectedRoute>
                     }
                   />
+                  {/* <Route
+                    path="/create-post"
+                    element={
+                      <ProtectedRoute>
+                        <CreatePost organisationId={""} />
+                      </ProtectedRoute>
+                    }
+                  /> */}
 
                   {/* Registrations */}
                   <Route

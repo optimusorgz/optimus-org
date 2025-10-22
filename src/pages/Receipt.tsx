@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { jsPDF } from "jspdf";
+import jsPDF from 'jspdf';
 import html2canvas from "html2canvas";
 import { Label } from "@/components/ui/label";
 
@@ -26,14 +26,13 @@ const Receipt = () => {
   const handleDownloadPdf = async () => {
     if (receiptRef.current) {
       const canvas = await html2canvas(receiptRef.current, {
-        scale: 2, // Increase scale for better resolution
+        scale: 2,
         useCORS: true,
       });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
-      const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`receipt_${orderId}.pdf`);
     }

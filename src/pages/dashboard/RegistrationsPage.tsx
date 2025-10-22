@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import RegistrationsPage from '@/components/events/RegistrationsPage';
+import CheckInDashboard from '@/pages/CheckInDashboard';
 
 const RegistrationsPageWrapper = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -117,10 +117,7 @@ const RegistrationsPageWrapper = () => {
         </div>
 
         {/* Registrations Component */}
-        <RegistrationsPage
-          eventId={eventId!}
-          eventTitle={event.title}
-        />
+        <CheckInDashboard />
       </div>
     </div>
   );
