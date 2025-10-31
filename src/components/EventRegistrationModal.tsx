@@ -7,11 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./AuthContext";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
+import axios from 'axios'; // ⬅️ Using axios for communication with the Express backend
+
+// --- TYPE DECLARATIONS ---
 
 declare global {
   interface Window {
-    Razorpay: new (options: RazorpayOptions) => any;
+    Razorpay: any;
   }
 }
 
@@ -21,7 +24,6 @@ interface RazorpayOptions {
   currency: string;
   name: string;
   description: string;
-  image?: string;
   order_id: string;
   handler: (response: any) => void;
   prefill: {
@@ -46,10 +48,12 @@ interface EventRegistrationModalProps {
   customQuestions?: string[];
 }
 
+// --- MAIN COMPONENT ---
+
 const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPrice = 0, customQuestions = [] }: EventRegistrationModalProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -69,204 +73,178 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
     }
   }, [user, isOpen]);
 
-  // Remove handlePaytmPayment as it's no longer needed
-  // const handlePaytmPayment = async () => {
-  //   // ... existing code ...
-  // };
-
-  const createRegistration = async (razorpayPaymentDetails?: {
-    razorpay_order_id: string;
-    razorpay_payment_id: string;
-    razorpay_signature: string;
-  }) => {
-    try {
-      // Check if user is already registered for this event
-      if (user) {
-        const { data: existingRegistration } = await supabase
-          .from("event_registrations")
-          .select("id")
-          .eq("event_id", eventId)
-          .eq("user_id", user.id)
-          .single();
-
-        if (existingRegistration) {
-          toast({
-            title: "Already Registered",
-            description: "You are already registered for this event.",
-            variant: "destructive",
-          });
-          setLoading(false);
-          return;
-        }
-      }
-      
+  /**
+   * Securely saves registration data to Supabase ONLY after payment is verified.
+   * @param finalData The combined user and payment details.
+   */
+  const sendToSupabase = async (finalData: any) => {
       const ticketNumber = `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
       const qrCodeData = ticketNumber;
 
-      const { data: registration, error } = await supabase
-        .from("event_registrations")
-        .insert({
-          event_id: eventId,
-          user_id: user?.id || null,
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          custom_answers: formData.customAnswers,
+      const registrationPayload = {
+          event_id: finalData.event_id,
+          user_id: user?.id || null, // Keep user ID if logged in
+          name: finalData.name,
+          email: finalData.email,
+          phone: finalData.phone || null,
+          custom_answers: finalData.customAnswers,
           ticket_code: ticketNumber,
-        })
+          // Payment details stored for audit
+          razorpay_order_id: finalData.razorpay_order_id,
+          razorpay_payment_id: finalData.razorpay_payment_id,
+      };
 
-        .select()
-        .single();
+      const { data: registration, error } = await supabase
+          .from("event_registrations")
+          .insert(registrationPayload)
+          .select()
+          .single();
 
       if (error) throw error;
-
-      // Generate digital ticket
-
+      
+      // Generate digital ticket (optional but good practice)
       const { error: ticketError } = await supabase
         .from("digital_tickets")
         .insert({
           user_id: user?.id,
-          event_id: eventId,
+          event_id: finalData.event_id,
           registration_id: registration.id,
           ticket_number: ticketNumber,
           qr_code_data: qrCodeData,
         });
 
       if (ticketError) console.error("Error creating ticket:", ticketError);
-
-      toast({
-        title: "Registration Successful!",
-        description: `You are successfully registered for ${eventTitle}! Your digital ticket has been generated.`,
-      });
-
-      onClose();
-      setFormData({ 
-        name: "", 
-        email: "", 
-        phone: "", 
-        customAnswers: {} 
-      });
-
-      // Redirect to receipt page after successful payment and registration
-      if (razorpayPaymentDetails) {
-        const params = new URLSearchParams({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          amount: eventPrice.toString(),
-          orderId: razorpayPaymentDetails.razorpay_order_id,
-          paymentId: razorpayPaymentDetails.razorpay_payment_id,
-          date: new Date().toISOString(),
-        }).toString();
-        navigate(`/receipt?${params}`);
-
-        // Trigger email receipt
-       
-
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast({
-        title: "Registration Failed",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false); // Ensure loading is set to false even if registration fails
-    }
-  };
+      
+      return registration;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    const registrationData = {
+        ...formData,
+        event_id: eventId,
+        amount: eventPrice, // Amount in Rupees
+    };
+    
+    // Check if the event is free or paid
+    if (eventPrice <= 0) {
+        // --- FREE REGISTRATION FLOW ---
+        try {
+            // Note: Since no payment occurred, we pass null for payment IDs
+            await sendToSupabase({ ...registrationData, razorpay_order_id: null, razorpay_payment_id: null });
+            
+            toast({ title: "Registration Successful!", description: `You are successfully registered for ${eventTitle}!` });
+            onClose();
+        } catch (error) {
+            console.error("Free Registration error:", error);
+            toast({ title: "Registration Failed", description: "Something went wrong. Please try again.", variant: "destructive" });
+        } finally {
+            setLoading(false);
+        }
+        return;
+    }
+    
+    // --- PAID REGISTRATION FLOW ---
     try {
-      if (eventPrice > 0) {
-        // Razorpay integration
-        const { data, error } = await supabase.functions.invoke('create-order', {
-          body: { amount: eventPrice * 100 }, // Amount in paisa
+        // 1. CALL NODE.JS SERVER to create Razorpay Order
+        const { data: orderData } = await axios.post('http://localhost:3000/api/create-order', {
+            amount: registrationData.amount, // In Rupees, server converts to paise
+            eventTitle: eventTitle,
         });
 
-        if (error) throw error;
-        const { order_id, currency, amount } = data;
-
         const options: RazorpayOptions = {
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Your Razorpay Key ID
-          amount: amount.toString(),
-          currency: currency,
-          name: "Event Registration",
-          description: `Registration for ${eventTitle}`,
-          order_id: order_id,
-          handler: async (response: any) => {
-            // Verify payment on backend
-            const { data: verificationData, error: verificationError } = await supabase.functions.invoke('verify-payment', {
-              body: {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                formData: formData,
-              },
-            });
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Frontend key
+            amount: orderData.amount.toString(), // Amount in paise from server
+            currency: orderData.currency,
+            name: "Event Registration",
+            description: `Registration for ${eventTitle}`,
+            order_id: orderData.order_id,
+            
+            // 2. The critical payment handler logic
+            handler: async (response: any) => {
+                setLoading(true); // Re-set loading for verification phase
+                try {
+                    // Send order/payment details to Node.js server for **SECURE VERIFICATION**
+                    const { data: verificationData } = await axios.post('http://localhost:3000/api/verify-payment', {
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                    });
 
-            if (verificationError) throw verificationError;
+                    if (!verificationData.verified) {
+                        throw new Error("Payment signature verification failed.");
+                    }
 
-            if (verificationData.verified) {
-              toast({
-                title: "Payment Successful!",
-                description: "Your payment has been successfully processed.",
-              });
-              await createRegistration({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              });
-            } else {
-              toast({
-                title: "Payment Verification Failed",
-                description: "There was an issue verifying your payment. Please contact support.",
-                variant: "destructive",
-              });
-            }
-          },
-          prefill: {
-            name: formData.name,
-            email: formData.email,
-            contact: formData.phone,
-          },
-          notes: {
-            address: "Event Registration",
-          },
-          theme: {
-            color: "#3399CC",
-          },
+                    // 3. VERIFICATION SUCCESS: Now send the combined data to Supabase
+                    const finalDataForSupabase = {
+                        ...registrationData, 
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                    };
+                    
+                    await sendToSupabase(finalDataForSupabase); // Insert into Supabase
+
+                    toast({ title: "Payment Successful!", description: "Your payment has been successfully processed and registration is complete." });
+                    onClose();
+
+                    // 4. REDIRECT to Receipt Page, passing essential data
+                    const params = new URLSearchParams({
+                        name: finalDataForSupabase.name,
+                        email: finalDataForSupabase.email,
+                        amount: finalDataForSupabase.amount.toString(), // Amount in Rupees
+                        orderId: finalDataForSupabase.razorpay_order_id,
+                        paymentId: finalDataForSupabase.razorpay_payment_id,
+                        date: new Date().toISOString(),
+                    }).toString();
+                    
+                    navigate(`/receipt?${params}`);
+
+                } catch (handlerError) {
+                    console.error("Verification/Registration Error:", handlerError);
+                    toast({
+                        title: "Registration Failed",
+                        description: "Payment succeeded but registration failed to save. Please contact support.",
+                        variant: "destructive",
+                    });
+                } finally {
+                    setLoading(false);
+                }
+            },
+            prefill: {
+                name: formData.name,
+                email: formData.email,
+                contact: formData.phone,
+            },
+            notes: {
+                address: "Optimus Club Event", // You can customize this value
+            },
+            theme: {
+                color: "#3399CC",
+            },
         };
 
         const rzp1 = new window.Razorpay(options);
         rzp1.on('payment.failed', function (response: any){
           toast({
             title: "Payment Failed",
-            description: response.error.description,
+            description: response.error.description || "The payment window was closed or cancelled.",
             variant: "destructive",
           });
-          console.error("Razorpay Error:", response.error);
           setLoading(false); // Reset loading on failure
         });
         rzp1.open();
 
-
-      } else {
-        await createRegistration();
-      }
     } catch (error) {
-      console.error("Submission error:", error);
-      toast({
-        title: "Registration Failed",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+        console.error("Submission error:", error);
+        toast({
+            title: "Registration Failed",
+            description: "Could not initiate payment. Check your network or server connection.",
+            variant: "destructive",
+        });
+        setLoading(false); // Reset loading if error occurs BEFORE Razorpay window opens
+    } 
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -288,9 +266,10 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Register for Event</DialogTitle>
+          <DialogTitle>Register for {eventTitle}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Input Fields (Name, Email, Phone) */}
           <div className="space-y-2">
             <Label htmlFor="name">Full Name *</Label>
             <Input
@@ -323,6 +302,8 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
               required
             />
           </div>
+          
+          {/* Custom Questions */}
           {customQuestions.map((question, index) => (
             <div key={index} className="space-y-2">
               <Label htmlFor={`custom-${index}`}>{question} *</Label>
@@ -335,6 +316,8 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
               />
             </div>
           ))}
+
+          {/* Action Buttons */}
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
@@ -344,7 +327,7 @@ const EventRegistrationModal = ({ isOpen, onClose, eventId, eventTitle, eventPri
                 ? "Processing..." 
                 : eventPrice > 0 
                   ? `Pay ₹${eventPrice} & Register` 
-                  : "Register"
+                  : "Register (Free)"
               }
             </Button>
           </div>

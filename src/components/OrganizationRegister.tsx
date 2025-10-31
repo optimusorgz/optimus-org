@@ -108,8 +108,15 @@ const OrganizationRegistration = () => {
               </Alert>
 
               <form onSubmit={handleCreateOrganization} className="space-y-4">
+                <div className="flex gap-2">
+                    <input type='radio' id='individual' name='user_type' value='individual'/>
+                    <label className='mr-4' htmlFor='individual'>Individual</label>
+
+                    <input className='gap' type='radio' id='organisation' name='user_type' value='organisation'/>
+                    <label htmlFor='organisation'>Organisation</label>
+                </div>
                 <div className="space-y-2">
-                  <Label htmlFor="org-name">Organization Name *</Label>
+                  <Label htmlFor="org-name">Name *</Label>
                   <Input
                     id="org-name"
                     value={createForm.name}
@@ -120,12 +127,12 @@ const OrganizationRegistration = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="org-description">Description</Label>
+                  <Label htmlFor="org-description">Description *</Label>
                   <Textarea
                     id="org-description"
                     value={createForm.description}
                     onChange={(e) => setCreateForm(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Brief description of your organization (optional)"
+                    placeholder="Brief description of your organization or yourself"
                     rows={3}
                   />
                 </div>
