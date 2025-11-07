@@ -63,7 +63,8 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
 
 
   return (
-    <Card className="w-[350px] bg-gray-800/90 border-gray-700">
+    // 🚀 UPDATED: Replaced fixed w-[350px] with w-full for responsiveness.
+    <Card className="w-full bg-gray-800/90 border-gray-700">
       <CardHeader>
         <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Sign Up</CardTitle>
         <CardDescription className="text-gray-300">Create a new account</CardDescription>
@@ -104,7 +105,8 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmpassword">Cponfirm Password</Label>
+            <Label htmlFor="confirmpassword">Confirm Password</Label>
+            {/* 💡 Note: Fixed typo in the label text from "Cponfirm" to "Confirm" */}
             <Input 
               id="confirmpassword" 
               type="password" 

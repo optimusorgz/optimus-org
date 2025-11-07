@@ -43,7 +43,7 @@ const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title, statu
                     {events.length > 0 ? (
                         events
                         .filter(event => 
-                            (event.status === 'paid' && event.is_paid === 'PAID') || (event.status === 'free')
+                            (event.status === 'paid' && event.is_paid === 'PAID') || (event.is_paid === 'free')
                         )
                         .map((event) => (
                             <div

@@ -34,11 +34,12 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
       setError(null);
 
       // Assuming 'id' is necessary for the Registration interface, even if not explicitly selected
-      const { data, error } = await supabase
-        .from('event_registrations')
-        .select('id, form_data, status, is_paid, registration_date')
-        .eq('event_id', eventId)
-        .order('registration_date', { ascending: false });
+     const { data, error } = await supabase
+       .from('event_registrations')
+      .select('id, form_data, is_paid, registration_date, status')
+      .eq('event_id', eventId)   // Fetch only rows for the current event
+      .order('registration_date', { ascending: false });
+
 
       if (error) {
         setError('Could not load registrations: ' + error.message);
@@ -170,7 +171,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
       {/* ✅ Header & Count Section */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 border-b border-gray-700 pb-3">
         <h2 className="text-2xl md:text-3xl font-bold text-green-400 mb-2 sm:mb-0">
-          📝 Event Registrations ({filtered.length})
+          📝 Event Registrations ({filtered.length}) ({eventId})
         </h2>
         <div className="flex gap-2">
             <Button 

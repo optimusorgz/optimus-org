@@ -69,7 +69,9 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
   }
 
   return (
-    <Card className="w-[350px] bg-gray-800/90 border-gray-700">
+    // 🚀 UPDATED: Removed fixed w-[350px] and replaced with w-full. 
+    // The parent component will now control the maximum width (e.g., max-w-md).
+    <Card className="w-full bg-gray-800/90 border-gray-700 ">
       <CardHeader>
         <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Login</CardTitle>
         <CardDescription className="text-gray-300">Sign in to your account</CardDescription>
