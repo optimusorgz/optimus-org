@@ -11,7 +11,7 @@ import {
   ChevronDownIcon,
   MapPinIcon,
   DollarSign,
-  Rupee,
+  IndianRupee,
   UserIcon,
   Loader2, // Added for loading state
   AlertTriangle, // Added for error state
@@ -178,7 +178,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             <span className="font-medium">Organizer:</span> {event.organizer_name}
           </div>
           <div className="flex items-center">
-            <Rupee className="w-5 h-5 mr-2 text-green-400" />
+            <IndianRupee className="w-5 h-5 mr-2 text-green-400" />
             <span className="font-medium">Price:</span> {priceDisplay}
           </div>
         </div>
