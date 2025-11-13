@@ -70,6 +70,7 @@ export async function preRegisterUser(
       user_id: userId,
       form_data: formData, // Store form data
       is_paid: initialStatus,
+      status: initialStatus,
     })
     .select('ticket_uid') // Assuming this returns the unique ID that will be the QR code value
     .single();
