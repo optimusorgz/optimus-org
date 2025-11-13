@@ -3,55 +3,85 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import supabase from '@/api/client'; 
+import { User } from '@supabase/supabase-js'; // Import User type for better type safety
 
+// Type definition for Organization for clarity
+interface Organization {
+    id: string;
+    name: string;
+    description: string;
+    avtar_url: string;
+    status: 'Approved' | 'Pending' | 'Rejected' | string; // Assuming these are the status values
+    owner_id: string;
+    // Add other organization fields if needed
+}
 
 const OrganizationBox = () => {
-    // State to hold profile and organization data
-    const [profile, setProfile] = useState<any>(null);
-    const [organization, setOrganization] = useState<any>(null);
+    // State to hold organization data
+    const [organization, setOrganization] = useState<Organization | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     // --- Data Fetching Logic ---
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchOrganization = async () => {
             setLoading(true);
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                setLoading(false);
-                return;
-            }
+            setError(null);
+            
+            let user: User | null = null;
+            
+            try {
+                // 1. Get the current user
+                const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
 
-            // Fetch profile
-            const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('uuid', user.id)
-                .single();
+                if (userError) throw userError;
+                
+                user = currentUser;
 
-            setProfile(profileData);
+                if (!user) {
+                    setLoading(false);
+                    return; // User is not logged in, stop here
+                }
 
-            // Fetch organization details if ID exists
-            if (profileData?.organisation_id) {
-                const { data: orgData } = await supabase
+                // 2. Fetch the organization where the current user is the owner
+                // This checks if the user.id is saved in the owner_id column.
+                const { data, error: organizationError } = await supabase
                     .from('organizations')
-                    .select('id, name, description, status, avtar_url') // Added 'id' which is crucial for editing
-                    .eq('id', profileData.organisation_id)
+                    .select('*')
+                    .eq('owner_id', user.id)
                     .single();
 
-                setOrganization(orgData);
-            }
+                if (organizationError && organizationError.code !== 'PGRST116') { // PGRST116 means 'No rows returned'
+                    throw organizationError;
+                }
 
-            setLoading(false);
+                // If data is returned (organization exists)
+                if (data) {
+                    setOrganization(data as Organization);
+                } else {
+                    setOrganization(null); // Explicitly set to null if no organization is found
+                }
+
+            } catch (err: any) {
+                console.error("Error fetching organization:", err.message);
+                setError(`Failed to load organization data: ${err.message}`);
+            } finally {
+                setLoading(false);
+            }
         };
 
-        fetchProfile();
+        fetchOrganization();
     }, []);
 
     
     if (loading) return <p className="text-gray-400 p-6 text-center">Loading organization status...</p>;
+    
+    if (error) return <p className="text-red-400 p-6 text-center">Error: {error}</p>;
 
     // Determine if the organization exists
-    const hasOrganization = !!profile?.organisation_id && !!organization;
+    // The query is designed to fetch the organization if the user is the owner, 
+    // so checking if 'organization' state is populated is sufficient.
+    const hasOrganization = !!organization; 
 
     // --- Render Logic ---
     return (
@@ -59,16 +89,15 @@ const OrganizationBox = () => {
             <h2 className="text-xl font-semibold mb-4 text-green-400 border-b border-gray-700 pb-2 flex justify-between items-center">
                 Organization Management
                 
-                {/* ✨ NEW: Add Edit Link if organization exists 
-                */}
-                {hasOrganization && (
+                {/* Add Edit Link if organization exists */}
+                {/* {hasOrganization && organization?.id && (
                     <Link
-                        href={`/form/organisation-edit/${organization.id}`} // Assuming an edit route with the organization ID
+                        href={`/form/organisation-edit/${organization.id}`} 
                         className="text-sm font-medium text-blue-400 hover:text-blue-300 transition"
                     >
                         Edit Details
                     </Link>
-                )}
+                )} */}
             </h2>
 
             {/* Case 1: No organization → show register button */}
@@ -88,26 +117,26 @@ const OrganizationBox = () => {
                 /* Case 2: Organization exists → show details */
                 <div className='flex justify-between items-start'>
 
-                    <div className="text-gray-300 max-w-[70%]">
-                        {/* Improved image handling: checking for existence and providing an alt text */}
-                        {organization?.avtar_url && (
-                             <img 
-                                src={organization.avtar_url} 
+                    <div className="flex text-gray-300 max-w-[70%]">
+                            <img 
+                                src={`${organization.avtar_url}?cachebuster=${Date.now()}`} // <--- KEY CHANGE HERE
                                 alt={`${organization.name} logo`}
-                                className="w-16 h-16 object-cover rounded-full mb-3" // Added styling for a nicer look
-                             />
-                        )}
-                        <p className="text-2xl font-bold text-green-400">{organization?.name}</p>
-                        <p className="mt-2">{organization?.description || 'No description available'}</p>
+                                className="w-16 h-16 object-cover rounded-full mb-3" 
+                            />
+                        <div>
+
+                        <p className="text-2xl font-bold text-green-400">{organization.name}</p>
+                        <p className="mt-2">{organization.description || 'No description available'}</p>
+                        </div>
                     </div>
                     
                     <div className="text-right border-l border-gray-700 pl-4">
                         <p className="font-semibold text-gray-400 mb-2">Organization Status:</p>
                         <p>
                             {/* Status Display Logic */}
-                            {organization?.status === 'Approved' ? (
+                            {organization.status === 'Approved' ? (
                                 <span className="text-green-400 font-bold">✅ Approved</span>
-                            ) : organization?.status?.toLowerCase() === 'pending' ? (
+                            ) : organization.status?.toLowerCase() === 'pending' ? (
                                 <span className="text-yellow-400 font-bold">🟡 Pending Approval</span>
                             ) : (
                                 <span className="text-red-400 font-bold">🚫 Rejected</span>
