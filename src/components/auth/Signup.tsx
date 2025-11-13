@@ -5,120 +5,157 @@ import { Button } from "../ui/button"
 import { Label } from "../ui/label"
 import { toast } from 'sonner'
 import client from "@/api/client"
-import { AuthComponentProps } from './Auth';
+import { AuthComponentProps } from './Auth'
+import { Eye, EyeOff } from 'lucide-react' // For eye icons
 
 const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmpassword, setconfirmPassword] = useState('');
-  const [name, setName] = useState(''); 
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmpassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    if (!email || !password || !name || !confirmpassword) {
-      toast.error('Please fill in all fields');
-      setLoading(false);
-      return;
+    if (!email || !password || !confirmpassword || !name) {
+      toast.error('Please fill in all fields')
+      setLoading(false)
+      return
     }
 
     if (password !== confirmpassword) {
-      toast.error('Passwords do not match');
-      setLoading(false);
-      return;
+      toast.error('Passwords do not match')
+      setLoading(false)
+      return
     }
 
     try {
       const { data, error } = await client.auth.signUp({
         email,
         password,
-        options: {
-          data: { full_name: name } // Used by trigger
-        }
-      });
+        options: { data: { full_name: name } }
+      })
 
-      if (error) {
-        toast.error(`Signup failed: ${error.message}`);
-        setLoading(false);
-        return;
-      }
-
-      if (data.user) {
+      if (error) toast.error(`Signup failed: ${error.message}`)
+      else if (data.user) {
         if (!data.session) {
-          toast.success('Registration successful! Please check your email to confirm.');
+          toast.success('Registration successful! Please check your email to confirm.')
         } else {
-          toast.success('Signup successful! Welcome.');
-          onSuccess();
+          toast.success('Signup successful! Welcome.')
+          onSuccess()
         }
       }
     } catch (err) {
-      console.error(err);
-      toast.error('Unexpected error during signup.');
+      console.error(err)
+      toast.error('Unexpected error during signup.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
+  const handleGoogleSignup = async () => {
+    try {
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
+      })
+      if (error) toast.error(`Google login failed: ${error.message}`)
+    } catch (err) {
+      console.error(err)
+      toast.error('Unexpected error during Google signup.')
+    }
+  }
 
   return (
-    // 🚀 UPDATED: Replaced fixed w-[350px] with w-full for responsiveness.
     <Card className="w-full bg-gray-800/90 border-gray-700">
+      {/* Google Signup Button */}
+      <div className="px-6 pt-4 pb-2">
+        <Button
+          type="button"
+          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+          onClick={handleGoogleSignup}
+        >
+          Continue with Google
+        </Button>
+      </div>
+
       <CardHeader>
         <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Sign Up</CardTitle>
         <CardDescription className="text-gray-300">Create a new account</CardDescription>
       </CardHeader>
+
       <form onSubmit={handleSignup}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-6">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label> 
+            <Label htmlFor="name">Name</Label>
             <Input 
-              id="name" 
-              type="text" 
-              placeholder="Enter your Name" 
-              value={name}
-              onChange={(e) => setName(e.target.value)} 
-              required
+              id="name" type="text" placeholder="Enter your name" 
+              value={name} onChange={(e) => setName(e.target.value)} required
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input 
-              id="email" 
-              type="email" 
-              placeholder="Enter your email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              id="email" type="email" placeholder="Enter your email" 
+              value={email} onChange={(e) => setEmail(e.target.value)} required
             />
           </div>
-          <div className="space-y-2">
+
+          {/* Password field with eye toggle */}
+          <div className="space-y-2 relative">
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="Enter your password" 
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="pr-10"
             />
+            <button
+              type="button"
+              className="absolute right-2 top-9 text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
-          <div className="space-y-2">
+
+          {/* Confirm Password field with eye toggle */}
+          <div className="space-y-2 relative">
             <Label htmlFor="confirmpassword">Confirm Password</Label>
-            {/* 💡 Note: Fixed typo in the label text from "Cponfirm" to "Confirm" */}
-            <Input 
-              id="confirmpassword" 
-              type="password" 
-              placeholder="Confirm your password" 
+            <Input
+              id="confirmpassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Confirm your password"
               value={confirmpassword}
-              onChange={(e) => setconfirmPassword(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              className="pr-10"
             />
+            <button
+              type="button"
+              className="absolute right-2 top-9 text-gray-400"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold" disabled={loading}>
+
+        <CardFooter className="px-6 py-4">
+          <Button 
+            type="submit" 
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+            disabled={loading}
+          >
             {loading ? 'Signing Up...' : 'Create Account'}
           </Button>
         </CardFooter>

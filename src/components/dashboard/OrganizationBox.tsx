@@ -10,7 +10,7 @@ interface Organization {
     id: string;
     name: string;
     description: string;
-    avtar_url: string;
+    avatar_url: string;
     status: 'Approved' | 'Pending' | 'Rejected' | string; // Assuming these are the status values
     owner_id: string;
     // Add other organization fields if needed
@@ -117,21 +117,21 @@ const OrganizationBox = () => {
                 /* Case 2: Organization exists → show details */
                 <div className='flex justify-between items-start'>
 
-                    <div className="flex text-gray-300 max-w-[70%]">
+                    <div className="flex text-gray-300 max-w-[70%] m-2">
                             <img 
-                                src={`${organization.avtar_url}?cachebuster=${Date.now()}`} // <--- KEY CHANGE HERE
+                                src={`${organization.avatar_url}?cachebuster=${Date.now()}`} // <--- KEY CHANGE HERE
                                 alt={`${organization.name} logo`}
-                                className="w-16 h-16 object-cover rounded-full mb-3" 
+                                className="w-13 h-13 object-cover rounded-full  p-1 border-green-400 border-l mr-2" 
                             />
                         <div>
 
-                        <p className="text-2xl font-bold text-green-400">{organization.name}</p>
-                        <p className="mt-2">{organization.description || 'No description available'}</p>
+                        <p className="text-xl font-bold text-green-400">{organization.name}</p>
+                        <p className="text-s">{organization.description || 'No description available'}</p>
                         </div>
                     </div>
                     
                     <div className="text-right border-l border-gray-700 pl-4">
-                        <p className="font-semibold text-gray-400 mb-2">Organization Status:</p>
+                        <p className="font-semibold text-gray-400 mb-2">Status:</p>
                         <p>
                             {/* Status Display Logic */}
                             {organization.status === 'Approved' ? (

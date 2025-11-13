@@ -57,15 +57,16 @@ export interface Organization {
 
 // 4. Profile Table Type
 export interface Profile {
-  uuid: UUID;
+  uuid: string; // UUID type is usually string at runtime
   email: string;
   created_at: string;
   updated_at: string;
   name?: string;
-  role_type?: 'organiser' | 'user' | 'superadmin'; // Matching your RLS
-  organisation_id?: UUID;
+  role_type?: 'organiser' | 'user' | 'admin';
+  organisation_id?: string | null; // <- This allows UUID string or null
   avatar_url?: string;
 }
+
 
 // 5. Recruitment Table Type
 export interface Recruitment {
@@ -86,6 +87,15 @@ export interface Recruitment {
   residence?: string;
   areas_of_interest?: string[]; // Assuming _text array
   created_at: string;
+}
+
+export interface Post {
+  id: string;
+  user_id: string;    
+  caption: string;
+  post_image_url: string;
+  likes_count: number;
+  hashtags: string[];
 }
 
 // src/types/supabase.ts

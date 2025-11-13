@@ -1,16 +1,22 @@
-import React, { useState } from 'react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
-import { toast } from 'sonner'
-import client from "@/api/client"
+'use client';
+
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { toast } from 'sonner';
+import client from "@/api/client";
 import { AuthComponentProps } from './Auth';
+import { Eye, EyeOff } from 'lucide-react';
+import ForgotPassword from './ForgotPassword';
 
 const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => { 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showForgot, setShowForgot] = useState(false); // ✅ Added this state
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,108 +29,128 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
     }
 
     try {
-      const { error } = await client.auth.signInWithPassword({
-        email, 
-        password,
-      });
-
+      const { error } = await client.auth.signInWithPassword({ email, password });
       if (error) {
         toast.error(`Login failed: ${error.message}`);
       } else {
-        toast.success('Login successful! Welcome back.');
-        onSuccess(); 
-        
+        toast.success('Login successful!');
+        onSuccess();
         setEmail('');
         setPassword('');
       }
-
     } catch (err) {
-      toast.error('An unexpected error occurred during login.');
       console.error(err);
+      toast.error('Unexpected error during login.');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      toast.warning('Please enter your email address to receive the password reset link.');
-      return;
-    }
-
+  const handleGoogleLogin = async () => {
     try {
-      const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/update-password`,
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-
-      if (error) {
-        toast.error(`Password reset failed: ${error.message}`);
-      } else {
-        toast.success('Password reset link sent! Check your email inbox.');
-      }
+      if (error) toast.error(`Google login failed: ${error.message}`);
     } catch (err) {
-      toast.error('An error occurred while sending the reset link.');
       console.error(err);
+      toast.error('Unexpected error during Google login.');
     }
+  };
+
+  // ✅ Forgot Password Page Toggle
+  if (showForgot) {
+    return (
+      <div className="w-full">
+        <ForgotPassword />
+        <p
+          onClick={() => setShowForgot(false)}
+          className="text-sm text-white-600 hover:underline cursor-pointer text-center mt-4"
+        >
+          Back to Login
+        </p>
+      </div>
+    );
   }
 
   return (
-    // 🚀 UPDATED: Removed fixed w-[350px] and replaced with w-full. 
-    // The parent component will now control the maximum width (e.g., max-w-md).
-    <Card className="w-full bg-gray-800/90 border-gray-700 ">
+    <Card className="w-full bg-gray-800/90 border-gray-700">
+      {/* Google Login Button */}
+      <div className="px-6 pt-4 pb-2">
+        <Button
+          type="button"
+          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+          onClick={handleGoogleLogin}
+        >
+          Continue with Google
+        </Button>
+      </div>
+
       <CardHeader>
         <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Login</CardTitle>
         <CardDescription className="text-gray-300">Sign in to your account</CardDescription>
       </CardHeader>
-      
+
       <form onSubmit={handleLogin}>
-        <CardContent className="space-y-4">
-          
+        <CardContent className="space-y-4 px-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input 
               id="email" 
               type="email" 
               placeholder="Enter your email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
             />
           </div>
 
-          <div className="space-y-2">
+          {/* Password field with eye toggle */}
+          <div className="space-y-2 relative">
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="Enter your password" 
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="pr-10"
             />
-          </div>
-          
-          <div className="flex justify-end pt-1">
             <button
               type="button"
-              onClick={handleForgotPassword}
-              className="text-sm text-green-400 hover:text-green-500 hover:underline"
-              disabled={loading}
+              className="absolute right-2 top-9 text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
             >
-              Forgot Password?
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          
         </CardContent>
-        
-        <CardFooter>
-          <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold" disabled={loading}>
+
+        <div className="px-6">
+          <p
+            onClick={() => setShowForgot(true)}
+            className="text-sm text-white-600 hover:underline cursor-pointer text-right"
+          >
+            Forgot password?
+          </p>
+        </div>
+
+        <CardFooter className="px-6 py-4">
+          <Button 
+            type="submit" 
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+            disabled={loading}
+          >
             {loading ? 'Logging In...' : 'Sign In'}
           </Button>
         </CardFooter>
       </form>
     </Card>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

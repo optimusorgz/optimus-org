@@ -205,6 +205,17 @@ export default function EventDetailsClientContent() {
         router.push(`/event-page/${event.id}/register`);
     }
 
+    // --- inside EventDetailsClientContent ---
+// Derived data for UI
+
+    // Format UTC HH:MM
+    const formatUTC = (date: Date) => {
+        const hours = date.getUTCHours().toString().padStart(2,'0');
+        const minutes = date.getUTCMinutes().toString().padStart(2,'0');
+        return `${hours}:${minutes}`;
+    };
+
+
     // --- Render Main Page ---
     return (
         <div className="min-h-screen bg-gray-900 text-white font-sans">
@@ -249,7 +260,7 @@ export default function EventDetailsClientContent() {
                         </div>
 
                         {/* Main Title */}
-                        <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold lowercase text-white mb-4 leading-none tracking-tight drop-shadow-lg" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
+                        <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold text-white mb-4 leading-none tracking-tight drop-shadow-lg" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
                             {event.title}
                         </h1>
 
@@ -265,8 +276,9 @@ export default function EventDetailsClientContent() {
                             </span>
                             <span className="flex items-center">
                                 <Clock className="w-5 h-5 mr-2 text-blue-400" />
-                                {startDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - {endDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} ({duration})
+                                {formatUTC(startDate)} - {formatUTC(endDate)} ({duration})
                             </span>
+
                         </div>
                     </div>
                 </div>
@@ -340,8 +352,12 @@ export default function EventDetailsClientContent() {
                             <div className="space-y-4">
                                 <h4 className="font-semibold text-white text-lg">Event Timeline</h4>
                                 <div className="p-4 border-l-4 border-green-500 bg-gray-700/50 rounded-md space-y-2">
-                                    <p className="text-gray-300"><span className="font-semibold text-white">Start Date:</span> {formatEventDate(event.start_date)}</p>
-                                    <p className="text-gray-300"><span className="font-semibold text-white">End Date:</span> {formatEventDate(event.end_date)}</p>
+                                    <p className="text-gray-300">
+                                        <span className="font-semibold text-white">Start Date:</span> {formatUTC(startDate)}
+                                    </p>
+                                    <p className="text-gray-300">
+                                        <span className="font-semibold text-white">End Date:</span> {formatUTC(endDate)}
+                                    </p>
                                 </div>
                             </div>
                         </div>

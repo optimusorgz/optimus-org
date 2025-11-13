@@ -21,7 +21,7 @@ const initializeFormState = (data: Profile): Partial<Profile> => ({
     name: data.name || '',
     role_type: data.role_type || 'user',
     // Key Logic: Coerce null/undefined to '' so the 'No Organization' option is selected
-    organisation_id: data.organisation_id || '', 
+    organisation_id: data.organisation_id || null, 
     avatar_url: data.avatar_url || '',
 });
 
@@ -84,7 +84,7 @@ export default function ProfileForm({ table, initialData, onSuccess, onCancel }:
         const dataToSubmit: Partial<Profile> = {
             name: formData.name,
             role_type: formData.role_type,
-            organisation_id: formData.organisation_id, // This is either a UUID string or null
+            organisation_id: formData.organisation_id || null, // This is either a UUID string or null
             avatar_url: formData.avatar_url,
             updated_at: new Date().toISOString(), 
         };

@@ -7,93 +7,100 @@ import ProfileForm from '@/components/admin-dashboard/ProfileForm';
 import Modal from '@/components/ui/Modal';
 import { Profile } from '@/lib/types/supabase';
 
-// ✅ 1. Extend Profile with organization name
+// Extend Profile with organization name
 type ProfileWithOrg = Profile & {
-  organizations: { name: string } | null;
+  organizations: { name: string } | null;
 };
 
 export default function ProfilesPage() {
-  const [profiles, setProfiles] = useState<ProfileWithOrg[]>([]);
-  const [selectedProfile, setSelectedProfile] = useState<ProfileWithOrg | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [profiles, setProfiles] = useState<ProfileWithOrg[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileWithOrg | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // ✅ 2. Call the Supabase client function properly
-  const supabase = createClient;
+  const supabase = createClient;
 
-  // ✅ 3. Fetch profiles with organizations
-  const fetchProfiles = async () => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select(`*, organizations(name)`)
-      .order('created_at', { ascending: false });
+  const fetchProfiles = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(`*, organizations(name)`)
+      .order('created_at', { ascending: false });
 
-    if (!error && data) {
-      setProfiles(data as ProfileWithOrg[]);
-    }
-  };
+    if (!error && data) {
+      setProfiles(data as ProfileWithOrg[]);
+    }
+  };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
-  // ✅ Edit handler
-  const handleOpenEdit = (profile: ProfileWithOrg) => {
-    setSelectedProfile(profile);
-    setIsFormOpen(true);
-  };
+  // --- Edit handler ---
+  const handleOpenEdit = (profile: ProfileWithOrg) => {
+    if (profile.role_type === 'admin') {
+      alert('Admin profiles cannot be edited.');
+      return;
+    }
+    setSelectedProfile(profile);
+    setIsFormOpen(true);
+  };
 
-  // ✅ Delete handler (id refers to uuid in this context)
-  const handleDelete = async (id: string | number) => {
-    // Ensure we are deleting by the 'uuid' field, as that is the primary key for profiles
-    const profileUuid = String(id);
-    if (!confirm('Are you sure you want to DELETE this user profile?')) return;
+  // --- Delete handler ---
+  const handleDelete = async (id: string | number) => {
+    const profile = profiles.find(p => p.uuid === id);
+    if (!profile) return;
 
-    const { error } = await supabase.from('profiles').delete().eq('uuid', profileUuid);
-    if (!error) fetchProfiles();
-  };
+    if (profile.role_type === 'admin') {
+      alert('Admin profiles cannot be deleted.');
+      return;
+    }
 
-  const handleFormSuccess = () => {
-    alert('Profile successfully updated.');
-    setIsFormOpen(false);
-    fetchProfiles();
-  };
+    if (!confirm('Are you sure you want to DELETE this user profile?')) return;
 
-  const columns = [
-    { header: 'UUID', accessorKey: 'uuid', render: (id: string) => `${id.substring(0, 6)}...` },
-    { header: 'Email', accessorKey: 'email' },
-    { header: 'Name', accessorKey: 'name', render: (val: string) => val || 'N/A' },
-    { header: 'Role', accessorKey: 'role_type' },
-    { header: 'Organization', accessorKey: 'organizations', render: (org: any) => org?.name || 'None' },
-    { header: 'Joined At', accessorKey: 'created_at', render: (date: string) => new Date(date).toLocaleDateString() },
-  ];
+    const { error } = await supabase.from('profiles').delete().eq('uuid', String(id));
+    if (!error) fetchProfiles();
+  };
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">🧑‍💻 User Profiles Management</h1>
+  const handleFormSuccess = () => {
+    alert('Profile successfully updated.');
+    setIsFormOpen(false);
+    fetchProfiles();
+  };
 
-      <div className="flex justify-end items-center">
-        <ExportButton data={profiles} filename="profiles_data" />
-      </div>
+  const columns = [
+    { header: 'UUID', accessorKey: 'uuid', render: (id: string) => `${id.substring(0, 6)}...` },
+    { header: 'Email', accessorKey: 'email' },
+    { header: 'Name', accessorKey: 'name', render: (val: string) => val || 'N/A' },
+    { header: 'Role', accessorKey: 'role_type' },
+    { header: 'Organization', accessorKey: 'organizations', render: (org: any) => org?.name || 'None' },
+    { header: 'Joined At', accessorKey: 'created_at', render: (date: string) => new Date(date).toLocaleDateString() },
+  ];
 
-      {/* The error line, now resolved by fixing DataRowWithId */}
-      <DataTable<ProfileWithOrg>
-        data={profiles}
-        columns={columns}
-        tableName="profiles"
-        onDelete={handleDelete}
-        onEdit={handleOpenEdit}
-      />
+  return (
+    <div className="space-y-6">
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">🧑‍💻 User Profiles Management</h1>
 
-      {isFormOpen && selectedProfile && (
-        <Modal onClose={() => setIsFormOpen(false)}>
-          <ProfileForm
-            table="profiles"
-            initialData={selectedProfile}
-            onSuccess={handleFormSuccess}
-            onCancel={() => setIsFormOpen(false)}
-          />
-        </Modal>
-      )}
-    </div>
-  );
+      <div className="flex justify-end items-center">
+        <ExportButton data={profiles} filename="profiles_data" />
+      </div>
+
+      <DataTable<ProfileWithOrg>
+        data={profiles}
+        columns={columns}
+        tableName="profiles"
+        onDelete={handleDelete}
+        onEdit={handleOpenEdit}
+      />
+
+      {isFormOpen && selectedProfile && (
+        <Modal onClose={() => setIsFormOpen(false)}>
+          <ProfileForm
+            table="profiles"
+            initialData={selectedProfile}
+            onSuccess={handleFormSuccess}
+            onCancel={() => setIsFormOpen(false)}
+          />
+        </Modal>
+      )}
+    </div>
+  );
 }

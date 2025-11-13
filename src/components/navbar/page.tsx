@@ -29,7 +29,7 @@ interface NavItem {
 const navItems: NavItem[] = [
     { name: 'Home', href: '/' },
     { name: 'Events', href: '/event-page' },
-    { name: 'Post', href: '/post' },
+    // { name: 'Post', href: '/posts' },
     { name: 'Join Us', href: 'form/joinus' },
 ]
 
@@ -173,7 +173,7 @@ const Navbar: React.FC = () => {
     let updatedProfileMenuItems = [...baseProfileMenuItems];
 
     // Check if the user is an 'admin' and add the Admin Dashboard
-    if (userRole === 'organiser') { // <-- Role changed to 'admin'
+    if (userRole === 'organiser' || userRole === 'admin') { // <-- Role changed to 'admin'
         updatedProfileMenuItems.unshift(adminDashboardItem); 
     }
 

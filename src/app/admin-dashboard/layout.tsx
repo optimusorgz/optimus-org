@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { UserProvider } from '@/context/UserContext';
 
 // Define the target role for dashboard access
-const REQUIRED_ROLE = 'organiser'; // <--- CHANGE THIS TO YOUR REQUIRED ROLE (e.g., 'organiser', 'admin')
+const REQUIRED_ROLES = ['organiser', 'admin']; // array of allowed roles
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -46,13 +46,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     .eq('uuid', currentUserId)
                     .single();
 
-                if (profileError || !profile || profile.role_type !== REQUIRED_ROLE) {
-                    // ⚠️ FIX 2: Correctly checking if the role matches the REQUIRED_ROLE
-                    // Role check failed (either error, no profile, or wrong role)
-                    toast.error(`Access denied. Must be a ${REQUIRED_ROLE}.`);
+              if (profileError || !profile || !REQUIRED_ROLES.includes(profile.role_type)) {
+                    toast.error(`Access denied. Must be one of: ${REQUIRED_ROLES.join(', ')}.`);
                     router.push('/');
                     return;
                 }
+
 
                 // If code reaches here, authentication and role check passed
                 accessGranted = true;

@@ -83,10 +83,10 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
 
   const StatusBadge = ({ status }: { status: Registration['status'] }) => {
     const base = "px-3 py-1 text-xs font-semibold rounded-full flex items-center space-x-1 whitespace-nowrap";
-    if (status === 'paid') return <span className={`${base} bg-green-900 text-green-400`}><CheckCircle2 className="w-3 h-3" /> Paid</span>;
     if (status === 'free') return <span className={`${base} bg-yellow-900 text-yellow-400`}><Clock className="w-3 h-3" /> Free</span>;
+    return <span className={`${base} bg-green-900 text-green-400`}><CheckCircle2 className="w-3 h-3" /> Paid</span>;
     // Assuming any other case is an 'unpaid' status for payment_status check in table
-    return <span className={`${base} bg-red-900 text-red-400`}><XCircle className="w-3 h-3" /> Cancelled</span>;
+    
   };
   
   // ✅ New Function for CSV Download

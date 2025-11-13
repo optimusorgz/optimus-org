@@ -10,7 +10,7 @@ import {
   SearchIcon,
   ChevronDownIcon,
   MapPinIcon,
-  DollarSign,
+  IndianRupee,
   UserIcon,
   Loader2, // Added for loading state
   AlertTriangle, // Added for error state
@@ -136,7 +136,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   };
 
   const isFree = (event.ticket_price ?? 0) === 0;
-  const priceDisplay = isFree ? 'Free' : `$${event.ticket_price?.toFixed(2)}`;
+  const priceDisplay = isFree ? 'Free' : `₹${event.ticket_price?.toFixed(2)}`;
 
   const startDate = formatDate(event.start_date);
   // Only show end date if it's different from the start date
@@ -157,11 +157,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
           <h3 className="text-xl font-bold text-white leading-tight">{event.title}</h3>
-          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-              event.status === 'approved' ? 'bg-green-500 text-green-900' : 'bg-yellow-500 text-yellow-900'
-          }`}>
-              {event.status}
-          </span>
+         
         </div>
 
         <p className="text-sm text-gray-400 mb-4 line-clamp-2">{event.description}</p>
@@ -181,7 +177,7 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
             <span className="font-medium">Organizer:</span> {event.organizer_name}
           </div>
           <div className="flex items-center">
-            <DollarSign className="w-5 h-5 mr-2 text-green-400" />
+            <IndianRupee className="w-5 h-5 mr-2 text-green-400" />
             <span className="font-medium">Price:</span> {priceDisplay}
           </div>
         </div>
