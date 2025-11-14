@@ -7,6 +7,8 @@ import {
     ArrowLeft, MapPin, Clock, Calendar, User, DollarSign, List, Users, Mail, Phone, Share2, AlertTriangle, Loader2, Check, ExternalLink
 } from 'lucide-react';
 import supabase from "@/api/client" // Ensure this path is correct
+import { toast, Toaster } from 'react-hot-toast';
+
 
 // --- 1. TYPE DEFINITIONS ---
 
@@ -201,7 +203,33 @@ export default function EventDetailsClientContent() {
     const isPaid = (event.ticket_price ?? 0) > 0;
     const isUpcoming = event.status === 'approved' || event.status === 'pending';
 
-    const handleregistration = () => {
+    const handleregistration = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+        // User is not logged in
+            const isMobile = window.innerWidth <= 640; // Tailwind sm breakpoint (~640px)
+
+            toast.error(' Please log in first to register for this event.', {
+            duration: 2500,
+                style: {
+                    background: '#1F2937', // dark bg
+                    color: '#FACC15',       // yellow text
+                    fontWeight: 'bold',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    width: isMobile ? '90vw' : 'full', // full-width on mobile
+                    maxWidth: '600px', // prevent huge toast on desktop
+                },
+                iconTheme: {
+                    primary: '#FACC15',
+                    secondary: '#1F2937',
+                },
+            });
+            return;
+        }
+
+        // User is logged in → go to registration
         router.push(`/event-page/${event.id}/register`);
     }
 
@@ -306,6 +334,8 @@ export default function EventDetailsClientContent() {
                             Limited to **{event.max_participants || 100} participants**. Don't miss out on this opportunity!
                         </p>
 
+                        <Toaster position="top-right" />
+
                         {/* Action Buttons */}
                         <button
                             onClick={handleregistration}
@@ -325,43 +355,88 @@ export default function EventDetailsClientContent() {
                     {/* Card A: Event Details and Timeline */}
                     <Card title="About the Event" icon={<List />} className="bg-gray-800/90">
 
-                    <p className="text-gray-300 text-lg leading-relaxed">
-                            {/* Compelling Nature Hackathon Description */}
-                            {event.description || 
-                                "Join us to code innovative solutions for environmental sustainability, from optimizing renewable energy grids to creating digital tools for conservation. Our challenge focuses on leveraging cutting-edge tech to protect nature's delicate balance."
-                            }
-                        </p>
+                    <p
+                    className="text-gray-300 text-lg leading-relaxed"
+                    dangerouslySetInnerHTML={{
+                        __html: (event.description || "Default description").replace(/\n/g, '<br />')
+                    }}
+                    />
+
                     </Card>
                     <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            
-                            {/* Data Table/List */}
-                            <div className="space-y-4">
-                                <h4 className="font-semibold text-white text-lg">Essentials</h4>
-                                <div className="space-y-3">
-                                    <DetailItem icon={<MapPin />} label="Venue" value={event.location} />
-                                    <DetailItem icon={<User />} label="Organized by" value={event.organizer_name} />
-                                    <DetailItem icon={<Clock />} label="Duration" value={duration} />
-                                    <DetailItem icon={<List />} label="Category" value={event.category} />
-                                    <DetailItem icon={<DollarSign />} label="Event Type" value={isPaid ? 'Paid' : 'Free'} />
-                                    <DetailItem icon={<Users />} label="Max Participants" value={event.max_participants} />
+
+                            {/* Essentials Section */}
+                            <div className="space-y-3">
+                            <h4 className="font-semibold text-white text-lg mb-2">Essentials</h4>
+
+                            {/* Each Detail Item */}
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <MapPin className="w-5 h-5 text-green-500" />
+                                <span className="font-medium text-white">Venue:</span>
                                 </div>
+                                <span className="text-gray-300">{event.location}</span>
                             </div>
-                            
-                            {/* Event Timeline */}
-                            <div className="space-y-4">
-                                <h4 className="font-semibold text-white text-lg">Event Timeline</h4>
-                                <div className="p-4 border-l-4 border-green-500 bg-gray-700/50 rounded-md space-y-2">
-                                    <p className="text-gray-300">
-                                        <span className="font-semibold text-white">Start Date:</span> {formatUTC(startDate)}
-                                    </p>
-                                    <p className="text-gray-300">
-                                        <span className="font-semibold text-white">End Date:</span> {formatUTC(endDate)}
-                                    </p>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <User className="w-5 h-5 text-purple-400" />
+                                <span className="font-medium text-white">Organized by:</span>
                                 </div>
+                                <span className="text-gray-300">{event.organizer_name}</span>
                             </div>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <Clock className="w-5 h-5 text-blue-400" />
+                                <span className="font-medium text-white">Duration:</span>
+                                </div>
+                                <span className="text-gray-300">{duration}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <List className="w-5 h-5 text-yellow-400" />
+                                <span className="font-medium text-white">Category:</span>
+                                </div>
+                                <span className="text-gray-300">{event.category}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <DollarSign className="w-5 h-5 text-green-400" />
+                                <span className="font-medium text-white">Event Type:</span>
+                                </div>
+                                <span className="text-gray-300">{isPaid ? 'Paid' : 'Free'}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                <Users className="w-5 h-5 text-pink-400" />
+                                <span className="font-medium text-white">Max Participants:</span>
+                                </div>
+                                <span className="text-gray-300">{event.max_participants}</span>
+                            </div>
+                            </div>
+
+                            {/* Event Timeline Section */}
+                            <div className="space-y-3">
+                            <h4 className="font-semibold text-white text-lg mb-2">Event Timeline</h4>
+                            <div className="p-4 border-l-4 border-green-500 bg-gray-700/50 rounded-md space-y-2">
+                                <p className="text-gray-300">
+                                <span className="font-semibold text-white">Start Date:</span> {formatUTC(startDate)}
+                                </p>
+                                <p className="text-gray-300">
+                                <span className="font-semibold text-white">End Date:</span> {formatUTC(endDate)}
+                                </p>
+                            </div>
+                            </div>
+
                         </div>
-                    </Card>
+                        </Card>
+
+
 
                     {/* Card C: Why Attend? (Value Proposition) */}
                     
