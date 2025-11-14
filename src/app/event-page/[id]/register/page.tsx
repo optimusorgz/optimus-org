@@ -34,6 +34,8 @@ const RegisterPage = () => {
   const eventId = Array.isArray(params.id) ? params.id[0] : (params.id as string | undefined);
 
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null); // NEW: State for authenticated user's email
+  const [userPhone, setUserPhone] = useState<string | null>(null); // NEW: State for authenticated user's phone
   const [eventData, setEventData] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -47,19 +49,46 @@ const RegisterPage = () => {
 
   const formDataRef = useRef<DynamicFormData>({}); 
 
-  // --- Fetch Event Data ---
+  // --- Fetch Event and User Data (MODIFIED) ---
   const fetchData = useCallback(async (id: string) => {
     setLoading(true);
     setFetchError(null);
 
+    // 1. Get Session & User ID
     const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      setUserId(session.user.id);
-    } else {
+    if (!session) {
       router.push(`/login?redirect=/events/${id}/register`);
       return;
     }
+    
+    const currentUserId = session.user.id ?? null; 
+    const userEmailFromSession = session.user.email ?? null;
 
+    if (!currentUserId) {
+        console.error('User ID missing from active session.');
+        setFetchError('Authentication error: User ID not found.');
+        setLoading(false);
+        return;
+    }
+
+    setUserId(currentUserId);
+    setUserEmail(userEmailFromSession); // Store email from the session
+
+    // 2. Fetch User Profile for Phone (Assumes a 'profiles' table with 'id' column matching Supabase 'user.id')
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('phone_number') // **UPDATE THIS COLUMN NAME if it is different in your Supabase 'profiles' table**
+      .eq('id', currentUserId)
+      .single();
+
+    if (profileData && profileData.phone_number) {
+      setUserPhone(profileData.phone_number); 
+    } else if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is 'No rows found', which is acceptable
+      console.warn('Could not fetch user phone number:', profileError.message);
+    }
+
+
+    // 3. Fetch Event Data
     const { data, error } = await supabase
       .from('events')
       .select('id, title, description, ticket_price') 
@@ -113,7 +142,7 @@ const RegisterPage = () => {
     finalizeRegistration(preRegTicketUid, response);
   };
 
-  // --- Razorpay Payment Initiator ---
+  // --- Razorpay Payment Initiator (MODIFIED) ---
   const handleProceedToPayment = useCallback(() => {
     if (!razorpayOrderId || !eventData || !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
       console.error("Payment initiation failed: Missing Order ID or Key.");
@@ -124,6 +153,11 @@ const RegisterPage = () => {
 
     setIsPaymentProcessing(true);
     const ticketPrice = eventData.ticket_price ?? 0;
+
+    // Prefill Logic: Uses form data, falls back to profile data, then placeholders
+    const prefillName = formDataRef.current.Name || "Registered User";
+    const prefillEmail = formDataRef.current.Email || userEmail || "user@example.com"; 
+    const prefillContact = formDataRef.current.Phone || userPhone || "9999999999"; 
 
     const options = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
@@ -143,9 +177,9 @@ const RegisterPage = () => {
         }
       },
       prefill: {
-        name: formDataRef.current.Name || "Registered User",
-        email: formDataRef.current.Email || "user@example.com",
-        contact: formDataRef.current.Phone || "9999999999",
+        name: prefillName,
+        email: prefillEmail,
+        contact: prefillContact,
       },
       theme: { color: "#4F46E5" },
     };
@@ -158,7 +192,7 @@ const RegisterPage = () => {
       setIsPaymentProcessing(false);
       setFetchError("Payment gateway is not ready. Please try again.");
     }
-  }, [razorpayOrderId, eventData, handlePaymentSuccess]);
+  }, [razorpayOrderId, eventData, handlePaymentSuccess, userEmail, userPhone]); // Added userEmail, userPhone as dependencies
 
   useEffect(() => {
     if (registrationStatus === 'payment_required' && razorpayOrderId && !isPaymentProcessing) {
