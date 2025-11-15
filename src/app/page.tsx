@@ -5,6 +5,7 @@ import { useAuth } from "@/components/context/authprovider";
 import { useRouter } from "next/navigation";
 import HomePage from "./home/page"; 
 
+
 export default function Home() {
   
     const router = useRouter(); 
