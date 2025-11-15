@@ -9,10 +9,12 @@ import { RecruitmentApplication } from '@/lib/types/recruitment';
 // --- Static Data Definitions ---
 const BRANCHES = [
   'B Tech', 'B.Sc', 'BBA', 'BA', 'BCA', 'LLB', 'B.Ed', 'B.Arch',
-  'B.Des', 'B.Pharm', 'BHMCT', 'BFA', 'Other',
+  'B.Des', 'B.Pharm', 'BHMCT', 'BFA', 'MBA', 'MCA', 'M.Tech', 'M.Sc',
+  'MA', 'LLM', 'M.Ed', 'M.Arch', 'M.Des', 'M.Pharm', 'MFA', 'PhD',
 ];
 
 const YEARS = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Final Year'];
+
 
 const INTERESTS = [
   'Graphic Designing & Video Editing', 'Social Media', 'Content Writing',
