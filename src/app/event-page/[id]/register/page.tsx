@@ -307,11 +307,32 @@ const RegisterPage = () => {
               : `You are now registered for **${eventData.title}**. Save your Ticket ID.`}
           </p>
           {ticketUid && (
-            <div className="mt-4 p-4 border border-gray-700 rounded-lg bg-gray-800 flex flex-col items-center">
-              <h3 className="font-bold text-lg mb-2 text-green-400">Your E-Ticket QR</h3>
-              <div className='w-24 h-24 bg-white flex items-center justify-center text-gray-800 font-bold rounded-md'></div>
-              <p className="mt-4 text-sm text-gray-300 break-all">Ticket ID: **{ticketUid.substring(0, 8)}...**</p>
-            </div>
+            <div className="mt-6 p-6 border border-gray-700 rounded-xl bg-gray-800 flex flex-col items-center text-center shadow-lg">
+            {/* Big Green Tick */}
+            <svg
+              className="w-16 h-16 text-green-500 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+
+            {/* Success Message */}
+            <h3 className="text-2xl font-bold text-white mb-2">Registration Successful!</h3>
+
+            {/* Info */}
+            <p className="text-gray-300 text-sm">
+              Your E-ticket has been generated. You can view and download it from your <span className="text-green-400 font-semibold">Dashboard</span>.
+            </p>
+          </div>
+
           )}
           <button
             onClick={() => router.push(`/event-page`)}

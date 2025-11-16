@@ -12,6 +12,7 @@ interface Registration {
   is_paid: string;
   status: 'paid' | 'free';
   form_data: { [key: string]: any };
+  check_in: string;
 }
 
 interface EventRegistrationsViewProps {
@@ -36,7 +37,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
       // Assuming 'id' is necessary for the Registration interface, even if not explicitly selected
      const { data, error } = await supabase
        .from('event_registrations')
-      .select('id, form_data, is_paid, registration_date, status')
+      .select('id, form_data, is_paid, registration_date, status, check_in')
       .eq('event_id', eventId)   // Fetch only rows for the current event
       .order('registration_date', { ascending: false });
 
@@ -239,6 +240,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
                         ))}
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Type</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Payment</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Checked in</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase whitespace-nowrap">Reg. Date</th>
                     </tr>
                     </thead>
@@ -256,6 +258,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
                             // ⬇️ CHANGE: Use aria-label instead of title
                             : <XCircle className="w-5 h-5 text-red-500" aria-label="Unpaid" />} 
                         </td>
+                        <td className="px-6 py-4 text-sm text-gray-400 whitespace-nowrap">{reg.check_in}</td>
                         <td className="px-6 py-4 text-sm text-gray-400 whitespace-nowrap">{new Date(reg.registration_date).toLocaleDateString()}</td>
                         </tr>
                     ))}
