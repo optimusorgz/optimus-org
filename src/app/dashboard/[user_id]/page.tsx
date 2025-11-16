@@ -441,8 +441,7 @@ const DashboardPage = () => {
                     <ParticipatedEventsList 
                         events={participatedEvents as any} 
                         title="Events Participated" 
-                        status='all'
-                        is_paid=''
+                        
                     />
                 </div>
                 
