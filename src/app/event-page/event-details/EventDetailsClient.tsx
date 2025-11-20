@@ -125,6 +125,8 @@ export default function EventDetailsClientContent() {
     const [event, setEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentRegistrations, setCurrentRegistrations] = useState<number>(0);
+
 
     // --- Data Fetching Logic ---
     const fetchEventDetails = useCallback(async () => {
@@ -166,6 +168,17 @@ export default function EventDetailsClientContent() {
         fetchEventDetails();
     }, [fetchEventDetails]);
 
+    useEffect(() => {
+        const fetchRegistrations = async () => {
+            if (!event) return;
+            const { data, error } = await supabase
+                .from('event_registrations')
+                .select('*', { count: 'exact' })
+                .eq('event_id', event.id);
+            setCurrentRegistrations(data?.length || 0);
+        };
+        fetchRegistrations();
+    }, [event]);
     // --- Render Loading/Error States ---
     if (loading) {
         return (
@@ -204,23 +217,52 @@ export default function EventDetailsClientContent() {
     const isPaid = (event.ticket_price ?? 0) > 0;
     const isUpcoming = event.status === 'approved' || event.status === 'pending';
 
+
     const handleregistration = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+        if (!event) return;
 
-    if (!session) {
-        // User is not logged in
-            const isMobile = window.innerWidth <= 640; // Tailwind sm breakpoint (~640px)
+        // Check max participants
+        const currentParticipants = event.max_participants || 100; // default 100
+        // You may want to fetch the actual registered participants from Supabase here
+        const { data: registered, error: regError } = await supabase
+            .from('registrations') // assuming a table 'registrations'
+            .select('*', { count: 'exact' })
+            .eq('event_id', event.id);
 
-            toast.error(' Please log in first to register for this event.', {
-            duration: 2500,
+        const currentCount = registered?.length || 0;
+
+        if (currentCount >= currentParticipants) {
+            toast.error('Maximum registration limit reached!', {
+                duration: 2500,
                 style: {
-                    background: '#1F2937', // dark bg
-                    color: '#FACC15',       // yellow text
+                    background: '#1F2937',
+                    color: '#F87171', // red
                     fontWeight: 'bold',
                     padding: '16px',
                     borderRadius: '10px',
-                    width: isMobile ? '90vw' : 'full', // full-width on mobile
-                    maxWidth: '600px', // prevent huge toast on desktop
+                },
+                iconTheme: {
+                    primary: '#F87171',
+                    secondary: '#1F2937',
+                },
+            });
+            return;
+        }
+
+        // Check login
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            const isMobile = window.innerWidth <= 640;
+            toast.error('Please log in first to register for this event.', {
+                duration: 2500,
+                style: {
+                    background: '#1F2937',
+                    color: '#FACC15',
+                    fontWeight: 'bold',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    width: isMobile ? '90vw' : 'full',
+                    maxWidth: '600px',
                 },
                 iconTheme: {
                     primary: '#FACC15',
@@ -230,9 +272,9 @@ export default function EventDetailsClientContent() {
             return;
         }
 
-        // User is logged in → go to registration
+        // Proceed to registration page
         router.push(`/event-page/${event.id}/register`);
-    }
+    };
 
     // --- inside EventDetailsClientContent ---
 // Derived data for UI
@@ -345,10 +387,13 @@ export default function EventDetailsClientContent() {
                         {/* Action Buttons */}
                         <button
                             onClick={handleregistration}
-                            className="w-full py-3 bg-green-600 text-white text-lg font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-150"
+                            disabled={currentRegistrations >= (event.max_participants || 100)}
+                            className={`w-full py-3 text-lg font-bold rounded-lg shadow-md transition duration-150
+                                ${currentRegistrations >= (event.max_participants || 100) ? 'bg-gray-500 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
                         >
-                            Register for Event
-                        </button>
+                            {currentRegistrations >= (event.max_participants || 100) ? 'Registration Full' : 'Register for Event'}
+                        </button>           
+
                         <button
                             // Conditional check for navigator.share is good practice
                             onClick={() => navigator.share ? navigator.share({ title: event.title, url: window.location.href }) : toast.error('Share function unavailable.')}
