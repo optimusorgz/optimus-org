@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-    ArrowLeft, MapPin, Clock, Calendar, User, DollarSign, List, Users, Mail, Phone, Share2, AlertTriangle, Loader2, Check, ExternalLink
+    ArrowLeft, MapPin, Clock, Calendar, User, DollarSign, List, Users, Mail, Phone, Share2, AlertTriangle, Loader2, Check, ExternalLink, Ticket, X
 } from 'lucide-react';
 import supabase from "@/api/client" // Ensure this path is correct
 import { toast, Toaster } from 'react-hot-toast';
@@ -18,7 +18,7 @@ interface Event {
     description: string;
     category: string;
     start_date: string; // timestamptz
-    end_date: string;    // timestamptz
+    end_date: string;    // timestamptz
     location: string;
     organizer_name: string;
     contact_email: string | null;
@@ -28,6 +28,10 @@ interface Event {
     banner_url: string | null;
     status: 'draft' | 'pending' | 'approved' | 'cancelled' | 'ended';
 }
+
+// Custom type for registration status
+type RegistrationStatus = 'unregistered' | 'pending_payment' | 'registered' | 'full';
+
 
 // --- 2. UTILITY FUNCTIONS (Kept here for simplicity) ---
 
@@ -111,12 +115,48 @@ const DetailItem: React.FC<{ icon: React.ReactNode, label: string, value: string
     </div>
 );
 
+// --- New Ticket Modal Component ---
+const TicketModal: React.FC<{ event: Event, onClose: () => void }> = ({ event, onClose }) => {
+    return (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-lg w-full transform transition-all duration-300 scale-100">
+                <div className="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+                    <h2 className="text-2xl font-bold text-green-400 flex items-center">
+                        <Ticket className="w-6 h-6 mr-2" /> Your Event Ticket
+                    </h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-white transition">
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+                
+                <div className="bg-gray-900 p-6 rounded-lg border border-green-600/50 space-y-4">
+                    <p className="text-lg font-semibold text-white">{event.title}</p>
+                    <DetailItem icon={<User />} label="Attendee" value="Current User (Placeholder)" />
+                    <DetailItem icon={<Calendar />} label="Date" value={formatEventDate(event.start_date)} />
+                    <DetailItem icon={<MapPin />} label="Location" value={event.location} />
+                    <DetailItem icon={<DollarSign />} label="Status" value="Payment Confirmed" />
+                    <p className="text-sm text-center text-gray-400 pt-3 border-t border-gray-700">
+                        Please keep this ticket for entry. A detailed email confirmation has been sent to your registered email.
+                    </p>
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                    <button
+                        onClick={onClose}
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 // --- 5. MAIN CONTENT COMPONENT ---
 
 export default function EventDetailsClientContent() {
     const router = useRouter();
-    // useSearchParams is now safely used within a client component!
     const searchParams = useSearchParams(); 
     
     // Get the ID from the search parameters
@@ -127,9 +167,42 @@ export default function EventDetailsClientContent() {
     const [error, setError] = useState<string | null>(null);
     const [currentRegistrations, setCurrentRegistrations] = useState<number>(0);
 
+    // NEW STATE: Registration and Ticket Status
+    const [regStatus, setRegStatus] = useState<RegistrationStatus>('unregistered');
+    const [showTicketModal, setShowTicketModal] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-    // --- Data Fetching Logic ---
+
+    // Utility to simulate Razorpay button opening
+    const openRazorpay = (event: Event) => {
+        const isMobile = window.innerWidth <= 640;
+        toast('Simulating Razorpay Payment...', {
+            icon: '💳',
+            duration: 5000,
+            style: {
+                background: '#1F2937',
+                color: '#34D399',
+                fontWeight: 'bold',
+                padding: '16px',
+                borderRadius: '10px',
+                width: isMobile ? '90vw' : 'full',
+                maxWidth: '600px',
+            },
+        });
+        
+        // **In a real app, this is where you'd initiate the Razorpay instance**
+        // For simulation, let's auto-transition to 'registered' after a delay
+        setTimeout(() => {
+            // Simulate successful payment
+            setRegStatus('registered');
+            toast.success('Payment successful! You are now registered.', { duration: 3000 });
+        }, 2000);
+    };
+
+
+    // --- Data Fetching Logic (Modified to check user-specific status) ---
     const fetchEventDetails = useCallback(async () => {
+        // ... (existing error/loading checks)
         if (eventId === 'placeholder-uuid') {
             setError('No event ID provided. Cannot fetch data.');
             setLoading(false);
@@ -139,28 +212,74 @@ export default function EventDetailsClientContent() {
         setLoading(true);
         setError(null);
 
-        const { data, error } = await supabase
+        // Fetch Event Details
+        const { data: eventData, error: eventError } = await supabase
             .from('events')
             .select('*')
             .eq('id', eventId)
             .single();
 
-        if (error) {
-            console.error('Error fetching event:', error);
-            setError(error.message || 'Failed to fetch event details. Check RLS policy.');
+        if (eventError) {
+            console.error('Error fetching event:', eventError);
+            setError(eventError.message || 'Failed to fetch event details. Check RLS policy.');
             setEvent(null);
-        } else {
-            // Apply mock data to fill gaps for presentation if needed
-            const mockDefaults = {
-                title: 'Nature Hackathon',
-                location: 'LPU',
-                organizer_name: 'drogon',
-                category: 'Hackathon',
-                contact_email: 'piyushsaini0404@gmail.com',
-                contact_phone: '987654321',
-            };
-            setEvent({ ...mockDefaults, ...data } as Event);
+            setLoading(false);
+            return;
         }
+
+        const event: Event = { 
+            // Apply mock data to fill gaps for presentation if needed
+            title: 'Nature Hackathon',
+            location: 'LPU',
+            organizer_name: 'drogon',
+            category: 'Hackathon',
+            contact_email: 'piyushsaini0404@gmail.com',
+            contact_phone: '987654321',
+            ...eventData 
+        } as Event;
+        setEvent(event);
+        
+        // Fetch Current User
+        const { data: { session } } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
+        setCurrentUserId(userId || null);
+        
+        // Fetch current registrations count (for capacity check)
+        const { count: regCount, error: regCountError } = await supabase
+            .from('registrations')
+            .select('*', { count: 'exact' })
+            .eq('event_id', event.id);
+        
+        const currentCount = regCount || 0;
+        setCurrentRegistrations(currentCount);
+
+        if (event.max_participants && currentCount >= event.max_participants) {
+            setRegStatus('full');
+        } else if (userId) {
+            // Fetch User Registration Status
+            const { data: userReg, error: userRegError } = await supabase
+                .from('event_registrations') // Assuming a 'registrations' table
+                .select('is_paid') // Assuming a 'payment_status' column ('pending', 'completed')
+                .eq('event_id', event.id)
+                .eq('user_id', userId)
+                .single();
+
+            if (userReg) {
+                if (userReg.is_paid === 'PAID' || event.ticket_price === 0 || event.ticket_price === null) {
+                    setRegStatus('registered');
+                } else if (userReg.is_paid === 'pending' && event.ticket_price! > 0) {
+                    setRegStatus('pending_payment');
+                } else {
+                     // Fallback in case of registration record but weird status
+                    setRegStatus('unregistered');
+                }
+            } else {
+                setRegStatus('unregistered');
+            }
+        } else {
+            setRegStatus('unregistered');
+        }
+
         setLoading(false);
     }, [eventId]);
 
@@ -168,22 +287,12 @@ export default function EventDetailsClientContent() {
         fetchEventDetails();
     }, [fetchEventDetails]);
 
-    useEffect(() => {
-        const fetchRegistrations = async () => {
-            if (!event) return;
-            const { data, error } = await supabase
-                .from('event_registrations')
-                .select('*', { count: 'exact' })
-                .eq('event_id', event.id);
-            setCurrentRegistrations(data?.length || 0);
-        };
-        fetchRegistrations();
-    }, [event]);
+    
+    
     // --- Render Loading/Error States ---
     if (loading) {
+        // ... (Loading UI)
         return (
-            // This is the initial loading state *after* the Suspense fallback
-            // has yielded to the client component.
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
                 <Loader2 className="w-10 h-10 animate-spin text-green-500 mb-4" />
                 <p className="text-xl">Loading event data...</p>
@@ -192,6 +301,7 @@ export default function EventDetailsClientContent() {
     }
 
     if (error || !event) {
+        // ... (Error UI)
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-8">
                 <AlertTriangle className="w-10 h-10 text-red-500 mb-4" />
@@ -216,69 +326,7 @@ export default function EventDetailsClientContent() {
     const priceDisplay = formatPrice(event.ticket_price);
     const isPaid = (event.ticket_price ?? 0) > 0;
     const isUpcoming = event.status === 'approved' || event.status === 'pending';
-
-
-    const handleregistration = async () => {
-        if (!event) return;
-
-        // Check max participants
-        const currentParticipants = event.max_participants || 100; // default 100
-        // You may want to fetch the actual registered participants from Supabase here
-        const { data: registered, error: regError } = await supabase
-            .from('registrations') // assuming a table 'registrations'
-            .select('*', { count: 'exact' })
-            .eq('event_id', event.id);
-
-        const currentCount = registered?.length || 0;
-
-        if (currentCount >= currentParticipants) {
-            toast.error('Maximum registration limit reached!', {
-                duration: 2500,
-                style: {
-                    background: '#1F2937',
-                    color: '#F87171', // red
-                    fontWeight: 'bold',
-                    padding: '16px',
-                    borderRadius: '10px',
-                },
-                iconTheme: {
-                    primary: '#F87171',
-                    secondary: '#1F2937',
-                },
-            });
-            return;
-        }
-
-        // Check login
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            const isMobile = window.innerWidth <= 640;
-            toast.error('Please log in first to register for this event.', {
-                duration: 2500,
-                style: {
-                    background: '#1F2937',
-                    color: '#FACC15',
-                    fontWeight: 'bold',
-                    padding: '16px',
-                    borderRadius: '10px',
-                    width: isMobile ? '90vw' : 'full',
-                    maxWidth: '600px',
-                },
-                iconTheme: {
-                    primary: '#FACC15',
-                    secondary: '#1F2937',
-                },
-            });
-            return;
-        }
-
-        // Proceed to registration page
-        router.push(`/event-page/${event.id}/register`);
-    };
-
-    // --- inside EventDetailsClientContent ---
-// Derived data for UI
-
+    
     // Format UTC HH:MM
     const formatUTC = (date: Date) => {
         const hours = date.getUTCHours().toString().padStart(2,'0');
@@ -287,14 +335,82 @@ export default function EventDetailsClientContent() {
     };
 
 
+    const handleregistration = async () => {
+        if (!event) return;
+
+        // Check login (simplified, as status check already assumed logged in or not)
+        if (!currentUserId) {
+        toast.error('Please log in first to register for this event.', { duration: 2500 });
+        // Optionally redirect to login here: router.push('/login');
+        return;
+        }
+
+        let registrationUrl = `/event-page/${event.id}/register`;
+        // If unregistered and free, go straight to registration process (or simply mark as registered for free events)
+        if (regStatus === 'pending_payment') {
+        // 💡 Case: RESUME REGISTRATION / PAY NOW (Pass resume flag and user ID)
+            registrationUrl = `/event-page/${event.id}/register?status=resume&user_id=${currentUserId}`;
+            toast('Resuming registration to complete payment...', { icon: '📝' });
+        
+        } else if (regStatus === 'unregistered') {
+            // 💡 Case: NEW REGISTRATION (Pass user ID)
+            registrationUrl = `/event-page/${event.id}/register?user_id=${currentUserId}`;
+            toast('Starting new registration...', { icon: '✍️' });
+        }
+        
+        // Use Next.js router for navigation
+        router.push(registrationUrl);
+    };
+
+    // --- Button Logic based on Registration Status ---
+
+    let buttonText = 'Register for Event';
+    let buttonAction: () => void = handleregistration;
+    let isButtonDisabled = false;
+    let buttonClass = 'bg-green-600 text-white hover:bg-green-700';
+
+    switch (regStatus) {
+        case 'registered':
+            buttonText = 'Registered! 🎉';
+            isButtonDisabled = true;
+            buttonAction = () => {}; // No action
+            buttonClass = 'bg-gray-500 cursor-not-allowed text-white';
+            break;
+        case 'pending_payment':
+            buttonText = 'Registration Pending: Pay Now';
+            buttonAction = handleregistration;
+            buttonClass = 'bg-yellow-500 text-gray-900 hover:bg-yellow-600';
+            break;
+        case 'full':
+            buttonText = 'Registration Full';
+            isButtonDisabled = true;
+            buttonAction = () => {};
+            buttonClass = 'bg-red-500 cursor-not-allowed text-white';
+            break;
+        case 'unregistered':
+        default:
+            buttonText = isPaid ? `Register & Pay ${priceDisplay}` : 'Register for Event';
+            buttonAction = handleregistration;
+            buttonClass = 'bg-green-600 text-white hover:bg-green-700';
+            break;
+    }
+
+
+    
+
+
     // --- Render Main Page ---
     return (
         <div className="min-h-screen bg-gray-900 text-white font-sans">
+            <Toaster position="top-right" />
+            
+            {/* Ticket Modal */}
+            {showTicketModal && event && <TicketModal event={event} onClose={() => setShowTicketModal(false)} />}
             
             {/* 1. Header and Banner */}
-            {/* Increased height on small screens for better title visibility */}
+            {/* ... (Existing Banner/Header UI) ... */}
             <div className="relative h-[30rem] sm:h-130 overflow-hidden pb-5"> 
-    {/* Banner Image (Nature Theme Background) */}
+                {/* Banner Image (Nature Theme Background) */}
                 <div 
                     className="absolute inset-0 bg-cover bg-center transition-opacity duration-500"
                     style={{ 
@@ -360,13 +476,12 @@ export default function EventDetailsClientContent() {
             </div>
 
             {/* Main Content Grid */}
-            {/* Reduced negative margin for better mobile view */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-6 lg:p-8 mt-[-1rem] sm:mt-[-3rem] relative">
                 
                 {/* 4. Main Content Cards (Left Column - Span 2) */}
                 <div className="lg:col-span-2 space-y-8">
                     
-                    {/* Card B: Registration CTA (Moved to the top of the left column) */}
+                    {/* Card B: Registration CTA (Modified) */}
                     
                         <div className="p-6 bg-gray-800 border border-green-600 rounded-xl shadow-2xl space-y-4">
                         <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3">Registration</h3>
@@ -377,22 +492,32 @@ export default function EventDetailsClientContent() {
                             <span className="text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
                         </div>
 
-                        {/* Creative Addition */}
+                        {/* Creative Addition (Capacity Alert) */}
                         <p className="text-sm text-yellow-300 bg-gray-700/50 p-3 rounded-md border-l-4 border-yellow-500">
-                            Limited to **{event.max_participants || 100} participants**. Don't miss out on this opportunity!
+                            Limited to **{event.max_participants || 100} participants**. Current registrations: **{currentRegistrations}**.
                         </p>
 
-                        <Toaster position="top-right" />
-
-                        {/* Action Buttons */}
+                        {/* Action Buttons (Modified) */}
                         <button
-                            onClick={handleregistration}
-                            disabled={currentRegistrations >= (event.max_participants || 100)}
-                            className={`w-full py-3 text-lg font-bold rounded-lg shadow-md transition duration-150
-                                ${currentRegistrations >= (event.max_participants || 100) ? 'bg-gray-500 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
+                            onClick={buttonAction}
+                            disabled={isButtonDisabled || !isUpcoming} // Disable if not upcoming as well
+                            className={`w-full py-3 text-lg font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center
+                                ${isButtonDisabled || !isUpcoming ? 'bg-gray-500 cursor-not-allowed' : buttonClass}`}
                         >
-                            {currentRegistrations >= (event.max_participants || 100) ? 'Registration Full' : 'Register for Event'}
-                        </button>           
+                            {isButtonDisabled && regStatus !== 'registered' ? <AlertTriangle className='w-5 h-5 mr-2' /> : null}
+                            {buttonText}
+                        </button>
+
+                        {/* NEW: Show Ticket Button if Registered */}
+                        {regStatus === 'registered' && (
+                             <button
+                                onClick={() => setShowTicketModal(true)}
+                                className="w-full py-3 mt-2 border border-green-600 text-green-400 rounded-lg flex items-center justify-center hover:bg-green-600 hover:text-white transition duration-150 font-bold"
+                            >
+                                <Ticket className="w-5 h-5 mr-2" /> View My Ticket
+                            </button>
+                        )}
+                        
 
                         <button
                             // Conditional check for navigator.share is good practice
@@ -547,9 +672,16 @@ export default function EventDetailsClientContent() {
                     {/* Card E: Quick Actions */}
                     <Card title="Quick Actions" icon={<ExternalLink />}>
                         <div className="flex flex-col space-y-2">
-                            <button onClick={handleregistration} className="text-green-400 hover:text-green-500 text-left font-medium">
-                                Register for Event
+                            {/* Quick Action: Register/Pay Button */}
+                            <button onClick={buttonAction} className="text-green-400 hover:text-green-500 text-left font-medium disabled:text-gray-500" disabled={isButtonDisabled}>
+                                {regStatus === 'pending_payment' ? 'Complete Payment' : 'Register for Event'}
                             </button>
+                            {/* Quick Action: View Ticket Button */}
+                            {regStatus === 'registered' && (
+                                <button onClick={() => setShowTicketModal(true)} className="text-green-400 hover:text-green-500 text-left font-medium">
+                                    View My Ticket
+                                </button>
+                            )}
                             <button onClick={() => navigator.share ? navigator.share({ title: event.title, url: window.location.href }) : toast.error('Share function unavailable.')} className="text-gray-400 hover:text-gray-300 text-left font-medium">
                                 Share with Friends
                             </button>
@@ -567,19 +699,19 @@ export default function EventDetailsClientContent() {
 
             {/* Card C: Why Attend? (Value Proposition) - Show on larger screens as a standalone section */}
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8'>
-                 <Card title="Why Attend?" icon={<Check className="text-green-500" />} className="lg:block hidden">
-                    <div className="space-y-5">
-                        {WHY_ATTEND_POINTS.map((point, index) => (
-                            <div key={index} className="flex items-start">
-                                <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
-                                <div className="ml-3">
-                                    <p className="font-semibold text-white" dangerouslySetInnerHTML={{ __html: point.title }} />
-                                    <p className="text-gray-400 text-sm" dangerouslySetInnerHTML={{ __html: point.detail.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                    <Card title="Why Attend?" icon={<Check className="text-green-500" />} className="lg:block hidden">
+                        <div className="space-y-5">
+                            {WHY_ATTEND_POINTS.map((point, index) => (
+                                <div key={index} className="flex items-start">
+                                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
+                                    <div className="ml-3">
+                                        <p className="font-semibold text-white" dangerouslySetInnerHTML={{ __html: point.title }} />
+                                        <p className="text-gray-400 text-sm" dangerouslySetInnerHTML={{ __html: point.detail.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
+                            ))}
+                        </div>
+                    </Card>
             </div>
         </div>
     );

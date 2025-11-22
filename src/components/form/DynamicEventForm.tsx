@@ -12,45 +12,53 @@ interface DynamicEventFormProps {
   // IMPORTANT CHANGE: Now accepts DynamicFormData to pass up to parent
   onFormSubmit: (formData: DynamicFormData) => void; 
   ticketPrice: number; 
+  initialData: DynamicFormData | null;
 }
 
-const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, onFormSubmit, ticketPrice }) => {
+const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, onFormSubmit, ticketPrice, initialData }) => {
   
   const [fields, setFields] = useState<FormField[]>([]);
-  const [formData, setFormData] = useState<DynamicFormData>({});
-  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState<DynamicFormData>(initialData || {}); 
+  const [loading, setLoading] = useState(true);  
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadFields = async () => {
-      try {
-        // 1. FIX: Corrected the TypeScript syntax to declare the type.
-        const fetchedFields: FormField[] = await fetchEventFormFields(eventId);
-        
-        setFields(fetchedFields);
+    const loadFields = async () => {
+      try {
+        const fetchedFields: FormField[] = await fetchEventFormFields(eventId);
+        setFields(fetchedFields);
 
-        const initialData: DynamicFormData = {};
-        
-        // 2. FIX: Added explicit type to the 'field' parameter to resolve TS7006.
-        fetchedFields.forEach((field: FormField) => { 
-          if (field.field_type !== 'checkbox') {
-            initialData[field.field_name] = ''; 
-          } else {
-            initialData[field.field_name] = [];
-          }
-        });
-        setFormData(initialData);
-        
-      } catch (err) {
-        console.error("Error loading form fields:", err); 
-        setError('Failed to load form structure.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadFields();
-  }, [eventId]);
+        // 💡 REVISED INITIALIZATION LOGIC
+        const defaultFormTemplate: DynamicFormData = {};
+        
+        // 1. Create a clean template based on fetched fields
+        fetchedFields.forEach((field: FormField) => { 
+          // Initialize fields that are NOT pre-filled with empty values
+          if (field.field_type !== 'checkbox') {
+            defaultFormTemplate[field.field_name] = ''; 
+          } else {
+            defaultFormTemplate[field.field_name] = [];
+          }
+        });
+        
+        // 2. Merge the template with initialData (pre-filled values take precedence)
+        const mergedData: DynamicFormData = {
+          ...defaultFormTemplate,
+          ...(initialData || {}) // Apply initialData on top
+        };
+        
+        setFormData(mergedData); // Set the final merged state
+        
+      } catch (err) {
+        console.error("Error loading form fields:", err); 
+        setError('Failed to load form structure.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadFields();
+  }, [eventId, initialData]);
 
   
   const handleChange = useCallback((fieldName: string, value: string | string[], type: string) => {
