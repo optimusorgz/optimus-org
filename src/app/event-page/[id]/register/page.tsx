@@ -6,14 +6,10 @@ import { useParams, useRouter } from 'next/navigation';
 import DynamicEventForm from '@/components/form/DynamicEventForm';
 import supabase from '@/api/client';
 import { Loader2, DollarSign, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
-import Script from 'next/script'; 
-import { DynamicFormData } from '@/lib/types/event'; 
-import { sendRegistrationEmail } from '@/lib/email'; // Still imported, but not used in finalizeRegistration per request
-
-// --- UPDATED IMPORTS ---
-import { preRegisterUser, finalizeRegistrationStatus } from '@/lib/dynamicForm'; 
-import { DynamicPreRegResult } from '@/lib/types/event'; // Assuming this is defined or will be defined.
-import { set } from 'date-fns';
+import Script from 'next/script';
+import { DynamicFormData } from '@/lib/types/event';
+import { preRegisterUser, finalizeRegistrationStatus } from '@/lib/dynamicForm';
+import { DynamicPreRegResult } from '@/lib/types/event';
 
 declare global {
   interface Window {
@@ -21,7 +17,6 @@ declare global {
   }
 }
 
-// --- Type Definition ---
 interface Event {
   id: string;
   title: string;
@@ -35,7 +30,7 @@ const RegisterPage = () => {
 
   const eventId = Array.isArray(params.id) ? params.id[0] : (params.id as string | undefined);
 
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null >(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userPhone, setUserPhone] = useState<string | null>(null);
   const [eventData, setEventData] = useState<Event | null>(null);
@@ -43,58 +38,53 @@ const RegisterPage = () => {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [registrationStatus, setRegistrationStatus] = useState<'idle' | 'success' | 'payment_required' | 'error' | 'submitting_data'>('idle');
 
-  const [razorpayOrderId, setRazorpayOrderId] = useState<string | null>(null); 
-  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false); 
+  const [razorpayOrderId, setRazorpayOrderId] = useState<string | null>(null);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
-  const [ticketUid, setTicketUid] = useState<string | null>(null); 
+  const [ticketUid, setTicketUid] = useState<string | null>(null);
   const [preRegTicketUid, setPreRegTicketUid] = useState<string | null>(null);
 
-  const formDataRef = useRef<DynamicFormData>({}); 
+  const formDataRef = useRef<DynamicFormData>({});
   const [prefilledFormData, setPrefilledFormData] = useState<DynamicFormData | null>(null);
+
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
 
   // --- Fetch Event and User Data ---
   const fetchData = useCallback(async (id: string) => {
     setLoading(true);
     setFetchError(null);
 
-    // 1. Get Session & User ID
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       router.push(`/login?redirect=/events/${id}/register`);
       return;
     }
-    
-    const currentUserId = session.user.id ?? null; 
+
+    const currentUserId = session.user.id ?? null;
     const userEmailFromSession = session.user.email ?? null;
 
     if (!currentUserId) {
-        console.error('User ID missing from active session.');
-        setFetchError('Authentication error: User ID not found.');
-        setLoading(false);
-        return;
+      console.error('User ID missing from active session.');
+      setFetchError('Authentication error: User ID not found.');
+      setLoading(false);
+      return;
     }
 
     setUserId(currentUserId);
-    setUserEmail(userEmailFromSession); 
+    setUserEmail(userEmailFromSession);
 
-    // 2. Fetch User Profile for Phone
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('phone_number') 
+      .select('phone_number')
       .eq('id', currentUserId)
       .single();
 
-    if (profileData && profileData.phone_number) {
-      setUserPhone(profileData.phone_number); 
-    } else if (profileError && profileError.code !== 'PGRST116') { 
-      console.warn('Could not fetch user phone number:', profileError.message);
-    }
+    if (profileData && profileData.phone_number) setUserPhone(profileData.phone_number);
+    else if (profileError && profileError.code !== 'PGRST116') console.warn('Could not fetch user phone number:', profileError.message);
 
-
-    // 3. Fetch Event Data
     const { data, error } = await supabase
       .from('events')
-      .select('id, title, description, ticket_price') 
+      .select('id, title, description, ticket_price')
       .eq('id', id)
       .single();
 
@@ -103,14 +93,15 @@ const RegisterPage = () => {
       setFetchError(error?.message || 'Event not found.');
     } else {
       setEventData(data as Event);
+      setPaymentAmount(data.ticket_price ?? 0);
     }
 
     if (currentUserId) {
-        const existingFormData = await fetchPendingFormData(id, currentUserId);
-        if (existingFormData) {
-            setPrefilledFormData(existingFormData);
-            console.log('Found existing pending form data for pre-fill.');
-        }
+      const existingFormData = await fetchPendingFormData(id, currentUserId);
+      if (existingFormData) {
+        setPrefilledFormData(existingFormData);
+        console.log('Found existing pending form data for pre-fill.');
+      }
     }
 
     setLoading(false);
@@ -121,36 +112,25 @@ const RegisterPage = () => {
     else setLoading(false);
   }, [eventId, fetchData]);
 
-  // Add this utility function *outside* the RegisterPage component, or just above fetchData.
-
-  // UTILITY FUNCTION (New)
   const fetchPendingFormData = async (eventId: string, userId: string): Promise<DynamicFormData | null> => {
-      // 1. Find the latest 'pending' ticket for this user and event
-      const { data, error } = await supabase
-          .from('event_registrations')
-          .select('form_data') // Assuming 'form_data' column exists and stores the JSON
-          .eq('event_id', eventId)
-          .eq('user_id', userId)
-          .limit(1)
-          .single();
-          
-      if (error && error.code !== 'PGRST116') { // PGRST116 means No Rows
-          console.error('Error fetching pending form data:', error.message);
-          return null;
-      }
+    const { data, error } = await supabase
+      .from('event_registrations')
+      .select('form_data')
+      .eq('event_id', eventId)
+      .eq('user_id', userId)
+      .limit(1)
+      .single();
 
-      if (data && data.form_data) {
-          // NOTE: form_data is typically stored as JSONB in Supabase.
-          // It might be a string if you don't use the JSONB type, so parse it if needed.
-          return data.form_data as DynamicFormData; 
-      }
-      
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching pending form data:', error.message);
       return null;
+    }
+
+    return data?.form_data as DynamicFormData ?? null;
   };
 
-
-  // --- Finalize Registration (updates DB) ---
-  const finalizeRegistration = async (ticketUidToUse: string, paymentResponse: any) => {
+  // --- Finalize Registration ---
+  const finalizeRegistration = async (ticketUidToUse: string | null, paymentResponse: any) => {
     if (!eventId || !userId || !eventData || !ticketUidToUse) {
       console.error("Finalization failed: Missing event, user, or pre-registration UID.");
       setFetchError("Internal error during final registration.");
@@ -164,26 +144,6 @@ const RegisterPage = () => {
     try {
       await finalizeRegistrationStatus(eventId, userId, ticketUidToUse, paymentResponse);
 
-      try {
-      await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formDataRef.current,          // All form fields
-          event_title: eventData.title,
-          event_date: eventData.ticket_price === 0 ? "Free Event" : "Date not provided",
-          event_time: "Time not provided",
-          venue: "Venue not provided",
-        }),
-      });
-      // ignore response; we do NOT throw on failure
-    } catch {
-      // silently ignore email failure
-      console.warn("Registration email failed to send. Continuing without blocking registration.");
-    }
-
-    setRegistrationStatus('success');
-      // NOTE: sendRegistrationEmail is NOT called here, as per the previous request.
       setRegistrationStatus('success');
     } catch (error: any) {
       console.error('Final registration update failed:', error);
@@ -202,156 +162,161 @@ const RegisterPage = () => {
     finalizeRegistration(preRegTicketUid, response);
   };
 
-  // --- Razorpay Payment Initiator (MODIFIED) ---
+  // --- Razorpay Payment Initiator ---
   const handleProceedToPayment = useCallback(() => {
-    if (!razorpayOrderId || !eventData || !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-      console.error("Payment initiation failed: Missing Order ID or Key.");
-      setFetchError("Payment data is incomplete.");
-      setRegistrationStatus('error');
-      return;
-    }
+  if (!razorpayOrderId || !eventData || !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+    console.error("Payment initiation failed: Missing Order ID or Key.");
+    setFetchError("Payment data is incomplete.");
+    setRegistrationStatus("error");
+    return;
+  }
 
-    setIsPaymentProcessing(true);
-    const ticketPrice = eventData.ticket_price ?? 0;
+  setIsPaymentProcessing(true);
 
-    // Prefill Logic: Uses form data, falls back to profile data, then placeholders
-    // We use the data captured in formDataRef.current during the initial submission
-    const prefillName = formDataRef.current.Name || "Registered User";
-    const prefillEmail = formDataRef.current.Email || userEmail || "user@example.com"; 
-    const prefillContact = formDataRef.current.Phone || userPhone || "9999999999"; 
+  if (isNaN(paymentAmount) || paymentAmount < 0) {
+    setFetchError("Invalid ticket price selected.");
+    setIsPaymentProcessing(false);
+    return;
+  }
 
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-      amount: ticketPrice * 100,
-      currency: "INR",
-      name: eventData.title,
-      description: `Registration for ${eventData.title}`,
-      order_id: razorpayOrderId,
-      handler: function (response: any) {
-        handlePaymentSuccess(response);
-        setIsPaymentProcessing(false);
-      },
-      modal: {
-        ondismiss: () => {
-          setIsPaymentProcessing(false);
-          // 💡 FIX 1: Reset the registration status to stop the loop
-          setRegistrationStatus('idle'); 
-          // 💡 FIX 2: Clear the Order ID so the user must click Pay Now again
-          setRazorpayOrderId(null); 
-          console.log('Payment modal closed, status reset to idle.');
-        }
-      },
-      prefill: {
-        name: prefillName,
-        email: prefillEmail,
-        contact: prefillContact,
-      },
-      theme: { color: "#4F46E5" },
-    };
+  const prefillName = formDataRef.current.Name || "Registered User";
+  const prefillEmail = formDataRef.current.Email || userEmail || "user@example.com";
+  const prefillContact = formDataRef.current.Phone || userPhone || "9999999999";
 
-    if (typeof window.Razorpay !== 'undefined') {
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } else {
-      console.error("Razorpay SDK not loaded.");
+  const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+    amount: paymentAmount * 100, // ✅ Ensure Razorpay gets the correct amount
+    currency: "INR",
+    name: eventData.title,
+    description: `Registration for ${eventData.title}`,
+    order_id: razorpayOrderId,
+    handler: function (response: any) {
+      handlePaymentSuccess(response);
       setIsPaymentProcessing(false);
-      setFetchError("Payment gateway is not ready. Please try again.");
-    }
-  }, [razorpayOrderId, eventData, handlePaymentSuccess, userEmail, userPhone]);
-
-
-
-  // --- Initial Form Submission (MODIFIED) ---
-  const handleInitialSubmission = async (formData: DynamicFormData) => {
-    if (!eventData || !eventId || !userId) return;
-
-    // Store form data for prefill, even if it's a pending resume
-    formDataRef.current = formData;
-
-    const ticketPrice = eventData.ticket_price ?? 0;
-    const initialStatus = ticketPrice > 0 ? 'pending' : 'free';
-
-    setLoading(true);
-    setFetchError(null);
-
-    try {
-    // Assuming preRegisterUser now returns the existing order ID if the ticket is pending
-    const preRegResult: DynamicPreRegResult = await preRegisterUser(
-      eventId,
-      userId,
-      formData,
-      initialStatus
-    );
-
-    const { ticketUid, isRegistered, existingStatus, existingOrderId } = preRegResult;
-
-      setPreRegTicketUid(ticketUid);
-
-      if (isRegistered) {
-        setLoading(false);
-        if (existingStatus === 'paid' || existingStatus === 'free') {
-          setTicketUid(ticketUid);
-          setFetchError(`You are already registered! Ticket ID: ${ticketUid}`);
-          setRegistrationStatus('success');
-          return;
-        } else if (existingStatus === 'pending' && ticketPrice > 0) {
-          console.log('Pending registration found. Reusing order ID or creating new one.');
-          
-          if (existingOrderId) {
-            // Found existing pending order ID! Use it.
-            setRazorpayOrderId(existingOrderId);
-            setRegistrationStatus('payment_required');
-            setLoading(false);
-            return;
-          } else {
-             // Pending ticket exists but order ID is missing or expired, create a new order
-             // FALL THROUGH TO PAID EVENT LOGIC BELOW
-             // We do nothing here and let the paid event logic below handle order creation.
-          }
-
-        } else {
-          setFetchError('You are already registered, but with unknown status. Contact support.');
-          setRegistrationStatus('error');
-          return;
-        }
-      }
-
-      // Logic for NEW registration OR existing PENDING registration without a valid Order ID
-      if (ticketPrice > 0) {
-        if (registrationStatus === 'payment_required' && razorpayOrderId) {
-          // If we got here via an existingOrderId check above, just exit and wait for useEffect to trigger payment
-          setLoading(false); 
-          return;
-        }
-
-        // Paid event: create Razorpay order
-        const response = await fetch('/api/create-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: ticketPrice * 100, ticketUid }), // Pass ticketUid to associate order
-        });
-        const data = await response.json();
-        if (!response.ok || data.error) throw new Error(data.error || "Failed to create order.");
-        
-        // IMPORTANT: In your server-side logic (or finalizeRegistrationStatus),
-        // you must update the ticket record with this new Razorpay Order ID.
-        setRazorpayOrderId(data.orderId);
-        setRegistrationStatus('payment_required');
-      } else {
-        // Free event: finalize immediately
-        console.log('Free Event - Finalizing registration...');
-        if (!ticketUid) throw new Error('Ticket UID missing for free event.');
-        await finalizeRegistration(ticketUid, { razorpay_payment_id: 'FREE_EVENT', razorpay_order_id: 'NA' });
-      }
-    } catch (error: any) {
-      console.error("Submission Error:", error);
-      setFetchError(error.message || "Unknown error during registration.");
-      setRegistrationStatus('error');
-    } finally {
-      // Only set loading to false if we are not moving to payment_required state
-      if (registrationStatus !== 'payment_required') setLoading(false);
-    }
+    },
+    modal: {
+      ondismiss: () => {
+        setIsPaymentProcessing(false);
+        setRegistrationStatus("idle");
+        setRazorpayOrderId(null);
+        console.log("Payment modal closed, status reset to idle.");
+      },
+    },
+    prefill: {
+      name: prefillName,
+      email: prefillEmail,
+      contact: prefillContact,
+    },
+    theme: { color: "#4F46E5" },
   };
+
+  if (typeof window.Razorpay !== "undefined") {
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } else {
+    console.error("Razorpay SDK not loaded.");
+    setIsPaymentProcessing(false);
+    setFetchError("Payment gateway is not ready. Please try again.");
+  }
+}, [razorpayOrderId, eventData, userEmail, userPhone, paymentAmount]);
+
+
+  // --- Initial Form Submission ---
+  const handleInitialSubmission = async (formData: DynamicFormData) => {
+  if (!eventData || !eventId || !userId) return;
+
+  formDataRef.current = formData;
+
+  // --- Determine payment method and amount ---
+  let amountToPay = 0;
+  let paymentMethod: string | null | string[] | number;
+  
+  
+  if (formData.ticketPrice) {
+    paymentMethod = "online";
+    amountToPay = Number(formData.ticketPrice ?? 0);
+  }else if (eventData.ticket_price && eventData.ticket_price > 0) {
+    amountToPay = Number(eventData.ticket_price);
+    paymentMethod = amountToPay === 0 ? "free" : "online";
+  } else {
+    paymentMethod = "free";
+    amountToPay = 0;
+  }
+
+  setPaymentAmount(amountToPay);
+  console.log("User Selected Price:", formData.ticketPrice);
+  console.log("Amount To Pay:", amountToPay);
+
+
+  // --- Handle pay_later ---
+  if (paymentMethod === "pay_later") {
+    const preRegResult = await preRegisterUser(eventId, userId, formData , "pending");
+    setRegistrationStatus("success");
+    setTicketUid(preRegResult.ticketUid);
+    return;
+  }
+
+  // --- Handle free event ---
+  if (paymentMethod === "free" || amountToPay === 0) {
+    const preRegResult = await preRegisterUser(eventId, userId, formData, "free");
+    await finalizeRegistration(preRegResult.ticketUid!, { razorpay_payment_id: "FREE" });
+    return;
+  }
+
+  // --- Online payment ---
+  const initialStatus = amountToPay > 0 ? "pending" : "free";
+  setLoading(true);
+  setFetchError(null);
+
+  try {
+    const preRegResult: DynamicPreRegResult = await preRegisterUser(eventId, userId, formData, initialStatus);
+    const { ticketUid, isRegistered, existingStatus, existingOrderId } = preRegResult;
+    setPreRegTicketUid(ticketUid);
+
+    if (isRegistered) {
+      setLoading(false);
+      if (existingStatus === "paid" || existingStatus === "free") {
+        setTicketUid(ticketUid);
+        setFetchError(`You are already registered! Ticket ID: ${ticketUid}`);
+        setRegistrationStatus("success");
+        return;
+      } else if (existingStatus === "pending" && amountToPay > 0) {
+        if (existingOrderId) {
+          setRazorpayOrderId(existingOrderId);
+          setRegistrationStatus("payment_required");
+          setLoading(false);
+          return;
+        }
+      } else {
+        setFetchError("You are already registered, but with unknown status. Contact support.");
+        setRegistrationStatus("error");
+        return;
+      }
+    }
+
+    if (amountToPay > 0) {
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: amountToPay * 100, ticketUid }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) throw new Error(data.error || "Failed to create order.");
+
+      setRazorpayOrderId(data.orderId);
+      setRegistrationStatus("payment_required");
+    } else {
+      await finalizeRegistration(ticketUid, { razorpay_payment_id: "FREE_EVENT", razorpay_order_id: "NA" });
+    }
+  } catch (error: any) {
+    console.error("Submission Error:", error);
+    setFetchError(error.message || "Unknown error during registration.");
+    setRegistrationStatus("error");
+  } finally {
+    if (registrationStatus !== "payment_required") setLoading(false);
+  }
+};
+
 
   // --- Render ---
   if (loading || isPaymentProcessing || registrationStatus === 'submitting_data') {
@@ -378,8 +343,7 @@ const RegisterPage = () => {
     );
   }
 
-  const ticketPrice = eventData.ticket_price ?? 0;
-  const isFree = ticketPrice === 0;
+  const isFree = (formDataRef.current.ticketPrice ?? paymentAmount) === 0;
 
   if (registrationStatus === 'success') {
     return (
@@ -390,37 +354,20 @@ const RegisterPage = () => {
             {fetchError?.includes('already registered') ? 'Already Registered!' : 'Registration Complete!'}
           </h2>
           <p className="text-gray-300 mb-4">
-            {fetchError?.includes('already registered') 
+            {fetchError?.includes('already registered')
               ? 'Your registration was previously confirmed.'
               : `You are now registered for **${eventData.title}**. Save your Ticket ID.`}
           </p>
           {ticketUid && (
             <div className="mt-6 p-6 border border-gray-700 rounded-xl bg-gray-800 flex flex-col items-center text-center shadow-lg">
-            {/* Big Green Tick */}
-            <svg
-              className="w-16 h-16 text-green-500 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-
-            {/* Success Message */}
-            <h3 className="text-2xl font-bold text-white mb-2">Registration Successful!</h3>
-
-            {/* Info */}
-            <p className="text-gray-300 text-sm">
-              Your E-ticket has been generated. You can view and download it from your <span className="text-green-400 font-semibold">Dashboard</span>.
-            </p>
+              <svg className="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <h3 className="text-2xl font-bold text-white mb-2">Registration Successful!</h3>
+              <p className="text-gray-300 text-sm">
+                Your E-ticket has been generated. You can view and download it from your <span className="text-green-400 font-semibold">Dashboard</span>.
+              </p>
             </div>
-
           )}
           <button
             onClick={() => router.push(`/event-page`)}
@@ -433,6 +380,8 @@ const RegisterPage = () => {
     );
   }
 
+const displayPrice = Number(formDataRef.current.ticketPrice ?? paymentAmount);
+
   if (registrationStatus === 'payment_required') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-900">
@@ -440,21 +389,22 @@ const RegisterPage = () => {
           <DollarSign className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">Payment Required</h2>
           <p className="text-gray-300 mb-4">
-            Your registration is **reserved** (Ticket ID: {preRegTicketUid?.substring(0, 8)}...). Complete payment for: **₹{ticketPrice.toFixed(2)}**.
+            You selected <b>{formDataRef.current.payment}</b><br />
+            Amount to pay: <b>₹{paymentAmount.toFixed(2)}</b>
           </p>
           <p className='text-sm text-yellow-300 mb-4 font-semibold'>
             The payment window should open automatically.
           </p>
           {razorpayOrderId && (
             <button
-              onClick={handleProceedToPayment} 
+              onClick={handleProceedToPayment}
               disabled={isPaymentProcessing}
               className="w-full py-3 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-200 flex items-center justify-center disabled:bg-green-400"
             >
               {isPaymentProcessing ? (
                 <> <Loader2 className="w-5 h-5 animate-spin mr-2" /> Initializing...</>
               ) : (
-                <>Pay Now: ₹{ticketPrice.toFixed(2)} <ArrowRight className="w-5 h-5 ml-2" /></>
+                <>Pay Now: ₹{displayPrice.toFixed(2)} <ArrowRight className="w-5 h-5 ml-2" /></>
               )}
             </button>
           )}
@@ -470,20 +420,14 @@ const RegisterPage = () => {
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       {(registrationStatus === 'idle' || registrationStatus === 'error') && (
         <div className="w-full max-w-2xl bg-gray-800/90 border border-gray-700 p-8 rounded-xl shadow-2xl">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 border-b border-gray-700 pb-3">
-            Register for: {eventData.title}
-          </h1>
-
-          <div className={`p-4 mb-6 rounded-lg flex items-center ${isFree ? 'bg-green-900/50 border border-green-600 text-green-400' : 'bg-yellow-900/50 border border-yellow-600 text-yellow-400'}`}>
-            <p className="font-semibold">{isFree ? 'This is a **FREE** event.' : `Ticket Price: ₹${ticketPrice.toFixed(2)}`}</p>
-          </div>
-
-
+          <h1 className="text-3xl md:text-4xl font-bold mb-6 text-white">{eventData.title}</h1>
+          {fetchError && <p className="text-red-400 mb-4">{fetchError}</p>}
+          
           <DynamicEventForm 
               eventId={eventId} 
               userId={userId} 
               onFormSubmit={handleInitialSubmission} 
-              ticketPrice={ticketPrice} 
+              paymentAmount={paymentAmount} 
               // ADD THIS PROP:
               initialData={prefilledFormData} 
             />

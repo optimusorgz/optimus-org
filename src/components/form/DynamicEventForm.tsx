@@ -3,19 +3,17 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { FormField, DynamicFormData } from '@/lib/types/event';
-// FIX: Changed to a NAMED import to resolve "Module has no default export" error
-import { fetchEventFormFields } from '@/lib/dynamicForm'; 
+import { fetchEventFormFields } from '@/lib/dynamicForm';
 
 interface DynamicEventFormProps {
   eventId: string;
   userId: string;
-  // IMPORTANT CHANGE: Now accepts DynamicFormData to pass up to parent
   onFormSubmit: (formData: DynamicFormData) => void; 
-  ticketPrice: number; 
+  paymentAmount: number; 
   initialData: DynamicFormData | null;
 }
 
-const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, onFormSubmit, ticketPrice, initialData }) => {
+const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, onFormSubmit, paymentAmount, initialData }) => {
   
   const [fields, setFields] = useState<FormField[]>([]);
   const [formData, setFormData] = useState<DynamicFormData>(initialData || {}); 
@@ -23,70 +21,63 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // --- Load form fields ---
   useEffect(() => {
-    const loadFields = async () => {
-      try {
-        const fetchedFields: FormField[] = await fetchEventFormFields(eventId);
-        setFields(fetchedFields);
+    const loadFields = async () => {
+      try {
+        const fetchedFields: FormField[] = await fetchEventFormFields(eventId);
+        setFields(fetchedFields);
 
-        // 💡 REVISED INITIALIZATION LOGIC
-        const defaultFormTemplate: DynamicFormData = {};
-        
-        // 1. Create a clean template based on fetched fields
-        fetchedFields.forEach((field: FormField) => { 
-          // Initialize fields that are NOT pre-filled with empty values
-          if (field.field_type !== 'checkbox') {
-            defaultFormTemplate[field.field_name] = ''; 
-          } else {
-            defaultFormTemplate[field.field_name] = [];
-          }
-        });
-        
-        // 2. Merge the template with initialData (pre-filled values take precedence)
-        const mergedData: DynamicFormData = {
-          ...defaultFormTemplate,
-          ...(initialData || {}) // Apply initialData on top
-        };
-        
-        setFormData(mergedData); // Set the final merged state
-        
-      } catch (err) {
-        console.error("Error loading form fields:", err); 
-        setError('Failed to load form structure.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadFields();
-  }, [eventId, initialData]);
+        // Initialize empty template for fields
+        const defaultFormTemplate: DynamicFormData = {};
+        fetchedFields.forEach((field: FormField) => { 
+          if (field.field_type !== 'checkbox' && field.field_type !== 'payment') defaultFormTemplate[field.field_name] = '';
+          else defaultFormTemplate[field.field_name] = [];
+          if (field.field_type === 'payment') defaultFormTemplate[field.field_name] = ''; // ensure payment exists
+        });
 
-  
+        // Merge with initial data (prefilled)
+        setFormData({
+          ...defaultFormTemplate,
+          ...(initialData || {})
+        });
+      } catch (err) {
+        console.error("Error loading form fields:", err);
+        setError('Failed to load form structure.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadFields();
+  }, [eventId, initialData]);
+
+  // --- Handle input changes ---
   const handleChange = useCallback((fieldName: string, value: string | string[], type: string) => {
-    setFormData(prevData => {
+    setFormData(prev => {
       if (type === 'checkbox') {
-        const currentArray = (prevData[fieldName] as string[]) || [];
+        const currentArray = (prev[fieldName] as string[]) || [];
         const checked = currentArray.includes(value as string);
         return {
-          ...prevData,
+          ...prev,
           [fieldName]: checked
             ? currentArray.filter(v => v !== value)
             : [...currentArray, value as string],
         };
       }
       return {
-        ...prevData,
+        ...prev,
         [fieldName]: value,
       };
     });
   }, []);
 
-
+  // --- Form submission ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
 
-    // Validate Form
+    // Validate required fields
     const isFormValid = fields.every(field => {
       if (!field.is_required) return true;
       const value = formData[field.field_name];
@@ -99,17 +90,17 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
       return;
     }
 
-    // --- Pass the data to the parent for pre-registration/payment ---
     try {
-      onFormSubmit(formData); 
-      // Note: The parent component handles setting the loading state after this.
-      
+      // Pass data to parent, which handles free/paid/pay_later logic
+      onFormSubmit(formData);
     } catch (err) {
-      setError('Error during submission flow.');
+      setError('Error during submission.');
       setSubmitting(false);
     }
   };
+
   
+
   const renderField = (field: FormField) => {
     const commonProps = {
       id: field.field_name,
@@ -119,7 +110,6 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
       onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => 
         handleChange(field.field_name, e.target.value, field.field_type),
     };
-
     const value = formData[field.field_name];
 
     switch (field.field_type) {
@@ -128,38 +118,83 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
       case 'number':
         return <input type={field.field_type} value={value as string || ''} {...commonProps} />;
       case 'select':
-        return (
-          <select value={value as string || ''} {...commonProps}>
-            <option value="">Select...</option>
-            {field.options?.values.map(option => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        );
+      const selectOptions = Array.isArray(field.options?.values) ? field.options.values : [];
+      return (
+        <select value={value as string || ''} {...commonProps}>
+          <option value="">Select...</option>
+          {selectOptions.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      );
+
       case 'checkbox':
+  const checkboxOptions = Array.isArray(field.options?.values) ? field.options.values : [];
+  return (
+    <div className="mt-2 space-y-2">
+      {checkboxOptions.map(option => (
+        <div key={option} className="flex items-center">
+          <input
+            type="checkbox"
+            checked={(value as string[] || []).includes(option)}
+            onChange={() => handleChange(field.field_name, option, 'checkbox')}
+            className="h-4 w-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
+          />
+          <label htmlFor={`${field.field_name}-${option}`} className="ml-3 text-sm font-medium text-gray-300">
+            {option}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+
+  case "payment":
+  const paymentOptions = Array.isArray(field.options) ? field.options : [];
+
+  return (
+    <div className="mt-2 space-y-2">
+      {paymentOptions.map(option => {
+        // Support formats:
+        // "VIP-200", "VIP - 200", "VIP : 200", "VIP | 200"
+        const parts = option.split(/[-:|]/).map((s: string) => s.trim());
+        const label = parts[0];
+        const price = Number(parts[1]) || 0;
+
         return (
-          <div className="mt-2 space-y-2">
-            {field.options?.values.map(option => (
-              <div key={option} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={(value as string[] || []).includes(option)}
-                  onChange={() => handleChange(field.field_name, option, 'checkbox')}
-                  className="h-4 w-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
-                />
-                <label htmlFor={`${field.field_name}-${option}`} className="ml-3 text-sm font-medium text-gray-300">
-                  {option}
-                </label>
-              </div>
-            ))}
+          <div key={option} className="flex items-center">
+            <input
+              type="radio"
+              name={field.field_name}
+              value={label}
+              checked={formData[field.field_name] === label}
+              onChange={() => {
+                setFormData(prev => ({
+                  ...prev,
+                  [field.field_name]: label,
+                  ticketPrice: price,  // ❗ correctly set user's selected amount
+                }));
+              }}
+              className="h-4 w-4 text-green-600 border-gray-700 rounded focus:ring-green-500"
+            />
+            <label className="ml-3 text-sm font-medium text-gray-300">
+              {label} (₹{price})
+            </label>
           </div>
         );
+      })}
+    </div>
+  );
+
+
+
+
+
       default:
         return null;
     }
   };
-  
-  const isFree = ticketPrice === 0;
+
+  const isFree = paymentAmount === 0;
 
   if (loading) return <div className="text-center p-8 text-gray-300">Loading form...</div>;
   if (error && !submitting) return <div className="text-center p-8 text-red-400">Error: {error}</div>;
@@ -169,7 +204,6 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-bold text-green-400 border-b border-gray-700 pb-2">Registration Form</h2>
       
-      {/* FIX: Explicitly type 'field' in the map function */}
       {fields.map((field: FormField) => ( 
         <div key={field.id}>
           <label htmlFor={field.field_name} className="block text-sm font-medium text-gray-300">
@@ -179,9 +213,7 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
         </div>
       ))}
 
-      {error && (
-        <p className="text-red-400 text-sm">{error}</p>
-      )}
+      {error && <p className="text-red-400 text-sm">{error}</p>}
 
       <button
         type="submit"
@@ -192,7 +224,7 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
           ? 'Processing...' 
           : isFree 
             ? 'Register for Event' 
-            : `Proceed to Payment: ₹${ticketPrice.toFixed(2)}`}
+            : `Proceed to Payment`}
       </button>
     </form>
   );

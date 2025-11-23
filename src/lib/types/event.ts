@@ -4,7 +4,7 @@ export interface FormField {
     id: string;
     event_id: string;
     field_name: string;
-    field_type: 'text' | 'email' | 'number' | 'select' | 'checkbox';
+    field_type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'payment';
     is_required: boolean;
     options: {
         values: string[];
@@ -13,7 +13,7 @@ export interface FormField {
 }
 
 
-export type DynamicFormData = Record<string, string | string[]>;
+export type DynamicFormData = Record<string, string | string[] | number>;
 
 export interface DynamicPreRegResult {
     ticketUid: string | null;

@@ -37,6 +37,7 @@ export async function preRegisterUser(
   eventId: string,
   userId: string,
   formData: DynamicFormData,
+  
   initialStatus: 'pending' | 'free' // 'pending' for paid, 'free' for free
 ): Promise<{ ticketUid: string | null; isRegistered: boolean; existingStatus?: string }> {
   
@@ -69,6 +70,7 @@ export async function preRegisterUser(
       event_id: eventId,
       user_id: userId,
       form_data: formData, // Store form data
+      ticket_price: Number(formData.ticketPrice ?? 0),
       is_paid: initialStatus,
       status: initialStatus,
     })
