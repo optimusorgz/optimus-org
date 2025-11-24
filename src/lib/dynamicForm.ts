@@ -54,14 +54,40 @@ export async function preRegisterUser(
     throw new Error(`Database error during check: ${fetchError.message}`);
   }
 
-  if (existingReg) {
-    // Registration already exists. Return the UID and status.
+  // If registration exists, update form_data ONLY when still pending
+if (existingReg) {
+
+    if (existingReg.is_paid === 'pending') {
+        const { data: updated, error: updateError } = await supabase
+            .from('event_registrations')
+            .update({
+                form_data: formData,
+                ticket_price: Number(formData.ticketPrice ?? 0),
+            })
+            .eq('event_id', eventId)
+            .eq('user_id', userId)
+            .select("ticket_uid, is_paid")
+            .single();
+
+        if (updateError) {
+            throw new Error(`Failed to update registration: ${updateError.message}`);
+        }
+
+        return {
+            ticketUid: updated.ticket_uid,
+            isRegistered: true,
+            existingStatus: updated.is_paid,
+        };
+    }
+
+    // If status is paid/free → cannot update form
     return {
-      ticketUid: existingReg.ticket_uid,
-      isRegistered: true,
-      existingStatus: existingReg.is_paid, // e.g., 'pending', 'paid', 'free'
+        ticketUid: existingReg.ticket_uid,
+        isRegistered: true,
+        existingStatus: existingReg.is_paid,
     };
-  }
+}
+
 
   // 2. If registration does not exist, insert the initial record
   const { data: newReg, error: insertError } = await supabase

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import supabase from "@/api/client" // Ensure this path is correct
 import { toast, Toaster } from 'react-hot-toast';
+import { max } from 'date-fns';
 
 
 // --- 1. TYPE DEFINITIONS ---
@@ -492,6 +493,9 @@ export default function EventDetailsClientContent() {
                             <span className="text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
                         </div>
                        
+                       <p className="text-yellow-300 text-sm border-l-4 border-yellow-500 p-2 rounded-lg ">
+                            Limit: {event.max_participants} participants only
+                        </p>
 
                         {/* Action Buttons (Modified) */}
                         <button
@@ -599,10 +603,10 @@ export default function EventDetailsClientContent() {
                             <h4 className="font-semibold text-white text-lg mb-2">Event Timeline</h4>
                             <div className="p-4 border-l-4 border-green-500 bg-gray-700/50 rounded-md space-y-2">
                                 <p className="text-gray-300">
-                                <span className="font-semibold text-white">Start Date:</span> {formatUTC(startDate)}
+                                <span className="font-semibold text-white">Start Time:</span> {formatUTC(startDate)}
                                 </p>
                                 <p className="text-gray-300">
-                                <span className="font-semibold text-white">End Date:</span> {formatUTC(endDate)}
+                                <span className="font-semibold text-white">End Time:</span> {formatUTC(endDate)}
                                 </p>
                             </div>
                             </div>

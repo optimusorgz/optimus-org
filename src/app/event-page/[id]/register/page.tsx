@@ -393,7 +393,7 @@ const displayPrice = Number(formDataRef.current.ticketPrice ?? paymentAmount);
             Amount to pay: <b>₹{paymentAmount.toFixed(2)}</b>
           </p>
           <p className='text-sm text-yellow-300 mb-4 font-semibold'>
-            The payment window should open automatically.
+            To open the payment window click here.
           </p>
           {razorpayOrderId && (
             <button
