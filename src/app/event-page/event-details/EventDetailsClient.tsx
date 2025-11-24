@@ -491,11 +491,7 @@ export default function EventDetailsClientContent() {
                             <span className="text-3xl font-extrabold text-green-400">{priceDisplay}</span>
                             <span className="text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
                         </div>
-
-                        {/* Creative Addition (Capacity Alert) */}
-                        <p className="text-sm text-yellow-300 bg-gray-700/50 p-3 rounded-md border-l-4 border-yellow-500">
-                            Limited to **{event.max_participants || 100} participants**. Current registrations: **{currentRegistrations}**.
-                        </p>
+                       
 
                         {/* Action Buttons (Modified) */}
                         <button
