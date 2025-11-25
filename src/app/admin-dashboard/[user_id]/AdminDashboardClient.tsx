@@ -70,7 +70,6 @@ export default function AdminDashboardClient() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard title="Total Events" value={stats.events} icon={Calendar} color="green" />
-          <StatCard title="Total Registrations" value={stats.registrations} icon={Users} color="indigo" />
           <StatCard title="Organizations" value={stats.organizations} icon={Briefcase} color="purple" />
           <StatCard title="Recruitment Entries" value={stats.recruitment} icon={FileText} color="red" />
         </div>

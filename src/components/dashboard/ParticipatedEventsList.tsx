@@ -1,4 +1,3 @@
-// components/ParticipatedEventsList.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -21,15 +20,24 @@ interface EventListProps {
 const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTicketUid, setCurrentTicketUid] = useState('');
+  const [currentEventId, setCurrentEventId] = useState('');
 
-  const handleViewTicket = (ticketUid: string) => {
+  const handleViewTicket = (ticketUid: string, eventId: string) => {
     setCurrentTicketUid(ticketUid);
+    setCurrentEventId(eventId);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentTicketUid('');
+    setCurrentEventId('');
+  };
+
+  const isEventOver = (dateStr: string) => {
+    const today = new Date();
+    const eventDate = new Date(dateStr);
+    return eventDate < today;
   };
 
   return (
@@ -51,12 +59,20 @@ const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title }) => 
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm text-white leading-snug truncate">{event.name}</p>
                       <p className="mt-1 text-xs text-gray-300">Date: {event.date}</p>
+                      {isEventOver(event.date) && (
+                        <p className="mt-1 text-xs text-red-400 font-semibold">Event Over</p>
+                      )}
                     </div>
                   </div>
 
                   <button
-                    onClick={() => handleViewTicket(event.ticket_uid)}
-                    className="ml-4 px-3 py-1 text-xs font-medium text-gray-900 bg-green-400 rounded hover:bg-green-500 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 flex-shrink-0"
+                    onClick={() => handleViewTicket(event.ticket_uid, event.id)}
+                    disabled={isEventOver(event.date)}
+                    className={`ml-4 px-3 py-1 text-xs font-medium text-gray-900 rounded flex-shrink-0 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 ${
+                      isEventOver(event.date)
+                        ? 'bg-gray-600 cursor-not-allowed'
+                        : 'bg-green-400 hover:bg-green-500'
+                    }`}
                   >
                     View Ticket
                   </button>
@@ -68,7 +84,7 @@ const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title }) => 
         </div>
       </div>
 
-      <TicketModal ticketId={currentTicketUid} isOpen={isModalOpen} onClose={closeModal} />
+      <TicketModal ticketId={currentTicketUid} eventId={currentEventId} isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 };

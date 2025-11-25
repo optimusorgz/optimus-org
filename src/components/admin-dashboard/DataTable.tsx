@@ -41,11 +41,11 @@ export default function DataTable<T extends DataRowWithId>({
           {data.map((row: T) => ( // <-- Map parameter is typed
             <tr key={getRowId(row)} className="hover:bg-gray-700/50">
               {columns.map((col: Column<T>) => (
-                <td key={col.accessorKey as string} className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                  {/* Access the data safely using 'as any' for dynamic key access, passing the whole row to render */}
+                <td key={`${getRowId(row)}-${col.accessorKey as string}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                   {col.render ? col.render((row as any)[col.accessorKey], row) : (row as any)[col.accessorKey]}
                 </td>
               ))}
+
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                 
                 {/* 1. Only show Eye button if the prop is provided (e.g., for 'events' table) */}
@@ -62,9 +62,9 @@ export default function DataTable<T extends DataRowWithId>({
                 </button>
                 
                 {/* 3. Delete Button */}
-                <button onClick={() => onDelete(getRowId(row))} className="text-red-400 hover:text-red-500" title="Delete">
+                {/* <button onClick={() => onDelete(getRowId(row))} className="text-red-400 hover:text-red-500" title="Delete">
                   <Trash2 size={18} />
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}

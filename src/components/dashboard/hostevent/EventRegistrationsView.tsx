@@ -172,7 +172,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
       {/* ✅ Header & Count Section */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 border-b border-gray-700 pb-3">
         <h2 className="text-2xl md:text-3xl font-bold text-green-400 mb-2 sm:mb-0">
-          📝 Event Registrations ({filtered.length}) ({eventId})
+          📝 Event Registrations ({filtered.length}) 
         </h2>
         <div className="flex gap-2">
             <Button 

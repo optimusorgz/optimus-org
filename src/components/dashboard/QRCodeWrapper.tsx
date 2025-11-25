@@ -12,7 +12,7 @@ interface QRCodeWrapperProps {
 const QRCodeWrapper: React.FC<QRCodeWrapperProps> = ({ value, size = 150 }) => {
   return (
     <div style={{ width: size, height: size }}>
-      <QRCode value={value} size={size} bgColor="#1F2937" fgColor="#34D399" />
+      <QRCode value={value} size={size} bgColor="#000000ff" fgColor="#ffffffff" />
     </div>
   );
 };
