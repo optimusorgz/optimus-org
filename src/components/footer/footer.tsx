@@ -89,7 +89,23 @@ const Footer = () => {
 
       {/* Footer Bottom: Copyright & Legal Links */}
       {/* Note: border-gray-800 is a perfect fit for a divider on bg-gray-900 */}
-      <div className="border-t border-gray-800 mt-12 pt-8 text-center md:flex md:justify-between md:items-center text-sm text-gray-500">
+      <div className="mt-12 flex justify-center items-center  text-sm text-gray-500 text-center py-3">
+        <p className="flex items-center gap-2">
+          Developed By: <span className="font-medium">Piyush Saini</span>
+           <a 
+              href="https://www.linkedin.com/in/piyushsaini2004/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              // Updated hover to theme's green accent color (text-green-500)
+              className="text-gray-400 hover:text-green-500 transition duration-200"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-6 h-6" />
+            </a>
+        </p>
+      </div>
+
+      <div className="border-t border-gray-800  pt-8 text-center md:flex md:justify-between md:items-center text-sm text-gray-500">
         <p className="mb-4 md:mb-0">&copy; 2025 Optimus Student Organisation. All rights reserved.</p>
         <div className="flex flex-wrap justify-center md:justify-end space-x-4">
           {/* Updated link hover to theme's primary text color for this section (text-white) */}
