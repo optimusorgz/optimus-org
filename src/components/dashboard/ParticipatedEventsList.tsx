@@ -37,11 +37,11 @@ const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title }) => 
   const isEventOver = (dateStr: string) => {
     const [y, m, d] = dateStr.split("-").map(Number);
     const eventDate = new Date(y, m - 1, d); // LOCAL date, not UTC
-
+  
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     eventDate.setHours(0, 0, 0, 0);
-
+  
     return eventDate < today;
   };
 

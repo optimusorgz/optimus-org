@@ -392,9 +392,12 @@ const displayPrice = Number(formDataRef.current.ticketPrice ?? paymentAmount);
             You selected <b>{formDataRef.current.payment}</b><br />
             Amount to pay: <b>₹{paymentAmount.toFixed(2)}</b>
           </p>
-          <p className='text-sm text-yellow-300 mb-4 font-semibold'>
-            To open the payment window click here.
+         <p className="text-2xl text-yellow-300 mb-4 font-extrabold uppercase text-center tracking-wide">
+            ⚠️ DO NOT CLOSE OR GO BACK FROM THIS PAGE UNTIL YOUR REGISTRATION SUCCESS MESSAGE APPEARS! ⚠️
           </p>
+
+
+
           {razorpayOrderId && (
             <button
               onClick={handleProceedToPayment}
