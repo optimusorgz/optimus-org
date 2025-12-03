@@ -22,7 +22,7 @@ const EventManagementPage: React.FC = () => {
     const [activeFeature, setActiveFeature] = useState<ActiveFeature>(null);
     
     const displayEventId = eventId.length > 10 ? eventId.substring(0, 8) + '...' : eventId;
-    const eventTitle = `Event Management for ID: ${displayEventId}`;
+    const eventTitle = `Event Management`;
 
     const handleGoBack = useCallback(() => router.push('/dashboard'), [router]);
     const handleCloseModal = useCallback(() => setActiveFeature(null), []);
@@ -44,9 +44,7 @@ const EventManagementPage: React.FC = () => {
         <div className="bg-gray-800/90 border border-gray-700 p-8 rounded-xl shadow-2xl space-y-8">
             <div className="flex items-center justify-between border-b border-gray-700 pb-4">
                 <h1 className="text-3xl font-bold text-green-400">{eventTitle}</h1>
-                <button onClick={handleGoBack} className="flex items-center text-gray-400 hover:text-green-500 transition duration-200 font-semibold">
-                    <ChevronLeft className="w-5 h-5 mr-1" /> Back to All Hosted Events
-                </button>
+                
             </div>
 
             <p className="text-gray-300 text-lg font-medium mb-6">Select an action to manage your event:</p>

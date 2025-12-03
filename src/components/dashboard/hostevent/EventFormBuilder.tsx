@@ -14,7 +14,7 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
   const [fields, setFields] = useState<FormField[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Normalize options to always have { values: [] } structure
+  // ✅ Always return { values: [] }
   const normalizeOptions = (options: any) => {
     if (!options) return { values: [] };
     if (Array.isArray(options)) return { values: options };
@@ -34,16 +34,17 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
       console.error('Error fetching fields:', error);
       setFields([]);
     } else if (data) {
-      const mappedFields: FormField[] = data.map((f: any) => ({
-        id: f.id,
-        event_id: f.event_id,
-        field_name: f.field_name,
-        field_type: f.field_type,
-        is_required: f.is_required,
-        options: normalizeOptions(f.options),
-        order: f.order || 0,
-      }));
-      setFields(mappedFields);
+      setFields(
+        data.map((f: any) => ({
+          id: f.id,
+          event_id: f.event_id,
+          field_name: f.field_name,
+          field_type: f.field_type,
+          is_required: f.is_required,
+          options: normalizeOptions(f.options),
+          order: f.order || 0,
+        }))
+      );
     }
     setLoading(false);
   };
@@ -72,11 +73,10 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
     const field = newFields[index];
 
     if (key === 'options') {
-      // Convert comma-separated string to array safely
       field.options = { values: value.split(',').map((s: string) => s.trim()) };
     } else if (key === 'field_type') {
       field.field_type = value;
-      if (value === 'select' || value === 'checkbox' || value === 'payment') {
+      if (['select', 'checkbox', 'payment'].includes(value)) {
         field.options = field.options || { values: ['Option 1'] };
       } else {
         field.options = { values: [] };
@@ -90,8 +90,7 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
 
   const deleteField = async (fieldId: string, index: number) => {
     if (fieldId) {
-      const { error } = await supabase.from('event_form_fields').delete().eq('id', fieldId);
-      if (error) console.error('Error deleting field:', error);
+      await supabase.from('event_form_fields').delete().eq('id', fieldId);
     }
     setFields(fields.filter((_, i) => i !== index).map((f, i) => ({ ...f, order: i })));
   };
@@ -99,12 +98,16 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
   const saveFields = async () => {
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
+
       const payload = {
         event_id: field.event_id,
         field_name: field.field_name,
         field_type: field.field_type,
         is_required: field.is_required,
-        options: field.options?.values || [],
+
+        // ✅ FIXED: Store { values: [] } not array
+        options: field.options || { values: [] },
+
         order: i,
       };
 
@@ -114,29 +117,37 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
         await supabase.from('event_form_fields').update(payload).eq('id', field.id);
       }
     }
+
     fetchFields();
   };
 
-  if (loading) return <Loader2 className="animate-spin w-6 h-6 text-green-400" />;
+  if (loading)
+    return (
+      <div className="flex justify-center p-6">
+        <Loader2 className="animate-spin w-8 h-8 text-green-400" />
+      </div>
+    );
 
   return (
-    <div className="bg-gray-800 p-6 rounded-xl shadow-lg space-y-4 max-h-[80vh] overflow-y-auto">
-      <h2 className="text-xl font-bold text-green-400 mb-4">Edit Event Registration Form</h2>
+    <div className="bg-gray-900 p-6 rounded-xl shadow-xl space-y-4 max-h-[80vh] overflow-y-auto border border-gray-700 m-5">
+      <h2 className="text-4xl font-bold text-green-400 mb-8 text-center">
+        Event Registration Form Builder
+      </h2>
 
       {fields.map((field, index) => (
-        <div key={index} className="flex flex-col gap-2 bg-gray-700 p-2 rounded">
+        <div key={index} className="bg-gray-800 p-4 rounded-lg flex flex-col gap-3 border border-gray-300 ">
           <input
             type="text"
-            placeholder="Field Name / Question"
+            placeholder="Field Label"
             value={field.field_name}
             onChange={(e) => updateField(index, 'field_name', e.target.value)}
-            className="p-1 rounded flex-1 text-black"
+            className="p-2 rounded text-black bg-gray-300 border border-gray-300"
           />
 
           <select
             value={field.field_type}
             onChange={(e) => updateField(index, 'field_type', e.target.value)}
-            className="p-1 rounded text-black"
+            className="p-2 rounded text-black bg-gray-300 border border-gray-300"
           >
             <option value="text">Text</option>
             <option value="number">Number</option>
@@ -147,51 +158,49 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
             <option value="payment">Payment</option>
           </select>
 
-          {(field.field_type === 'select' ||
-            field.field_type === 'checkbox' ||
-            field.field_type === 'payment') && (
+          {['select', 'checkbox', 'payment'].includes(field.field_type) && (
             <textarea
               value={(field.options?.values || []).join(', ')}
               onChange={(e) => updateField(index, 'options', e.target.value)}
-              className="p-1 rounded text-black resize-none"
-              placeholder={
-                field.field_type === 'payment'
-                  ? 'VIP - 499, Basic - 99'
-                  : 'Option 1, Option 2'
-              }
+              className="p-2 rounded text-black resize-none bg-gray-300 border border-gray-300"
+              placeholder="Option 1, Option 2"
               rows={2}
-            />
+            /> 
           )}
 
-          <label className="flex items-center gap-1 text-gray-200">
+          <div className='flex gap-5'>
+
+
+          <label className="flex items-center gap-2 text-gray-200">
             <input
               type="checkbox"
               checked={field.is_required}
               onChange={(e) => updateField(index, 'is_required', e.target.checked)}
-            />
+              />
             Required
           </label>
 
           <button
             onClick={() => deleteField(field.id, index)}
-            className="p-1 bg-red-500 rounded hover:bg-red-600 w-max"
-          >
-            <Trash2 className="w-4 h-4" />
+            className="p-1 bg-red-800 rounded hover:bg-red-500 text-white w-max flex items-center gap-2"
+            >
+            Delete
           </button>
+          </div>
         </div>
       ))}
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex gap-3 mt-4 justify-center">
         <button
           onClick={addField}
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 flex items-center gap-1"
+          className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" /> Add Field
         </button>
 
         <button
           onClick={saveFields}
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+          className="bg-green-500 text-white p-3 rounded hover:bg-green-600"
         >
           Save Changes
         </button>
@@ -199,7 +208,7 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
         {onClose && (
           <button
             onClick={onClose}
-            className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
+            className="bg-gray-600 text-white p-3 rounded hover:bg-gray-700"
           >
             Close
           </button>

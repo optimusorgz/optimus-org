@@ -248,7 +248,7 @@ const EventEditForm: React.FC<EventEditFormProps> = ({ eventId, onCancel, onEven
             <h2 className="text-3xl font-bold text-orange-400 mb-6 border-b border-gray-700 pb-3">
                 ✏️ Edit Event Details
             </h2>
-            <p className="text-gray-400 mb-4">Editing Event ID: **{eventId.substring(0, 8)}...**</p>
+            <p className="text-gray-400 mb-4">Editing Event </p>
             
             {error && <p className="text-red-400 mb-4 bg-red-900/30 p-2 rounded">{error}</p>}
             

@@ -147,7 +147,7 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
       ))}
     </div>
   );
-
+  
   case "payment":
   const paymentOptions = Array.isArray(field.options) ? field.options : [];
 
