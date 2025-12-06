@@ -83,7 +83,7 @@ const BottomNavbar: React.FC = () => {
   return (
     <>
       <Toaster position="bottom-center" />
-      <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-gray-900 border-t border-gray-700 shadow-inner">
+      <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-gray-900 border-t border-gray-700 shadow-inner w-full">
         <div className="flex justify-around items-center h-20 px-2">
           {mobileNavItems.map((item) => {
             const active = isActive(item.href);
@@ -108,9 +108,7 @@ const BottomNavbar: React.FC = () => {
                     {item.icon}
                 </div>
 
-                <span className={`mt-1 text-xs relative z-10 ${active ? 'text-white' : 'text-gray-400'}`}>
-                    {item.name}
-                </span>
+                
                 </button>
             );
             })}

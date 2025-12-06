@@ -144,7 +144,7 @@
   };
 
   return (
-    <div className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full sm:w-[350px] lg:w-[300px] snap-center hover:scale-[1.01] transition-transform duration-300 border border-[#1f2430]">
+    <div className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full  snap-center hover:scale-[1.01] transition-transform duration-300 border border-[#1f2430]">
       {/* Image with overlays */}
       <div className="relative h-40 flex items-center justify-center">
         <img
@@ -203,8 +203,8 @@
 
   const HowItWorksStep: React.FC<{ step: Step }> = ({ step }) => (
     // The line is handled by the parent container's CSS
-    <div className="relative h-full z-10">
-      <div className="bg-[#1f2430] rounded-xl p-6 pt-10 shadow-2xl border border-[#2c3240] h-full flex flex-col items-center text-center hover:scale-[1.02] transition-transform duration-300">
+    <div className="relative h-full z-10 text-l md:text-l">
+      <div className="bg-[#1f2430] rounded-xl p-2 md:p-6 pt-5 md:pt-10 shadow-2xl border border-[#2c3240] h-full flex flex-col items-center text-center hover:scale-[1.02] transition-transform duration-300">
 
         {/* 1. Number at Top Left */}
         <span className="absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-sm font-bold text-white bg-cyan-600 border-2 border-cyan-400 rounded-full shadow-lg z-20">
@@ -212,14 +212,14 @@
         </span>
 
         {/* 2. Increased Icon Size (moved to top center) */}
-        <div className="mx-auto mb-6 w-16 h-16 flex items-center justify-center bg-[#181d29] rounded-full border-2 border-cyan-400 shadow-xl">
+        <div className="mx-auto mb-6 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-[#181d29] rounded-full border-2 border-cyan-400 shadow-xl">
           {/* Adjusted icon size class directly here (w-10 h-10 is larger than w-8 h-8 used previously) */}
-        {React.cloneElement(step.icon as React.ReactElement<any>, { className: "w-10 h-10 text-cyan-400" })}
+        {React.cloneElement(step.icon as React.ReactElement<any>, { className: "w-8 h-8 md:w-10 md:h-10 text-cyan-400" })}
         </div>
 
         {/* 3. Content below Icon (vertical layout) */}
-        <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-        <p className="text-md text-gray-400">{step.description}</p>
+        <h3 className="text-l md:text-xl font-bold text-white mb-2">{step.title}</h3>
+        <p className="text-xs md:text-sm text-gray-400">{step.description}</p>
       </div>
     </div>
   );
@@ -238,13 +238,13 @@
         <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
           What People Say
         </h2>
-        <p className="text-3xl font-extrabold text-white sm:text-4xl mb-12">
+        <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl mb-12">
           Hear from our community of event organizers and attendees
         </p>
 
         <div className="relative max-w-2xl mx-auto bg-[#181d29] rounded-xl p-6 sm:p-10 shadow-2xl border border-[#1f2430]">
           <StarRating rating={testimonial.rating} />
-          <p className="text-xl italic text-gray-200 leading-relaxed">
+          <p className="text-l md:text-xl italic text-gray-200 leading-relaxed">
             {testimonial.quote}
           </p>
           <div className="mt-8 pt-4 border-t border-gray-700 flex flex-col items-center">
@@ -252,8 +252,8 @@
             <div className="w-12 h-12 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold mb-3">
               {testimonial.name.charAt(0)}
             </div>
-            <p className="text-lg font-semibold text-white">{testimonial.name}</p>
-            <p className="text-sm text-cyan-400">{testimonial.role}</p>
+            <p className="text-l md:text-lg font-semibold text-white">{testimonial.name}</p>
+            <p className="text-xs md:text-sm text-cyan-400">{testimonial.role}</p>
           </div>
 
           {/* Carousel Controls */}
@@ -304,9 +304,9 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
             {allPartners.map((partner, index) => (
               <div
               key={`${partner.id}-${index}`}
-              className="flex-shrink-0 flex items-center justify-center w-64 h-16 opacity-70 hover:opacity-100 transition duration-300 group mr-8"
+              className="flex-shrink-0 flex items-center justify-center w-64 h-16 opacity-70 hover:opacity-100 transition duration-300 group "
               >
-                <div className="mr-3">{partner.icon}</div>
+                <div className="mr-2">{partner.icon}</div>
                 <span className="text-xl font-bold text-white group-hover:text-cyan-400 transition whitespace-nowrap">
                   {partner.name}
                 </span>
@@ -505,7 +505,7 @@ if (loading) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-6xl sm:text-6xl md:text-8xl font-extrabold text-white mb-6 leading-tight"
+          className="text-4xl sm:text-6xl md:text-8xl font-extrabold text-white mb-6 leading-tight"
         >
           Discover and Host <br className="hidden sm:inline" />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400 drop-shadow-lg">
@@ -526,7 +526,7 @@ if (loading) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-row sm:flex-row gap-4 justify-center"
           >
             <Link href="/event-page">
               <Button className="group bg-transparent border-2 border-cyan-500 hover:bg-cyan-600 hover:border-cyan-600 text-white font-bold text-lg gap-2 p-5 rounded-md flex items-center">
@@ -553,7 +553,7 @@ if (loading) {
               <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
                 Featured Events
               </h2>
-              <p className="text-3xl font-extrabold text-white sm:text-4xl">
+              <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl">
                 Discover the most popular events happening soon
               </p>
             </div>
@@ -664,11 +664,11 @@ if (loading) {
         </section>
 
         {/* -------------------- HOW IT WORKS SECTION -------------------- */}
-        <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="py-12 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
             How It Works
           </h2>
-          <p className="text-3xl font-extrabold text-white sm:text-4xl mb-12">
+          <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl mb-12">
             Get started with OPTIMUS in four simple steps
           </p>
           
