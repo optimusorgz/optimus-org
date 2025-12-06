@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import HomePage from "./home/page"; 
 import Loader from "@/components/ui/Loader";
 
-
 export default function Home() {
   
     const router = useRouter(); 
