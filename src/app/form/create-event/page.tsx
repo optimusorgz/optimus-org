@@ -285,7 +285,7 @@ export default function CreateEventPage() {
 
     // --- 4. Tailwind CSS UI ---
     return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mt-10">
             <div className="max-w-4xl w-full space-y-8 p-10 bg-gray-800/90 border border-gray-700 shadow-xl rounded-xl">
                 <h2 className="text-center text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">
                     Create New Event
@@ -293,7 +293,7 @@ export default function CreateEventPage() {
 
                 {/* Status Message */}
                 {message && (
-                    <div className={`p-4 rounded-md ${message.type === 'success' ? 'bg-green-900/50 border border-green-600 text-green-400' : message.type === 'warning' ? 'bg-yellow-900/50 border border-yellow-600 text-yellow-400' : 'bg-red-900/50 border border-red-600 text-red-400'}`}>
+                    <div className={`p-4 rounded-md ${message.type === 'success' ? 'bg-cyan-900/50 border border-cyan-600 text-cyan-400' : message.type === 'warning' ? 'bg-yellow-900/50 border border-yellow-600 text-yellow-400' : 'bg-red-900/50 border border-red-600 text-red-400'}`}>
                         {message.text}
                     </div>
                 )}
@@ -309,13 +309,13 @@ export default function CreateEventPage() {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        <h3 className="md:col-span-2 text-xl font-semibold text-green-400 border-b border-gray-700 pb-2">Event Details</h3>
+                        <h3 className="md:col-span-2 text-xl font-semibold text-cyan-400 border-b border-gray-700 pb-2">Event Details</h3>
 
                         {/* Title */}
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-white">Title</label>
                             <input id="title" name="title" type="text" required value={formData.title} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -328,7 +328,7 @@ export default function CreateEventPage() {
                                 onChange={handleChange}
                                 readOnly={!!organizationId} // Read only if organizationId is present
                                 disabled={isFormBlocked}
-                                className={`mt-1 block w-full rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500 ${organizationId ? 'bg-gray-700 border border-gray-600 cursor-not-allowed' : 'bg-gray-800 border border-white'}`}
+                                className={`mt-1 block w-full rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500 ${organizationId ? 'bg-gray-700 border border-gray-600 cursor-not-allowed' : 'bg-gray-800 border border-white'}`}
                             />
                             {organizationStatus && organizationStatus !== 'Approved' && (
                                 <p className="mt-1 text-xs text-yellow-400">Status: {organizationStatus}</p>
@@ -339,7 +339,7 @@ export default function CreateEventPage() {
                         <div className="md:col-span-2">
                             <label htmlFor="description" className="block text-sm font-medium text-white">Description</label>
                             <textarea id="description" name="description" rows={3} required value={formData.description} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             ></textarea>
                         </div>
@@ -354,7 +354,7 @@ export default function CreateEventPage() {
                                 value={formData.category}
                                 onChange={handleChange}
                                 disabled={isFormBlocked}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                             >
                                 <option value="" disabled>Select Category</option>
                                 <option value="Workshop">Workshop</option>
@@ -373,7 +373,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="location" className="block text-sm font-medium text-white">Location</label>
                             <input id="location" name="location" type="text" required value={formData.location} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -382,7 +382,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="start_date" className="block text-sm font-medium text-white">Start Date & Time</label>
                             <input id="start_date" name="start_date" type="datetime-local" required value={formData.start_date} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -391,7 +391,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="end_date" className="block text-sm font-medium text-white">End Date & Time</label>
                             <input id="end_date" name="end_date" type="datetime-local" required value={formData.end_date} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -410,7 +410,7 @@ export default function CreateEventPage() {
                                 required
                                 onChange={handleFileChange}
                                 disabled={isFormBlocked}
-                                className="mt-1 block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-green-400 hover:file:bg-gray-600 disabled:opacity-50"
+                                className="mt-1 block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-cyan-400 hover:file:bg-gray-600 disabled:opacity-50"
                             />
                             {bannerFile && (
                                 <p className="mt-1 text-xs text-gray-300">Selected: {bannerFile.name}</p>
@@ -421,7 +421,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="ticket_price" className="block text-sm font-medium text-white">Ticket Price (Numeric)</label>
                             <input id="ticket_price" name="ticket_price" type="number" required step="0.01" value={formData.ticket_price ?? ''} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -430,7 +430,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="max_participants" className="block text-sm font-medium text-white">Max Participants (Integer)</label>
                             <input id="max_participants" name="max_participants" type="number" required step="1" value={formData.max_participants ?? ''} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -439,7 +439,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="contact_email" className="block text-sm font-medium text-white">Contact Email</label>
                             <input id="contact_email" name="contact_email" type="email" required value={formData.contact_email ?? ''} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -448,7 +448,7 @@ export default function CreateEventPage() {
                         <div>
                             <label htmlFor="contact_phone" className="block text-sm font-medium text-white">Contact Phone</label>
                             <input id="contact_phone" name="contact_phone" type="tel" required value={formData.contact_phone ?? ''} onChange={handleChange}
-                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-green-500 focus:border-green-500"
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
                                 disabled={isFormBlocked}
                             />
                         </div>
@@ -459,7 +459,7 @@ export default function CreateEventPage() {
                         <button
                             type="submit"
                             disabled={isFormBlocked}
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-bold text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50"
                         >
                             {loading 
                                 ? 'Processing...' 

@@ -37,7 +37,7 @@ const ForgotPassword = () => {
   return (
     <Card className="w-full bg-gray-800/90 border-gray-700">
       <CardHeader>
-        <CardTitle className="text-green-400 border-b border-gray-700 pb-2">
+        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2">
           Forgot Password
         </CardTitle>
         <CardDescription className="text-gray-300">
@@ -61,7 +61,7 @@ const ForgotPassword = () => {
         <Button
           onClick={handleResetPassword}
           disabled={loading || !email}
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+          className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
         >
           {loading ? 'Sending...' : 'Send Reset Link'}
         </Button>

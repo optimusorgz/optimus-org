@@ -186,12 +186,12 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({ userId, onUpd
     }
     
     return (
-        <div className="p-6 bg-gray-800/90 border border-gray-700 rounded-xl max-h-[80vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-4 text-green-400 border-b border-gray-700 pb-2">Profile Settings</h2>
+        <div className="p-6 bg-gray-800/90 border border-gray-700 rounded-xl  overflow-y-auto">
+            <h2 className="text-2xl font-bold text-cyan-400 border-b border-gray-700 pb-2">Profile Settings</h2>
             
             {/* Display Messages */}
             {error && <div className="bg-red-900/50 border border-red-600 text-red-400 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
-            {success && <div className="bg-green-900/50 border border-green-600 text-green-400 px-4 py-3 rounded relative mb-4" role="alert">{success}</div>}
+            {success && <div className="bg-cyan-900/50 border border-cyan-600 text-cyan-400 px-4 py-3 rounded relative mb-4" role="alert">{success}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 
@@ -242,7 +242,7 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({ userId, onUpd
                             <Image
                                 src={profileData.avatar_url}
                                 alt="Current Avatar"
-                                className="rounded-full object-cover border-2 border-green-500"
+                                className="rounded-full object-cover border-2 border-cyan-500"
                                 width={96}
                                 height={96}
                             />
@@ -257,7 +257,7 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({ userId, onUpd
                         disabled={isUploading || isSubmitting}
                         className="mt-1 block w-full text-sm text-gray-300 border border-gray-700 rounded-lg cursor-pointer bg-gray-800"
                     />
-                    {isUploading && <p className="text-sm text-green-400 mt-1">Uploading...</p>}
+                    {isUploading && <p className="text-sm text-cyan-400 mt-1">Uploading...</p>}
                     <p className="text-xs text-gray-400 mt-1">
                         Upload a new file. This will automatically update your profile picture.
                     </p>
@@ -267,7 +267,7 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({ userId, onUpd
                 <Button 
                     type="submit" 
                     disabled={isSubmitting || isUploading}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 transition duration-150"
+                    className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 transition duration-150"
                 >
                     {isSubmitting ? 'Saving Profile...' : 'Update Name & Phone'}
                 </Button>

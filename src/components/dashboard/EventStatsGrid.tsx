@@ -4,6 +4,7 @@ import React from 'react';
 interface EventStatsGridProps {
     participated: number;
     hosted: number;
+
 }
 
 const StatCard: React.FC<{ title: string; value: number; color: string }> = ({ title, value, color }) => (

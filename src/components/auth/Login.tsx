@@ -77,12 +77,12 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
   }
 
   return (
-    <Card className="w-full bg-gray-800/90 border-gray-700">
+    <Card className="w-full bg-transparent border-t border-b border-gray-700" >
       {/* Google Login Button */}
       <div className="px-6 pt-4 pb-2">
         <Button
           type="button"
-          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
           onClick={handleGoogleLogin}
         >
           Continue with Google
@@ -90,7 +90,7 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
       </div>
 
       <CardHeader>
-        <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Login</CardTitle>
+        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2">Login</CardTitle>
         <CardDescription className="text-gray-300">Sign in to your account</CardDescription>
       </CardHeader>
 
@@ -142,7 +142,7 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
         <CardFooter className="px-6 py-4">
           <Button 
             type="submit" 
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
             disabled={loading}
           >
             {loading ? 'Logging In...' : 'Sign In'}

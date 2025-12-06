@@ -1,4 +1,3 @@
-// /src/app/dashboard/organizations/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import createClient from '@/api/client';
@@ -7,7 +6,7 @@ import ExportButton from '@/components/admin-dashboard/ExportButton';
 import OrganizationForm from '@/components/admin-dashboard/OrganizationForm';
 import Modal from '@/components/ui/Modal';
 import { Organization } from '@/lib/types/supabase';
-import { Plus } from 'lucide-react';
+import { Plus, Edit, Eye } from 'lucide-react';
 
 interface EnrichedOrganization extends Organization {
   owner_name?: string;
@@ -16,7 +15,7 @@ interface EnrichedOrganization extends Organization {
 
 export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<EnrichedOrganization[]>([]);
-  const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
+  const [selectedOrg, setSelectedOrg] = useState<EnrichedOrganization | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const supabase = createClient;
 
@@ -26,31 +25,18 @@ export default function OrganizationsPage() {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching organizations:', error);
-      return;
-    }
-
+    if (error) return console.error('Error fetching organizations:', error);
     if (!data) return;
 
-    // Fetch all profiles for efficiency
     const ownerIds = data.map((org) => org.owner_id).filter(Boolean);
-    const { data: profiles, error: profileError } = await supabase
+    const { data: profiles } = await supabase
       .from('profiles')
       .select('uuid, name, email')
       .in('uuid', ownerIds);
 
-    if (profileError) {
-      console.error('Error fetching profiles:', profileError);
-    }
-
     const enrichedData: EnrichedOrganization[] = data.map((org) => {
       const owner = profiles?.find((p) => p.uuid === org.owner_id);
-      return {
-        ...org,
-        owner_name: owner?.name || 'N/A',
-        owner_email: owner?.email || 'N/A',
-      };
+      return { ...org, owner_name: owner?.name || 'N/A', owner_email: owner?.email || 'N/A' };
     });
 
     setOrganizations(enrichedData);
@@ -60,13 +46,12 @@ export default function OrganizationsPage() {
     fetchOrganizations();
   }, []);
 
-  // Handlers for CRUD Form
   const handleOpenInsert = () => {
     setSelectedOrg(null);
     setIsFormOpen(true);
   };
 
-  const handleOpenEdit = (org: Organization) => {
+  const handleOpenEdit = (org: EnrichedOrganization) => {
     setSelectedOrg(org);
     setIsFormOpen(true);
   };
@@ -79,36 +64,21 @@ export default function OrganizationsPage() {
 
   const handleDelete = async (orgId: string | number) => {
     const idToDelete = String(orgId);
-
-    if (!confirm('Are you sure you want to delete this organization? This may affect linked events/profiles.')) return;
+    if (!confirm('Are you sure you want to delete this organization?')) return;
 
     const { error } = await supabase.from('organizations').delete().eq('id', idToDelete);
 
     if (error) {
       console.error('Delete error:', error);
-
-      let errorMessage = 'Error deleting organization. Please check RLS or foreign key constraints.';
-
-      if (error.code === '42501') {
-        errorMessage =
-          'Permission Denied: You do not have the rights to delete this organization. Check the DELETE RLS Policy (auth.uid() must match owner_id).';
-      } else if (error.code === '23503') {
-        errorMessage =
-          'Foreign Key Violation: Cannot delete because the organization is linked to existing events or user profiles.';
-      }
-
-      alert(errorMessage);
+      alert('Error deleting organization.');
     } else {
-      alert(`Organization ID ${idToDelete.substring(0, 8)}... deleted successfully.`);
       fetchOrganizations();
     }
   };
 
-  // Define Table Columns
   const columns = [
     { header: 'ID', accessorKey: 'id', render: (id: string) => `${id.substring(0, 6)}...` },
     { header: 'Organization Name', accessorKey: 'name' },
-    // { header: 'Owner ID', accessorKey: 'owner_id', render: (id: string) => (id ? `${id.substring(0, 6)}...` : 'N/A') },
     { header: 'Owner Name', accessorKey: 'owner_name' },
     { header: 'Owner Email', accessorKey: 'owner_email' },
     { header: 'Status', accessorKey: 'status' },
@@ -132,14 +102,76 @@ export default function OrganizationsPage() {
         </button>
       </div>
 
-      <DataTable
-        data={organizations}
-        columns={columns}
-        tableName="organizations"
-        onDelete={handleDelete}
-        onEdit={handleOpenEdit}
-      />
+      {/* Desktop Table */}
+      <div className="hidden md:block">
+        <DataTable
+          data={organizations}
+          columns={columns}
+          tableName="organizations"
+          onDelete={handleDelete}
+          onEdit={handleOpenEdit}
+        />
+      </div>
 
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {organizations.map((org) => (
+          <div
+            key={org.id}
+            className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition-colors"
+            onClick={() => setSelectedOrg(org)}
+          >
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-bold text-white">{org.name}</h2>
+              <span
+                className={`px-2 py-1 rounded-md text-sm font-semibold text-green-600 `}
+              >
+                {org.status}
+              </span>
+            <div className="flex justify-end mt-2 space-x-2 text-white">
+              <span
+                title="Edit"
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent opening modal
+                  handleOpenEdit(org);
+                }}
+              >
+                <Edit />
+              </span>
+              
+            </div>
+            </div>
+            
+
+            <div className="text-white mt-1 text-sm">{org.owner_name}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Organization Details Modal */}
+      {selectedOrg && (
+        <Modal onClose={() => setSelectedOrg(null)}>
+          <div className="space-y-3">
+            <h2 className="text-2xl font-bold">{selectedOrg.name}</h2>
+            <p>
+              <span className="font-semibold">Owner Name:</span> {selectedOrg.owner_name}
+            </p>
+            <p>
+              <span className="font-semibold">Owner Email:</span> {selectedOrg.owner_email}
+            </p>
+            <p>
+              <span className="font-semibold">Status:</span> {selectedOrg.status}
+            </p>
+            <p>
+              <span className="font-semibold">Created At:</span>{' '}
+              {new Date(selectedOrg.created_at).toLocaleDateString()}
+            </p>
+          </div>
+        </Modal>
+      )}
+
+      {/* CRUD Form Modal */}
       {isFormOpen && (
         <Modal onClose={() => setIsFormOpen(false)}>
           <OrganizationForm

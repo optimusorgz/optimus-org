@@ -77,7 +77,7 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
       <div className="px-6 pt-4 pb-2">
         <Button
           type="button"
-          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
           onClick={handleGoogleSignup}
         >
           Continue with Google
@@ -85,7 +85,7 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
       </div>
 
       <CardHeader>
-        <CardTitle className="text-green-400 border-b border-gray-700 pb-2">Sign Up</CardTitle>
+        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2">Sign Up</CardTitle>
         <CardDescription className="text-gray-300">Create a new account</CardDescription>
       </CardHeader>
 
@@ -153,7 +153,7 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
         <CardFooter className="px-6 py-4">
           <Button 
             type="submit" 
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
             disabled={loading}
           >
             {loading ? 'Signing Up...' : 'Create Account'}

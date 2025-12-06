@@ -68,7 +68,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, type = 'text', req
       // Added key for stability, though usually not required for single components
       key={name} 
       onChange={onChange as (e: React.ChangeEvent<HTMLInputElement>) => void}
-      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
+      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-cyan-500 focus:border-cyan-500 transition duration-150 ease-in-out"
     />
   </div>
 );
@@ -94,7 +94,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ label, name, required = false
       value={value}
       key={name}
       onChange={onChange}
-      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
+      className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-cyan-500 focus:border-cyan-500 transition duration-150 ease-in-out"
     >
       <option value="" disabled>Select {label.toLowerCase()}</option>
       {options.map((option: string) => (
@@ -188,14 +188,14 @@ export default function Page() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gray-800/90 border border-gray-700 shadow-xl rounded-xl">
+    <div className="max-w-4xl mx-auto p-6 bg-gray-800/90 border border-gray-700 shadow-xl rounded-xl mt-10 mb-20">
       <button
                     onClick={() => router.push('/home')}
-                    className="mt-6 text-green-400 hover:text-green-500 flex items-center"
+                    className="mt-6 text-cyan-400 hover:text-cyan-500 flex items-center"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back
                 </button>
-      <h1 className="text-4xl md:text-5xl font-extrabold lowercase text-center text-green-400 mb-8 border-b border-gray-700 pb-3">
+      <h1 className="text-4xl md:text-5xl font-extrabold lowercase text-center text-cyan-400 mb-8 border-b border-gray-700 pb-3">
         Optimus Membership Application 🚀
       </h1>
       
@@ -203,7 +203,7 @@ export default function Page() {
         
         {/* --- Personal Information --- */}
         <section>
-          <h2 className="text-xl font-semibold text-green-400 mb-4 border-l-4 border-green-500 pl-3">Personal Information</h2>
+          <h2 className="text-xl font-semibold text-cyan-400 mb-4 border-l-4 border-cyan-500 pl-3">Personal Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InputField
               label="Full Name"
@@ -272,7 +272,7 @@ export default function Page() {
                       required
                       checked={formData.gender === g}
                       onChange={handleChange}
-                      className="form-radio text-green-600 h-4 w-4"
+                      className="form-radio text-cyan-600 h-4 w-4"
                     />
                     <span className="ml-2 text-sm text-gray-300">{g}</span>
                   </label>
@@ -292,7 +292,7 @@ export default function Page() {
                 value={formData.residence}
                 onChange={handleChange as (e: React.ChangeEvent<HTMLInputElement>) => void}
                 placeholder="Hostel Block / Home Address"
-                className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
+                className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-cyan-500 focus:border-cyan-500 transition duration-150 ease-in-out"
               />
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function Page() {
 
         {/* --- Academic Information --- */}
         <section>
-          <h2 className="text-xl font-semibold text-green-400 mb-4 border-l-4 border-green-500 pl-3">Academic Information</h2>
+          <h2 className="text-xl font-semibold text-cyan-400 mb-4 border-l-4 border-cyan-500 pl-3">Academic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <SelectField
                 label="Branch/Department"
@@ -327,7 +327,7 @@ export default function Page() {
 
         {/* --- Areas of Interest --- */}
         <section>
-          <h2 className="text-xl font-semibold text-green-400 mb-4 border-l-4 border-green-500 pl-3">Areas of Interest <span className="text-red-500">*</span></h2>
+          <h2 className="text-xl font-semibold text-cyan-400 mb-4 border-l-4 border-cyan-500 pl-3">Areas of Interest <span className="text-red-500">*</span></h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 bg-gray-800 rounded-lg border border-gray-700">
             {INTERESTS.map((interest) => (
               <label key={interest} className="inline-flex items-center">
@@ -336,7 +336,7 @@ export default function Page() {
                   value={interest}
                   checked={formData.areas_of_interest.includes(interest)}
                   onChange={handleInterestChange}
-                  className="form-checkbox text-green-600 rounded"
+                  className="form-checkbox text-cyan-600 rounded"
                 />
                 <span className="ml-2 text-sm text-gray-300">{interest}</span>
               </label>
@@ -392,7 +392,7 @@ export default function Page() {
               value={formData.why_join_optimus}
               onChange={handleChange as (e: React.ChangeEvent<HTMLTextAreaElement>) => void}
               placeholder="Share your motivation and what you hope to contribute..."
-              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-green-500 focus:border-green-500 transition duration-150 ease-in-out"
+              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-cyan-500 focus:border-cyan-500 transition duration-150 ease-in-out"
             />
           </div>
         </section>
@@ -401,7 +401,7 @@ export default function Page() {
         {submitMessage && (
             <div 
             className={`p-4 mb-4 rounded-lg text-center ${
-                submitMessage.type === 'success' ? 'bg-green-900/50 text-green-400 border-green-600' : 'bg-red-900/50 text-red-400 border-red-600'
+                submitMessage.type === 'success' ? 'bg-cyan-900/50 text-cyan-400 border-cyan-600' : 'bg-red-900/50 text-red-400 border-red-600'
             } border transition duration-300 ease-in-out`}
             >
             {submitMessage.text}
@@ -413,7 +413,7 @@ export default function Page() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-4 py-3 text-lg font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 text-lg font-bold text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Application'}
           </button>

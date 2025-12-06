@@ -1,79 +1,77 @@
-// /src/app/admin-dashboard/[user_id]/AdminDashboardClient.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
-import createClient from '@/api/client';
-import { Calendar, Users, Briefcase, FileText } from 'lucide-react';
+import { Calendar, Briefcase, FileText, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
+import Loader from '@/components/ui/Loader';
 
-interface DashboardStats {
-  events: number;
-  registrations: number;
-  organizations: number;
-  recruitment: number;
-}
+// Correct paths for dynamic userID folder
+import EventsPage from '@/app/admin-dashboard/[user_id]/events/page';
+import OrganizationsPage from '@/app/admin-dashboard/[user_id]/organisation/page';
+import RecruitmentPage from '@/app/admin-dashboard/[user_id]/recruitment/page';
+import ProfilePage from '@/app/admin-dashboard/[user_id]/profiles/page';
 
-const StatCard = ({ title, value, icon: Icon, color }: { title: string, value: number, icon: any, color: string }) => (
-  <div className={`p-6 bg-gray-800/90 border border-gray-700 rounded-xl shadow-lg border-l-4 border-${color}-500 flex items-center justify-between`}>
-    <div>
-      <p className="text-sm font-medium text-gray-300">{title}</p>
-      <p className="text-3xl font-bold text-green-400 mt-1">{value}</p>
-    </div>
-    <Icon size={36} className={`text-${color}-500 opacity-70`} />
-  </div>
-);
+const TABS = [
+  { id: 'events', label: 'Events', icon: Calendar, component: EventsPage },
+  { id: 'organizations', label: 'Organizations', icon: Briefcase, component: OrganizationsPage },
+  { id: 'recruitment', label: 'Recruitment', icon: FileText, component: RecruitmentPage },
+  { id: 'profile', label: 'Profile', icon: User, component: ProfilePage },
+];
 
 export default function AdminDashboardClient() {
-  const { userId } = useUser(); // <-- get userId from context
-  const supabase = createClient;
-  const [stats, setStats] = useState<DashboardStats>({
-    events: 0,
-    registrations: 0,
-    organizations: 0,
-    recruitment: 0
-  });
+  const { userId } = useUser();
+  const [activeTab, setActiveTab] = useState('events');
   const [loading, setLoading] = useState(true);
 
-  const fetchCounts = async () => {
-    setLoading(true);
-
-    try {
-      const [eventsRes, regsRes, orgRes, recRes] = await Promise.all([
-        supabase.from('events').select('*', { count: 'exact', head: true }),
-        supabase.from('event_registrations').select('*', { count: 'exact', head: true }),
-        supabase.from('organizations').select('*', { count: 'exact', head: true }),
-        supabase.from('recruitment').select('*', { count: 'exact', head: true })
-      ]);
-
-      setStats({
-        events: eventsRes.count || 0,
-        registrations: regsRes.count || 0,
-        organizations: orgRes.count || 0,
-        recruitment: recRes.count || 0
-      });
-    } catch (err) {
-      toast.error("Failed to fetch dashboard data.");
-    }
-
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchCounts();
-  }, [userId]); // <-- refetch if userId changes
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // You can fetch user-specific data here if needed
+        await new Promise((res) => setTimeout(res, 500));
+      } catch (err) {
+        toast.error('Failed to load dashboard.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [userId]);
+
+  const ActiveComponent = TABS.find(tab => tab.id === activeTab)?.component || EventsPage;
 
   return (
-    <div className="space-y-8 bg-gray-900 p-6">
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">✨ Admin Dashboard Overview</h1>
-      {loading ? (
-        <p className="text-center py-10 text-lg text-gray-300">Loading metrics...</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Total Events" value={stats.events} icon={Calendar} color="green" />
-          <StatCard title="Organizations" value={stats.organizations} icon={Briefcase} color="purple" />
-          <StatCard title="Recruitment Entries" value={stats.recruitment} icon={FileText} color="red" />
-        </div>
-      )}
+    <div className="p-6 bg-gray-900 min-h-screen">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6">✨ Admin Dashboard</h1>
+
+      {/* Horizontal Tabs */}
+      <div className="flex space-x-4 mb-6 overflow-x-auto">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all ${
+              activeTab === tab.id
+                ? 'bg-gray-700 text-white shadow-lg'
+                : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+            }`}
+          >
+            <tab.icon size={20} />
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Active Tab Content */}
+      <div className="p-6 bg-gray-800 rounded-xl shadow-lg min-h-[400px]">
+        {loading ? (
+          <div className="flex items-center justify-center min-h-[200px]">
+            <Loader />
+          </div>
+        ) : (
+          <ActiveComponent />
+        )}
+      </div>
     </div>
   );
 }

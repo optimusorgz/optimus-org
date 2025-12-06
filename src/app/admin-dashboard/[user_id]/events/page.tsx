@@ -1,4 +1,3 @@
-// /src/app/dashboard/events/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,7 +8,7 @@ import CRUDForm from '@/components/admin-dashboard/CRUDForm';
 import Modal from '@/components/ui/Modal';
 import { Event } from '@/lib/types/supabase';
 import { FormField } from '@/lib/types/form';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, Edit } from 'lucide-react';
 
 // Import EventRegistrationsView
 import EventRegistrationsView from '@/components/dashboard/hostevent/EventRegistrationsView';
@@ -114,22 +113,91 @@ export default function EventsPage() {
                 </button>
             </div>
 
-            <DataTable
-                data={events}
-                columns={columns}
-                tableName="events"
-                onViewRegistrations={handleViewRegistrations}
-                onDelete={handleDelete}
-                onEdit={handleOpenEdit}
-            />
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+                <DataTable
+                    data={events}
+                    columns={columns}
+                    tableName="events"
+                    onViewRegistrations={handleViewRegistrations}
+                    onDelete={handleDelete}
+                    onEdit={handleOpenEdit}
+                />
+            </div>
 
-            {/* Registration View Modal */}
-            {isRegistrationViewOpen && selectedEvent && (
-                <Modal onClose={() => setIsRegistrationViewOpen(false)}>
-                    <EventRegistrationsView
-                        eventId={selectedEvent.id}
-                        onBack={() => setIsRegistrationViewOpen(false)} // FIXED
-                    />
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4">
+  {events.map((event) => (
+    <div
+      key={event.id}
+      className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition-colors"
+      onClick={() => setSelectedEvent(event)}
+    >
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-white">{event.title}</h2>
+        <div className="flex justify-end mt-2 space-x-2 text-white">
+            <span title="Edit" className="cursor-pointer">
+                <Edit onClick={(e) => { e.stopPropagation(); handleOpenEdit(event); }} />
+            </span>
+            
+            <span title="Registrations" className="cursor-pointer">
+                <Eye onClick={(e) => { e.stopPropagation(); handleViewRegistrations(event); }} />
+            </span>
+        </div>
+      </div>
+        <span
+          className={`px-2 py-1 rounded-md text-sm font-semibold ${
+            event.status.toLowerCase() === 'approved'
+              ? 'bg-green-500 text-white'
+              : event.status.toLowerCase() === 'pending'
+              ? 'bg-yellow-500 text-white'
+              : 'bg-red-500 text-white'
+          }`}
+        >
+          {event.status}
+        </span>
+
+      {/* Optional: small icons for actions (Edit/Delete/Registrations) like your previous DataTable */}
+    </div>
+  ))}
+</div>
+
+            {/* Event Details Modal for Mobile */}
+            {selectedEvent && (
+                <Modal onClose={() => setSelectedEvent(null)}>
+                    <div className="space-y-4">
+                        <h2 className="text-2xl font-bold">{selectedEvent.title}</h2>
+                        <span className="font-semibold">Status:</span> {selectedEvent.status}
+                        
+                        <p>
+                            <span className="font-semibold">Location:</span> {selectedEvent.location}
+                        </p>
+                        <p>
+                            <span className="font-semibold">Start Date:</span>{' '}
+                            {new Date(selectedEvent.start_date).toLocaleDateString()}
+                        </p>
+                        <p>
+                            <span className="font-semibold">Ticket Price:</span> {selectedEvent.ticket_price || 'N/A'}
+                        </p>
+                        <p>
+                            <span className="font-semibold">Max Participants:</span> {selectedEvent.max_participants || 'N/A'}
+                        </p>
+                        <div className="flex justify-end space-x-2 mt-4">
+                            <button
+                                onClick={() => handleOpenEdit(selectedEvent)}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                            >
+                                Edit
+                            </button>
+                            
+                            <button
+                                onClick={() => handleViewRegistrations(selectedEvent)}
+                                className="px-4 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700 transition-colors"
+                            >
+                                Registrations
+                            </button>
+                        </div>
+                    </div>
                 </Modal>
             )}
 
@@ -142,6 +210,16 @@ export default function EventsPage() {
                         onSuccess={handleFormSuccess}
                         onCancel={() => setIsFormOpen(false)}
                         fields={EVENT_FIELDS}
+                    />
+                </Modal>
+            )}
+
+            {/* Registration View Modal */}
+            {isRegistrationViewOpen && selectedEvent && (
+                <Modal onClose={() => setIsRegistrationViewOpen(false)}>
+                    <EventRegistrationsView
+                        eventId={selectedEvent.id}
+                        onBack={() => setIsRegistrationViewOpen(false)}
                     />
                 </Modal>
             )}
