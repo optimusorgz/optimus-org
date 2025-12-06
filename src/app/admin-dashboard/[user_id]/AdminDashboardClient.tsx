@@ -5,6 +5,7 @@ import createClient from '@/api/client';
 import { Calendar, Users, Briefcase, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
+import Loader from '@/components/ui/Loader';
 
 interface DashboardStats {
   events: number;
@@ -63,10 +64,12 @@ export default function AdminDashboardClient() {
   }, [userId]); // <-- refetch if userId changes
 
   return (
-    <div className="space-y-8 bg-gray-900 p-6">
+    <div className="space-y-8 bg-gray-900 p-6 mt-10">
       <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">✨ Admin Dashboard Overview</h1>
       {loading ? (
-        <p className="text-center py-10 text-lg text-gray-300">Loading metrics...</p>
+        <div className="flex items-center justify-center min-h-screen bg-[#0a0f18]">
+          <Loader />
+    </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard title="Total Events" value={stats.events} icon={Calendar} color="green" />

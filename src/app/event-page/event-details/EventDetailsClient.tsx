@@ -70,34 +70,13 @@ const getDuration = (startStr: string, endStr: string): string => {
 
 
 // --- 3. DUMMY DATA FOR WHY ATTEND SECTION ---
-const WHY_ATTEND_POINTS = [
-    {
-        title: "🚀 Expert Knowledge & Mentorship",
-        detail: "Learn from industry experts and gain valuable insights in this Hackathon. **Connect with top-tier professionals from Google, Microsoft, and environmental tech startups.**"
-    },
-    {
-        title: "🤝 Networking Opportunities",
-        detail: "Connect with like-minded professionals and expand your network. **Build your future team and find potential collaborators/investors.**"
-    },
-    {
-        title: "💡 Practical Skills & Portfolio",
-        detail: "Gain hands-on experience and practical skills you can apply immediately. **Leave with a deployable project for your professional portfolio.**"
-    },
-    {
-        title: "🌍 Drive Environmental Impact",
-        detail: "Dedicate your skills to solving real-world ecological challenges. **Contribute code that matters to nature conservation and sustainability efforts.**"
-    },
-    {
-        title: "🏆 Win Cash Prizes & Recognition",
-        detail: "Compete for significant cash prizes and recognition from sponsoring organizations. **A great opportunity to boost your profile in the tech-for-good space.**"
-    },
-];
+
 
 // --- 4. SHARED UI COMPONENTS (Kept here for simplicity) ---
 
 const Card: React.FC<{ children: React.ReactNode, title: string, icon: React.ReactNode, className?: string }> = ({ children, title, icon, className = '' }) => (
     <div className={`p-6 bg-gray-800/70 border border-gray-700 rounded-xl shadow-lg ${className}`}>
-        <h3 className="flex items-center text-xl font-semibold text-green-400 mb-4 border-b border-gray-700 pb-2">
+        <h3 className="flex items-center text-xl font-semibold text-cyan-400  mb-4 border-b border-gray-700 pb-2">
             {icon}
             <span className="ml-2">{title}</span>
         </h3>
@@ -108,7 +87,7 @@ const Card: React.FC<{ children: React.ReactNode, title: string, icon: React.Rea
 // MODIFIED DetailItem for better mobile alignment
 const DetailItem: React.FC<{ icon: React.ReactNode, label: string, value: string | number | null }> = ({ icon, label, value }) => (
     <div className="flex items-start text-gray-300">
-        <div className="flex-shrink-0 w-6 h-6 mr-3 text-green-500">{icon}</div>
+        <div className="flex-shrink-0 w-6 h-6 mr-3 text-cyan-500">{icon}</div>
         <div className="flex justify-between w-full text-sm sm:text-base"> {/* Added text-sm for mobile */}
             <span className="font-medium text-white mr-2 flex-shrink-0">{label}:</span> {/* Added flex-shrink-0 */}
             <span className="text-right truncate">{value ?? 'N/A'}</span> {/* Added truncate for long text */}
@@ -122,7 +101,7 @@ const TicketModal: React.FC<{ event: Event, onClose: () => void }> = ({ event, o
         <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-lg w-full transform transition-all duration-300 scale-100">
                 <div className="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
-                    <h2 className="text-2xl font-bold text-green-400 flex items-center">
+                    <h2 className="text-2xl font-bold text-cyan-400  flex items-center">
                         <Ticket className="w-6 h-6 mr-2" /> Your Event Ticket
                     </h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-white transition">
@@ -130,7 +109,7 @@ const TicketModal: React.FC<{ event: Event, onClose: () => void }> = ({ event, o
                     </button>
                 </div>
                 
-                <div className="bg-gray-900 p-6 rounded-lg border border-green-600/50 space-y-4">
+                <div className="bg-gray-900 p-6 rounded-lg border border-cyan-600/50 space-y-4">
                     <p className="text-lg font-semibold text-white">{event.title}</p>
                     <DetailItem icon={<User />} label="Attendee" value="Current User (Placeholder)" />
                     <DetailItem icon={<Calendar />} label="Date" value={formatEventDate(event.start_date)} />
@@ -144,7 +123,7 @@ const TicketModal: React.FC<{ event: Event, onClose: () => void }> = ({ event, o
                 <div className="mt-6 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                        className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition"
                     >
                         Close
                     </button>
@@ -295,7 +274,7 @@ export default function EventDetailsClientContent() {
         // ... (Loading UI)
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
-                <Loader2 className="w-10 h-10 animate-spin text-green-500 mb-4" />
+                <Loader2 className="w-10 h-10 animate-spin text-cyan-500 mb-4" />
                 <p className="text-xl">Loading event data...</p>
             </div>
         );
@@ -312,7 +291,7 @@ export default function EventDetailsClientContent() {
                 </p>
                 <button
                     onClick={() => router.push('/event-page')}
-                    className="mt-6 text-green-400 hover:text-green-500 flex items-center"
+                    className="mt-6 text-cyan-400  hover:text-cyan-500 flex items-center"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back to Events
                 </button>
@@ -368,7 +347,7 @@ export default function EventDetailsClientContent() {
     let buttonText = 'Register for Event';
     let buttonAction: () => void = handleregistration;
     let isButtonDisabled = false;
-    let buttonClass = 'bg-green-600 text-white hover:bg-green-700';
+    let buttonClass = 'bg-cyan-600 text-white hover:bg-cyan-700';
 
     switch (regStatus) {
         case 'registered':
@@ -392,7 +371,7 @@ export default function EventDetailsClientContent() {
         default:
             buttonText = isPaid ? `Register & Pay ${priceDisplay}` : 'Register for Event';
             buttonAction = handleregistration;
-            buttonClass = 'bg-green-600 text-white hover:bg-green-700';
+            buttonClass = 'bg-cyan-600 text-white hover:bg-cyan-700';
             break;
     }
 
@@ -418,7 +397,7 @@ export default function EventDetailsClientContent() {
                         backgroundImage: `url(${event.banner_url || ''})`,
                         // Dark overlay for text readability
                         maskImage: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 100%)',
-                        backgroundColor: '#1E2D2B' // Deep Green/Charcoal fallback
+                        backgroundColor: '#1E2D2B' // Deep cyan/Charcoal fallback
                     }}
                 >
                     {/* Fallback color if no image */}
@@ -431,7 +410,7 @@ export default function EventDetailsClientContent() {
                     {/* Back Button - Remains anchored to the top (z-10 ensures it's above the content shift) */}
                     <button
                         onClick={() => router.push('/event-page')}
-                        className="absolute top-8 left-4 sm:left-6 lg:left-8 flex items-center text-gray-200 hover:text-green-400 transition text-sm bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg z-10"
+                        className="absolute top-8 left-4 sm:left-6 lg:left-8 flex items-center text-gray-200 hover:text-cyan-400  transition text-sm bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg z-10"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Events
                     </button>
@@ -443,7 +422,7 @@ export default function EventDetailsClientContent() {
                             <span className="text-base sm:text-xl font-medium text-gray-200">{formatEventDate(event.start_date, false)}</span>
                             {/* Upcoming Badge */}
                             {isUpcoming && (
-                                <span className={`ml-3 px-3 py-1 text-xs font-bold rounded-full ${isPaid ? 'bg-green-600 text-white' : 'bg-green-400 text-gray-900'}`}>
+                                <span className={`ml-3 px-3 py-1 text-xs font-bold rounded-full ${isPaid ? 'bg-cyan-600 text-white' : 'bg-cyan-400 text-gray-900'}`}>
                                     Upcoming
                                 </span>
                             )}
@@ -462,7 +441,7 @@ export default function EventDetailsClientContent() {
                             </span>
                             <span className="flex items-center mt-2">
                                 <User className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-purple-400" />
-                                Organized by <a href="#" className="font-bold text-green-400 hover:underline ml-1">{event.organizer_name}</a>
+                                Organized by <a href="#" className="font-bold text-cyan-400  hover:underline ml-1">{event.organizer_name}</a>
                             </span>
                             <span className="flex items-center mt-2">
                                 <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-blue-400" />
@@ -484,12 +463,12 @@ export default function EventDetailsClientContent() {
                     
                     {/* Card B: Registration CTA (Modified) */}
                     
-                        <div className="p-6 bg-gray-800 border border-green-600 rounded-xl shadow-2xl space-y-4">
+                        <div className="p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-4">
                         <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3">Registration</h3>
                         
                         {/* Ticket Info */}
                         <div className="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
-                            <span className="text-3xl font-extrabold text-green-400">{priceDisplay}</span>
+                            <span className="text-3xl font-extrabold text-cyan-400 ">{priceDisplay}</span>
                             <span className="text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
                         </div>
                        
@@ -512,7 +491,7 @@ export default function EventDetailsClientContent() {
                         {regStatus === 'registered' && (
                              <button
                                 onClick={() => setShowTicketModal(true)}
-                                className="w-full py-3 mt-2 border border-green-600 text-green-400 rounded-lg flex items-center justify-center hover:bg-green-600 hover:text-white transition duration-150 font-bold"
+                                className="w-full py-3 mt-2 border border-cyan-600 text-cyan-400  rounded-lg flex items-center justify-center hover:bg-cyan-600 hover:text-white transition duration-150 font-bold"
                             >
                                 <Ticket className="w-5 h-5 mr-2" /> View My Ticket
                             </button>
@@ -551,7 +530,7 @@ export default function EventDetailsClientContent() {
                             {/* Each Detail Item (Using the general DetailItem component for consistency) */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-2">
-                                <MapPin className="w-5 h-5 text-green-500" />
+                                <MapPin className="w-5 h-5 text-cyan-500" />
                                 <span className="font-medium text-white">Venue:</span>
                                 </div>
                                 <span className="text-gray-300">{event.location}</span>
@@ -583,7 +562,7 @@ export default function EventDetailsClientContent() {
 
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-2">
-                                <DollarSign className="w-5 h-5 text-green-400" />
+                                <DollarSign className="w-5 h-5 text-cyan-400 " />
                                 <span className="font-medium text-white">Event Type:</span>
                                 </div>
                                 <span className="text-gray-300">{isPaid ? 'Paid' : 'Free'}</span>
@@ -601,7 +580,7 @@ export default function EventDetailsClientContent() {
                             {/* Event Timeline Section */}
                             <div className="space-y-3">
                             <h4 className="font-semibold text-white text-lg mb-2">Event Timeline</h4>
-                            <div className="p-4 border-l-4 border-green-500 bg-gray-700/50 rounded-md space-y-2">
+                            <div className="p-4 border-l-4 border-cyan-500 bg-gray-700/50 rounded-md space-y-2">
                                 <p className="text-gray-300">
                                 <span className="font-semibold text-white">Start Time:</span> {formatUTC(startDate)}
                                 </p>
@@ -614,19 +593,7 @@ export default function EventDetailsClientContent() {
                         </div>
                         </Card>
                     {/* Card C: Why Attend? (Value Proposition) (Moved to the bottom of the left column before the final standalone section) */}
-                    <Card title="Why Attend?" icon={<Check className="text-green-500" />} className="lg:hidden block"> {/* Show only on mobile/md screens */}
-                        <div className="space-y-5">
-                            {WHY_ATTEND_POINTS.map((point, index) => (
-                                <div key={index} className="flex items-start">
-                                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
-                                    <div className="ml-3">
-                                        <p className="font-semibold text-white" dangerouslySetInnerHTML={{ __html: point.title }} />
-                                        <p className="text-gray-400 text-sm" dangerouslySetInnerHTML={{ __html: point.detail.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </Card>
+                    
 
                     
                 </div>
@@ -639,7 +606,7 @@ export default function EventDetailsClientContent() {
                         <div className="grid grid-cols-2 gap-4 text-center">
                             {/* Chip 1: Price */}
                             <div className="bg-gray-700 p-4 rounded-lg">
-                                <div className="text-xl font-bold text-green-400">{priceDisplay}</div>
+                                <div className="text-xl font-bold text-cyan-400 ">{priceDisplay}</div>
                                 <div className="text-xs text-gray-400 mt-1">Entry Fee</div>
                             </div>
                             {/* Chip 2: Max Participants */}
@@ -673,12 +640,12 @@ export default function EventDetailsClientContent() {
                     <Card title="Quick Actions" icon={<ExternalLink />}>
                         <div className="flex flex-col space-y-2">
                             {/* Quick Action: Register/Pay Button */}
-                            <button onClick={buttonAction} className="text-green-400 hover:text-green-500 text-left font-medium disabled:text-gray-500" disabled={isButtonDisabled}>
+                            <button onClick={buttonAction} className="text-cyan-400  hover:text-cyan-500 text-left font-medium disabled:text-gray-500" disabled={isButtonDisabled}>
                                 {regStatus === 'pending_payment' ? 'Complete Payment' : 'Register for Event'}
                             </button>
                             {/* Quick Action: View Ticket Button */}
                             {regStatus === 'registered' && (
-                                <button onClick={() => setShowTicketModal(true)} className="text-green-400 hover:text-green-500 text-left font-medium">
+                                <button onClick={() => setShowTicketModal(true)} className="text-cyan-400  hover:text-cyan-500 text-left font-medium">
                                     View My Ticket
                                 </button>
                             )}
@@ -696,23 +663,7 @@ export default function EventDetailsClientContent() {
 
                 </div>
             </div>
-
-            {/* Card C: Why Attend? (Value Proposition) - Show on larger screens as a standalone section */}
-            <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8'>
-                    <Card title="Why Attend?" icon={<Check className="text-green-500" />} className="lg:block hidden">
-                        <div className="space-y-5">
-                            {WHY_ATTEND_POINTS.map((point, index) => (
-                                <div key={index} className="flex items-start">
-                                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-1" />
-                                    <div className="ml-3">
-                                        <p className="font-semibold text-white" dangerouslySetInnerHTML={{ __html: point.title }} />
-                                        <p className="text-gray-400 text-sm" dangerouslySetInnerHTML={{ __html: point.detail.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </Card>
-            </div>
+            
         </div>
     );
 }

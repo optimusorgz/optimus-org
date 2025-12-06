@@ -1,474 +1,435 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
-import supabase from '@/api/client'; 
-import { Button } from '@/components/ui/button'; 
+import React, { useEffect, useState } from 'react';
+import supabase from '@/api/client'; // Supabase client
 import { useRouter } from 'next/navigation';
-
-// Existing Dashboard Components
-import EventStatsGrid from '@/components/dashboard/EventStatsGrid';
-import OrganizationBox from '@/components/dashboard/OrganizationBox';
-import UpcomingEventBox from '@/components/dashboard/UpcomingEventBox';
-import ParticipatedEventsList from '@/components/dashboard/ParticipatedEventsList';
-import HostedEventsList from '@/components/dashboard/HostedEventsList';
-
-// Event Management Components
-import EventEditForm from '@/components/dashboard/hostevent/EventEditForm';
-import EventRegistrationsView from '@/components/dashboard/hostevent/EventRegistrationsView';
-
-// NEW Post Management Components
-import HostedPostsList from '@/components/dashboard/HostedPostsList'; 
-import PostEditForm from '@/components/posts/PostEditForm'; 
+import TicketModal from '@/components/dashboard/TicketModal';
+import Loader from '@/components/ui/Loader';
 
 
-interface Profile {
-    uuid: string;
-    name: string;
-    email: string;
-    avatar_url: string; 
-    organisation_id?: string | null;
-}
-interface Organization {
-    id: string;
-    name: string;
-    details: string;
+
+// Define modal feature types
+type ActiveFeature = 'edit' | 'registrations' | 'form' | 'overview' | null;
+
+// --- 1. TYPE DEFINITIONS ---
+interface StatsCardData {
+  icon: string;
+  value: string;
+  label: string;
+  change: string;
+  trend: 'positive' | 'negative';
 }
 
-// 🔑 Event interface
-interface Event {
-    id: string; 
-    name: string;
-    date: string;
-    type: 'Participated' | 'Hosted';
-    ticket_uid?: string;
+interface EventData {
+  id: string;
+  title: string;
+  date: string;
+  registered: number;
+  imageUrl: string;
+  ticketPrice?: number;
 }
 
-// 🔑 NEW: Post interface
-interface Post {
-    id: string;
-    title: string; // Will hold the truncated caption
-    created_at: string;
+interface OrganizationData {
+  id: string;
+  name: string;
+  members: number;
+  logoUrl: string;
 }
 
-// --- Define Active Mode Types ---
-type DashboardMode = 'list' | 'edit' | 'registrations';
-type PostMode = 'list' | 'edit';
-// -----------------------------------
-
-
-interface CreateEventButtonProps {
-    organization: Organization | null;
-    onClick: () => void;
+interface RegistrationData {
+  id: string;
+  eventTitle: string;
+  ticketType: string;
+  status: 'confirmed' | 'pending';
 }
 
-const CreateEventButton: React.FC<CreateEventButtonProps> = ({ organization, onClick }) => {
-    const router = useRouter(); 
-    
-    const handleclick = () => {
-        router.push('/form/create-event');
-    }
+interface EventCardProps {
+  data: EventData;
+  onClick?: () => void; // optional click handler
+}
 
-    return (
-        <div className="relative inline-block group">
-            <Button
-                onClick={handleclick}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded-lg shadow-md disabled:opacity-50"
-            >
-                Create New Event
-            </Button>
-        </div>
-    );
+
+
+
+
+// --- 2. COMPONENTS ---
+const StatCard: React.FC<{ data: StatsCardData; bgColor: string }> = ({ data, bgColor }) => (
+  <div className={`p-6 rounded-xl shadow-lg ${bgColor}`}>
+    <div className="flex justify-between items-start mb-2">
+      <div>
+        <p className="text-5xl font-extrabold text-white">{data.value}</p>
+        <p className="text-base font-medium text-gray-100 mt-1">{data.label}</p>
+      </div>
+      <div className="text-3xl opacity-70 mt-1">{data.icon}</div>
+    </div>
+    <p className="text-sm font-light text-gray-200">{data.change}</p>
+  </div>
+);
+
+const EventCard: React.FC<{ data: EventData; onClick?: () => void }> = ({ data, onClick }) => (
+  
+  <div
+    onClick={onClick}
+    className="flex items-center p-4 bg-gray-800 rounded-lg transition duration-150 hover:bg-gray-700/70 cursor-pointer"
+  >
+    <div className="w-14 h-14 bg-gray-600 rounded-lg flex-shrink-0 mr-4 overflow-hidden">
+      <img
+        src={data.imageUrl}
+        alt={data.title}
+        className="w-full h-full object-cover"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = 'https://placehold.co/100x100/374151/FFFFFF?text=?';
+        }}
+      />
+    </div>
+    <div className="flex-grow min-w-0">
+      <p className="text-lg font-semibold truncate text-white">{data.title}</p>
+      <p className="text-sm text-gray-400">
+        {data.date} • <span className="text-blue-400 font-medium">{data.registered} registered</span>
+      </p>
+    </div>
+    <svg
+      className="ml-4 w-5 h-5 text-gray-400 flex-shrink-0"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </div>
+);
+
+
+const OrganizationPill: React.FC<{ data: OrganizationData }> = ({ data }) => (
+  <a className="p-4 bg-gray-800 rounded-xl text-center cursor-pointer transition duration-150 hover:bg-gray-700/70">
+    <div className="mx-auto w-14 h-14 bg-green-600 rounded-full mb-3 flex items-center justify-center text-xl font-bold text-white">
+      {data.logoUrl}
+    </div>
+    <p className="font-semibold truncate text-white">{data.name}</p>
+    <p className="text-xs text-gray-400">{data.members} members</p>
+  </a>
+);
+
+const RegistrationRow: React.FC<{ data: RegistrationData }> = ({ data }) => {
+  const isConfirmed = data.status === 'confirmed';
+  const statusClasses = isConfirmed ? 'bg-green-600/20 text-green-400' : 'bg-blue-600/20 text-blue-400';
+  return (
+    <div className="flex justify-between items-center p-4 bg-gray-800 rounded-lg">
+      <div>
+        <p className="text-lg font-semibold text-white truncate">{data.eventTitle}</p>
+        <p className="text-sm text-gray-400">
+          Ticket: <span className="font-medium">{data.ticketType}</span>
+        </p>
+      </div>
+      {/* <div className={`px-3 py-1 text-xs font-semibold rounded-full ${statusClasses}`}>{data.status}</div> */}
+    </div>
+  );
 };
 
+const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data }) => (
+  <div className="p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-8">
+    <h3 className="text-xl font-bold text-white mb-4 flex items-center">Your Hosted Organization</h3>
+    <div className="flex items-center space-x-4">
+      <div className="w-16 h-16 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-purple-600">
+        {data.logoUrl ? (
+          <img
+            src={data.logoUrl}
+            alt={data.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = 'https://placehold.co/100x100/6b21a8/FFFFFF?text=?';
+            }}
+          />
+        ) : (
+          <span className="text-3xl font-bold text-white">{data.name[0]}</span>
+        )}
+      </div>
+      <div>
+        <p className="text-2xl font-extrabold text-white truncate">{data.name}</p>
+        <p className="text-sm text-gray-400">{data.members} Total Members</p>
+      </div>
+    </div>
+    <div className="mt-4 pt-4 border-t border-gray-700/50">
+      <button className="w-full px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-purple-700 transition">
+        Manage Profile & Settings
+      </button>
+    </div>
+  </div>
+);
 
-const DashboardPage = () => {
-    const router = useRouter(); 
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [organization, setOrganization] = useState<Organization | null>(null); 
-    
-    const [participatedEvents, setParticipatedEvents] = useState<Event[]>([]);
-    const [hostedEvents, setHostedEvents] = useState<Event[]>([]);
-    const [hostedPosts, setHostedPosts] = useState<Post[]>([]); // Post Data
+// --- 3. MAIN APP COMPONENT ---
+const App: React.FC = () => {
+  const [upcomingEvents, setUpcomingEvents] = useState<EventData[]>([]);
+  const [hostedOrganization, setHostedOrganization] = useState<OrganizationData | null>(null);
+  const [memberOrganizations, setMemberOrganizations] = useState<OrganizationData[]>([]);
+  const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
+  const [hostedEvents, setHostedEvents] = useState<EventData[]>([]);
+  const [activeFeature, setActiveFeature] = useState<ActiveFeature>(null);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [loading, setLoading] = useState(true);
-    
-    // --- STATE: To manage Event dashboard view ---
-    const [activeMode, setActiveMode] = useState<DashboardMode>('list');
-    const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-    
-    // --- STATE: To manage Post dashboard view ---
-    const [activePostMode, setActivePostMode] = useState<PostMode>('list');
-    const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [revenue, setRevenue] = useState(0);
 
-
-    // --- EVENT HANDLERS ---
-    const handleEditEvent = useCallback((eventId: string) => {
-        setSelectedEventId(eventId);
-        setActiveMode('edit');
-    }, []);
-
-    const handleViewRegistrations = useCallback((eventId: string) => {
-        setSelectedEventId(eventId);
-        setActiveMode('registrations');
-    }, []);
-    
-    const handleBackToList = useCallback(() => {
-        setSelectedEventId(null);
-        setActiveMode('list');
-    }, []);
-
-    // --- NEW POST HANDLERS ---
-    const handleEditPost = useCallback((postId: string) => {
-        setSelectedPostId(postId);
-        setActivePostMode('edit');
-    }, []);
-
-    const handleBackToPostList = useCallback(() => {
-        setSelectedPostId(null);
-        setActivePostMode('list');
-    }, []);
-
-
-    // --- FETCH FUNCTIONS ---
-    const fetchParticipatedEvents = async (userId: string) => {
-        // ... (existing fetch logic) ...
-        const { data, error } = await supabase
-            .from('event_registrations')
-            .select(`
-                ticket_uid,
-                status,
-                is_paid,
-                event_id:events (
-                    id,
-                    title, 
-                    start_date
-                )
-            `)
-            .eq('user_id', userId); 
-
-        if (error) {
-            console.error("Supabase Participated Events Fetch Error:", error.message);
-            return [];
-        }
-        
-        return data.map((item: any) => ({
-            id: item.event_id.id,
-            name: item.event_id.title, 
-            date: new Date(item.event_id.start_date).toLocaleDateString(), 
-            type: 'Participated' as const,
-            ticket_uid: item.ticket_uid,
-            status: item.status,
-            is_paid: item.is_paid,
-        }));
-    };
-    
-    const fetchHostedEvents = async (userId: string) => {
-        // ... (existing fetch logic) ...
-        const { data, error } = await supabase
-            .from('events')
-            .select(`id, title, start_date`)
-            .eq('created_by', userId)
-            .order('start_date', { ascending: true });
-            
-        if (error) {
-            console.error("Supabase Hosted Events Fetch Error:", error.message);
-            return [];
-        }
-
-        return data.map((item: any) => ({
-            id: item.id,
-            name: item.title,
-            date: new Date(item.start_date).toLocaleDateString(),
-            type: 'Hosted' as const,
-        }));
-    };
-
-    // Inside DashboardPage component
-    const handleDeletePost = async (postId: string) => {
-    if (!profile) return;
-
-    const confirmDelete = confirm("Are you sure you want to delete this post?");
-    if (!confirmDelete) return;
-
-    const { error } = await supabase
-        .from('posts')
-        .delete()
-        .eq('id', postId)
-        .eq('user_id', profile.uuid); // ensures RLS checks ownership
-
-    if (error) {
-        console.error("Error deleting post:", error.message);
-        alert("Failed to delete post. Check console for details.");
-        return;
-    }
-
-    // Remove deleted post from local state
-    setHostedPosts(prev => prev.filter(post => post.id !== postId));
-    };
-
-    
-    const fetchHostedPosts = async (userId: string) => {
-        const { data, error } = await supabase
-            .from('posts')
-            .select(`id, caption, created_at`)
-            .eq('user_id', userId)
-            .order('created_at', { ascending: false });
-            
-        if (error) {
-            console.error("Supabase Hosted Posts Fetch Error:", error.message);
-            return [];
-        }
-
-        return data.map((item: any) => ({
-            id: item.id,
-            title: (item.caption as string).substring(0, 50) + ((item.caption.length > 50) ? '...' : ''),
-            created_at: new Date(item.created_at).toLocaleDateString(),
-        }));
-    };
+  const router = useRouter();
 
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            setLoading(true);
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            
-            if (sessionError || !session) {
-                router.push('/login'); 
-                setLoading(false);
-                return;
-            }
-            
-            const userId = session.user.id;
-            
-            // --- 1. Fetch Profile Data ---
-            const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select(`uuid, name, email, avatar_url, organisation_id, organization:organizations(id, name, description)`)
-            .eq('uuid', userId)
-            .single();
-            
-            if (profileError) {
-                console.error("Supabase Profile Fetch Error:", profileError.message || JSON.stringify(profileError));            
-            }
-            
-            if (profileData) {
-                const fetchedProfile: Profile = {
-                    uuid: profileData.uuid,
-                    name: profileData.name || 'User',
-                    email: profileData.email,
-                    avatar_url: profileData.avatar_url || '',
-                    organisation_id: profileData.organisation_id,
-                };
-                setProfile(fetchedProfile);
-                
-                if (profileData.organization && Array.isArray(profileData.organization) && profileData.organization.length > 0) {
-                    const orgData = profileData.organization[0];
-                    setOrganization({
-                        id: orgData.id,
-                        name: orgData.name,
-                        details: orgData.description,
-                    });
-                } else {
-                    setOrganization(null);
-                }
-                
-                // --- 2. Fetch Event Data (Participated & Hosted) ---
-                const [pEvents, hEvents, hPosts] = await Promise.all([
-                    fetchParticipatedEvents(userId),
-                    fetchHostedEvents(userId),
-                    fetchHostedPosts(userId), // Fetch posts concurrently
-                ]);
+  // Move this outside useEffect
+  const openEventModal = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setActiveFeature('overview');
+  };
 
-                setParticipatedEvents(pEvents);
-                setHostedEvents(hEvents);
-                setHostedPosts(hPosts); // Set post data
-            }
-            
-            setLoading(false);
-        };
-        
-        fetchUserData();
-    }, [router]);
+  const handleCloseModal = () => {
+    setSelectedEventId(null);
+    setActiveFeature(null);
+  };
 
+  const handleEventClick = (eventData: EventData) => {
+  setSelectedEvent(eventData);
+  setIsModalOpen(true);
+  };
 
-    const handleCreateEvent = () => {
-        if (organization) {
-            router.push('/form/create-event');
-        }
-    };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      const userId = userData.user.id;
 
-    const PARTICIPATED_COUNT = participatedEvents.length;
-    const HOSTED_EVENT_COUNT = hostedEvents.length;
-    const HOSTED_POST_COUNT = hostedPosts.length;
-    
-    // Logic for Upcoming Event Box
-    const allEvents = [...participatedEvents, ...hostedEvents];
-    const upcomingEvent = allEvents
-        .filter(e => new Date(e.date).getTime() > Date.now()) 
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0]; 
-    
-    const UPCOMING_EVENT_DATA = upcomingEvent ? { 
-        name: upcomingEvent.name, 
-        date: new Date(upcomingEvent.date)
-    } : undefined;
+      // Hosted org
+      const { data: hostedOrgData } = await supabase
+        .from('organizations')
+        .select('*')
+        .eq('owner_id', userId)
+        .single();
+      if (hostedOrgData) {
+        setHostedOrganization({
+          id: hostedOrgData.id,
+          name: hostedOrgData.name,
+          members: 0,
+          logoUrl: hostedOrgData.avatar_url || hostedOrgData.name[0],
+        });
+      }
 
+      // Member orgs
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('organisation_id')
+        .eq('id', userId)
+        .single();
 
-    if (loading) {
-        return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Loading Dashboard...</div>;
-    }
-    
-    if (!profile) return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900">
-            <p className="text-red-400">Error: Profile data could not be loaded. Please log in again.</p>
-        </div>
-    );
-    
-    // --- RENDER LOGIC: POST EDIT MODE ---
-    if (activePostMode === 'edit' && selectedPostId) {
-        return (
-            <div className="p-4 sm:p-6 lg:p-10 bg-gray-900 min-h-screen">
-                <PostEditForm 
-                    postId={selectedPostId} 
-                    onCancel={handleBackToPostList} 
-                    onPostUpdated={() => {
-                        handleBackToPostList(); 
-                        if (profile?.uuid) {
-                            fetchHostedPosts(profile.uuid).then(setHostedPosts);
-                        }
-                    }}
-                />
-            </div>
+      if (profileData?.organisation_id) {
+        const { data: orgData } = await supabase
+          .from('organizations')
+          .select('id, name, avatar_url')
+          .eq('id', profileData.organisation_id);
+
+        const memberOrgsData = orgData?.map((org: any) => ({
+          id: org.id,
+          name: org.name,
+          members: 0,
+          logoUrl: org.avatar_url || org.name[0],
+        })) || [];
+        setMemberOrganizations(memberOrgsData);
+      }
+
+      // Upcoming events
+      const { data: eventsData } = await supabase
+        .from('event_registrations')
+        .select('event_id, events!inner(title, start_date, banner_url)')
+        .eq('user_id', userId);
+
+      if (eventsData) {
+        const today = new Date();
+        const upcoming = eventsData
+          .filter((e: any) => new Date(e.events.start_date) >= today)
+          .map((e: any) => ({
+            id: e.event_id,
+            title: e.events.title,
+            date: new Date(e.events.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            registered: 0,
+            imageUrl: e.events.banner_url || 'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
+          }));
+        setUpcomingEvents(upcoming);
+      }
+
+      // Registrations
+      const { data: regsData } = await supabase
+        .from('event_registrations')
+        .select('id, ticket_uid, status, events!inner(title)')
+        .eq('user_id', userId);
+
+      if (regsData) {
+        setRegistrations(
+          regsData.map((r: any) => ({
+            id: r.id,
+            eventTitle: r.events.title,
+            ticketType: 'General',
+            status: r.status === 'paid' ? 'confirmed' : 'pending',
+          }))
         );
-    }
+      }
 
-    // --- RENDER LOGIC: EVENT EDIT MODE ---
-    if (activeMode === 'edit' && selectedEventId) {
-        return (
-            <div className="p-4 sm:p-6 lg:p-10 bg-gray-900 min-h-screen">
-                <EventEditForm 
-                    eventId={selectedEventId} 
-                    onCancel={handleBackToList} 
-                    onEventUpdated={() => {
-                        handleBackToList(); 
-                        if (profile?.uuid) {
-                            fetchHostedEvents(profile.uuid).then(setHostedEvents);
-                        }
-                    }}
-                />
-            </div>
-        );
-    }
-    
-    // --- RENDER LOGIC: EVENT REGISTRATIONS VIEW MODE ---
-    if (activeMode === 'registrations' && selectedEventId) {
-        return (
-            <div className="p-4 sm:p-6 lg:p-10 bg-gray-900 min-h-screen">
-                <EventRegistrationsView 
-                    eventId={selectedEventId} 
-                    onBack={handleBackToList}
-                />
-            </div>
-        );
-    }
+      // Hosted events
+      const { data: hostedEventsData } = await supabase
+        .from('events')
+        .select('*')
+        .eq('created_by', userId);
 
-    // Default 'list' mode rendering (activeMode === 'list' AND activePostMode === 'list')
+      if (hostedEventsData) {
+        const eventsWithRevenue = hostedEventsData.map((e: any) => ({
+          id: e.id,
+          title: e.title,
+          date: new Date(e.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          registered: e.registration_count || 0,
+          imageUrl: e.banner_url || 'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
+          ticketPrice: e.ticket_price || 0,
+        }));
+
+        setHostedEvents(eventsWithRevenue);
+
+        const totalRevenue = eventsWithRevenue.reduce(
+          (acc, e) => acc + (e.registered * (e.ticketPrice || 0)),
+          0
+        );
+        setRevenue(totalRevenue);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  
+
+  const statsData: StatsCardData[] = [
+    { icon: '📅', value: hostedEvents.length.toString(), label: 'Events Hosted', change: '+0 this month', trend: 'positive' },
+    { icon: '👥', value: registrations.length.toString(), label: 'Total Attendees', change: '+0 this week', trend: 'positive' },
+    { icon: '$', value: `$${revenue}`, label: 'Revenue', change: '+0% vs last month', trend: 'positive' },
+    { icon: '📈', value: 'N/A', label: 'Member', change: 'Organisation member', trend: 'positive' },
+  ];
+
+  if (loading) {
     return (
-        <div className="p-4 sm:p-6 lg:p-10 bg-gray-900 min-h-screen">
-            <div className='flex items-center justify-between mb-8'>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">Dashboard</h1>
-                
-                <CreateEventButton 
-                    organization={organization}
-                    onClick={handleCreateEvent}
-                />
-            </div>
-            
-            <div className="grid grid-cols-12 gap-6 mb-8">
-                
-                {/* Profile Box (Left Column) */}
-                <div className="col-span-12 md:col-span-4 lg:col-span-3 bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-lg h-full">
-                    <h2 className="text-xl font-semibold mb-4 text-green-400 border-b border-gray-700 pb-2">Profile</h2>
-                    <div className="items-center space-x-4">
-                        <div className="m-auto w-18 h-18 bg-green-600 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                            {profile.avatar_url ? (
-                                <img 
-                                    src={profile.avatar_url}
-                                    alt="User Avatar"
-                                    className="w-18 h-18 rounded-full object-cover border-2 border-green-400"
-                                />  
-                            ) : (
-                                profile.name.charAt(0).toUpperCase()
-                            )}
-                        </div>
-                        <div className="min-w-0 mx-auto my-3 text-center flex flex-col items-center">
-                            <p className="font-bold text-lg text-white truncate">{profile.name}</p>
-                            <p className="text-sm text-gray-300 truncate">{profile.email}</p>
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* Stats & Upcoming Event (Right Column Group) */}
-                <div className="col-span-12 md:col-span-8 lg:col-span-9">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="md:col-span-2">
-                           <EventStatsGrid 
-                                participated={PARTICIPATED_COUNT}
-                                hosted={HOSTED_EVENT_COUNT}
-                                 
-                            />
-                            <div className="col-span-3 lg:col-span-4 pt-6">
-                                <OrganizationBox /> 
-                            </div>
-                        </div>
-                        <div className="col-span-1">
-                            {UPCOMING_EVENT_DATA ? (
-                                <UpcomingEventBox event={UPCOMING_EVENT_DATA} />
-                            ) : (
-                                <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-lg h-full flex items-center justify-center">
-                                    <p className="text-gray-400 text-sm">No upcoming events found.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Event & Post Lists Section (3-Column Layout on Large Screens) */}
-            <div className="grid grid-cols-12 gap-6">
-                
-                {/* Participated Events List */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                    <ParticipatedEventsList 
-                        events={participatedEvents as any} 
-                        title="Events Participated" 
-                        
-                    />
-                </div>
-                
-                {/* Hosted Events List (Control Panel) */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                    <HostedEventsList 
-                        events={hostedEvents} 
-                        title="Events Hosted" 
-                        onEditEvent={handleEditEvent}
-                        onViewRegistrations={handleViewRegistrations}
-                    />
-                </div>
-                
-                {/* Hosted Posts List (Control Panel) */}
-                {/* Note the use of col-span-12 for md to keep the first two side-by-side, 
-                    and col-span-4 for lg to put all three side-by-side. */}
-                {/* <div className="col-span-12 lg:col-span-4">
-                    <HostedPostsList
-                        posts={hostedPosts}
-                        title="Your Blog Posts"
-                        onDeletePost={handleDeletePost}
-                    />
-
-                </div> */}
-            </div>
-        </div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+      <Loader />
+    </div>
     );
+  }
+
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-10 font-sans mt-10 w-full">
+      <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 flex items-center">
+        Welcome back! <span className="ml-2">👋</span>
+      </h1>
+      <p className="text-lg text-gray-300 mb-8">Here&apos;s what&apos;s happening with your events</p>
+
+      <section className="mb-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {statsData.map((stat, index) => (
+          <StatCard key={stat.label} data={stat} bgColor={['bg-teal-600', 'bg-gray-700', 'bg-blue-600', 'bg-gray-700'][index]} />
+        ))}
+      </section>
+
+      <div className="lg:grid lg:grid-cols-3 lg:gap-10">
+        {/* Left Column */}
+        <div className="lg:col-span-2">
+          {/* Upcoming Events */}
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">Upcoming Events</h2>
+            </div>
+            {upcomingEvents.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingEvents.map(e => (
+                  <div
+                    key={e.id}
+                    className="transform transition duration-300 hover:shadow-lg rounded-lg"
+                    onClick={() => handleEventClick(e)}
+                  >
+                    <EventCard data={e} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 italic">No upcoming events.</p>
+            )}
+          </section>
+
+
+          {/* Registrations */}
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">Recent Registrations</h2>
+            </div>
+            {registrations.length > 0 ? (
+              <div className="space-y-4">{registrations.map(r => <RegistrationRow key={r.id} data={r} />)}</div>
+            ) : (
+              <p className="text-gray-400 italic">No registrations yet.</p>
+            )}
+          </section>
+
+          {/* Hosted Events */}
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">Hosted Events</h2>
+            </div>
+            {hostedEvents.length > 0 ? (
+              <div className="space-y-4">
+                {hostedEvents.map(e => (
+                  <EventCard
+                    key={e.id}
+                    data={e}
+                    onClick={() => router.push(`/dashboard/eventmanage?id=${e.id}`)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 italic">You haven’t hosted any events yet.</p>
+            )}
+          </section>
+        </div>
+
+        {/* Right Column */}
+        <div className="lg:col-span-1">
+          {hostedOrganization ? (
+            <HostedOrganizationProfile data={hostedOrganization} />
+          ) : (
+            <p className="text-gray-400 italic mb-6">You are not hosting any organization.</p>
+          )}
+
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold">Member of Organizations</h2>
+            </div>
+            {memberOrganizations.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                {memberOrganizations.map(org => <OrganizationPill key={org.id} data={org} />)}
+              </div>
+            ) : (
+              <p className="text-gray-400 italic">You are not a member of any organization.</p>
+            )}
+          </section>
+        </div>
+      </div>
+      {selectedEvent && (
+        <TicketModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedEvent(null);
+          }}
+          ticketId={selectedEvent.id}  // pass the ID as ticketId
+          eventId={selectedEvent.id}   // pass the ID as eventId
+        />
+      )}
+    </div>
+  );
 };
 
-export default DashboardPage;
+export default App;

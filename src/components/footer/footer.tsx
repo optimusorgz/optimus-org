@@ -7,12 +7,12 @@ const Footer = () => {
   return (
     // Updated background to theme's primary dark mode background
     <footer className="bg-gray-900 text-gray-300 py-12 px-4 md:px-8 border-t border-gray-700">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12">
         {/* Column 1: Optimus Brand Info */}
         <div className="space-y-4">
           <Link href="/" className="flex items-center space-x-2 text-white text-2xl font-bold">
-            {/* Logo: Changed accent color from blue to the primary theme green (bg-green-600) */}
-            <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+            {/* Logo: Changed accent color from blue to the primary theme cyan (bg-cyan-600) */}
+            <div className="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-lg font-bold">O</span>
             </div>
             <span>Optimus</span>
@@ -26,8 +26,8 @@ const Footer = () => {
               href="https://linkedin.com/company/optimus-student-organisation" 
               target="_blank" 
               rel="noopener noreferrer" 
-              // Updated hover to theme's green accent color (text-green-500)
-              className="text-gray-400 hover:text-green-500 transition duration-200"
+              // Updated hover to theme's cyan accent color (text-cyan-500)
+              className="text-gray-400 hover:text-cyan-500 transition duration-200"
               aria-label="LinkedIn"
             >
               <Linkedin className="w-6 h-6" />
@@ -36,8 +36,8 @@ const Footer = () => {
               href="https://instagram.com/optimus.orgz" 
               target="_blank" 
               rel="noopener noreferrer" 
-              // Updated hover to theme's green accent color (text-green-500)
-              className="text-gray-400 hover:text-green-500 transition duration-200"
+              // Updated hover to theme's cyan accent color (text-cyan-500)
+              className="text-gray-400 hover:text-cyan-500 transition duration-200"
               aria-label="Instagram"
             >
               <Instagram className="w-6 h-6" />
@@ -49,10 +49,10 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
           <ul className="space-y-2">
-            {/* Updated link hover to theme's green accent color */}
-            <li><Link href="/" className="text-gray-400 hover:text-green-500 transition duration-200">Home</Link></li>
-            <li><Link href="/event-page" className="text-gray-400 hover:text-green-500 transition duration-200">Events</Link></li>
-            <li><Link href="/post" className="text-gray-400 hover:text-green-500 transition duration-200">Post</Link></li>
+            {/* Updated link hover to theme's cyan accent color */}
+            <li><Link href="/" className="text-gray-400 hover:text-cyan-500 transition duration-200">Home</Link></li>
+            <li><Link href="/event-page" className="text-gray-400 hover:text-cyan-500 transition duration-200">Events</Link></li>
+            <li><Link href="/post" className="text-gray-400 hover:text-cyan-500 transition duration-200">Post</Link></li>
           </ul>
         </div>
 
@@ -60,8 +60,8 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold text-white mb-4">Community</h3>
           <ul className="space-y-2">
-            {/* Updated link hover to theme's green accent color */}
-            <li><Link href="/form/joinus" className="text-gray-400 hover:text-green-500 transition duration-200">Join Us</Link></li>
+            {/* Updated link hover to theme's cyan accent color */}
+            <li><Link href="/form/joinus" className="text-gray-400 hover:text-cyan-500 transition duration-200">Join Us</Link></li>
           </ul>
         </div>
 
@@ -77,8 +77,8 @@ const Footer = () => {
               <Mail className="w-5 h-5 text-gray-500 flex-shrink-0" />
               <a 
                 href="mailto:optimus.orgz@gmail.com" 
-                // Updated link hover to theme's green accent color
-                className="text-gray-400 hover:text-green-500 transition duration-200"
+                // Updated link hover to theme's cyan accent color
+                className="text-gray-400 hover:text-cyan-500 transition duration-200"
               >
                 optimus.orgz@gmail.com
               </a>
@@ -96,8 +96,8 @@ const Footer = () => {
               href="https://www.linkedin.com/in/piyushsaini2004/" 
               target="_blank" 
               rel="noopener noreferrer" 
-              // Updated hover to theme's green accent color (text-green-500)
-              className="text-gray-400 hover:text-green-500 transition duration-200"
+              // Updated hover to theme's cyan accent color (text-cyan-500)
+              className="text-gray-400 hover:text-cyan-500 transition duration-200"
               aria-label="LinkedIn"
             >
               <Linkedin className="w-6 h-6" />

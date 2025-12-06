@@ -35,6 +35,7 @@ const navItems: NavItem[] = [
 
 // The base profile menu items
 const baseProfileMenuItems: NavItem[] = [
+    { name: 'Profile', href: '/profile' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Settings', href: '/settings' },
     { name: 'Logout', href: '#' },
@@ -186,13 +187,13 @@ const Navbar: React.FC = () => {
     });
 
     return (
-        <nav className="bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gray-700">
+        <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10 ">
             <div className="mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
                     {/* Logo and App Name (omitted for brevity) */}
                     <div className="flex items-center">
-                        {/* <div className="flex-shrink-0 bg-green-600 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold text-lg mr-2"> O </div>
+                        {/* <div className="flex-shrink-0 bg-cyan-600 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold text-lg mr-2"> O </div>
                         <span className="text-white text-xl font-semibold tracking-wider"> Optimus </span> */}
 
                         <img src={Logo.src} alt="Optimus Logo" style={{ width: 'auto', height: '60px' }} />
@@ -206,7 +207,7 @@ const Navbar: React.FC = () => {
                                <Link 
                                     key={item.name} 
                                     href={item.href} 
-                                    className="text-gray-300 hover:bg-gray-800 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                                    className="text-gray-300 hover:bg-gray-800 hover:text-cyan-400 px-3 py-2 rounded-md text-xl font-medium transition duration-150 ease-in-out"
                                     >
                                     {item.name}
                                 </Link>
@@ -217,22 +218,11 @@ const Navbar: React.FC = () => {
 
                         {/* Search Button (omitted for brevity) */}
                         
-
-                        {/* {userRole === 'admin' && userId && (
-                            <button
-                                onClick={() => router.push(`/admin-dashboard/${userId}`)}
-                                className="ml-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 px-4 rounded-lg transition duration-150 ease-in-out text-sm"
-                            >
-                                Admin Dashboard
-                            </button>
-                        )} */}
-
-
                         {/* Authentication (Sign In Button or Profile Menu) */}
                         {!isLoggedIn ? (
                             <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
                                 <DialogTrigger asChild>
-                                    <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
+                                    <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-1.5 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
                                         Sign In
                                     </button>
                                 </DialogTrigger>
@@ -270,7 +260,7 @@ const Navbar: React.FC = () => {
                                         tabIndex={-1}
                                     >
                                         {updatedProfileMenuItems.map((item) => {
-                                            const className = "block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-green-400 transition duration-100";
+                                            const className = "block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-100";
                                             const isAction = item.name === 'Logout' || item.name === 'Settings';
 
                                             if (isAction) {
@@ -316,9 +306,7 @@ const Navbar: React.FC = () => {
                     onOpenChange={setIsSettingModalOpen}
                 >
                     <DialogContent className="sm:max-w-md p-0 border-none bg-transparent shadow-none">
-                        <DialogHeader className="p-4 bg-gray-800 rounded-t-lg border-b border-gray-700">
-                            <DialogTitle className="text-xl font-bold text-green-400">Profile Settings</DialogTitle>
-                        </DialogHeader>
+                        
                         
                         <ProfileSettingsForm 
                             userId={userId} 

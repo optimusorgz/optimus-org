@@ -15,23 +15,23 @@ interface AuthProps extends AuthComponentProps {}
 const Auth: React.FC<AuthProps> = ({ onSuccess }) => {
     return (
         // 💡 ADDED: max-w-md and mx-auto for better centering and size control on large screens
-        <div className="w-full max-w-md mx-auto bg-gray-800/90 border border-gray-700 p-6 sm:p-8 rounded-xl shadow-2xl transition-all duration-300">
+        <div className="w-full max-w-md mx-auto bg-gray-800/90 border border-gray-700 p-2 sm:p-4 rounded-xl shadow-2xl transition-all duration-300">
             <div className="mb-6 text-center">
-                <h2 className="text-2xl font-bold text-green-400">Welcome Back</h2>
+                <h2 className="text-2xl font-bold text-cyan-400">Welcome Back</h2>
                 <p className="text-sm text-gray-300">Sign in or create an account to continue.</p>
             </div>
             
             <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 h-10 bg-gray-700 p-1 rounded-lg">
+                <TabsList className="grid w-full grid-cols-2 h-10 bg-gray-700 rounded-lg">
                     <TabsTrigger
                         value="login"
-                        className="data-[state=active]:bg-gray-800 data-[state=active]:text-green-400 data-[state=active]:shadow-sm transition-all duration-200 font-semibold text-gray-300"
+                        className="data-[state=active]:bg-gray-800 data-[state=active]:text-cyan-400 data-[state=active]:shadow-sm transition-all duration-200 font-semibold text-gray-300"
                     >
                         Login
                     </TabsTrigger>
                     <TabsTrigger
                         value="signup"
-                        className="data-[state=active]:bg-gray-800 data-[state=active]:text-green-400 data-[state=active]:shadow-sm transition-all duration-200 font-semibold text-gray-300"
+                        className="data-[state=active]:bg-gray-800 data-[state=active]:text-cyan-400 data-[state=active]:shadow-sm transition-all duration-200 font-semibold text-gray-300"
                     >
                         Sign Up
                     </TabsTrigger>
