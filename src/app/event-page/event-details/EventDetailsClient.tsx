@@ -76,8 +76,8 @@ const getDuration = (startStr: string, endStr: string): string => {
 // --- 4. SHARED UI COMPONENTS (Kept here for simplicity) ---
 
 const Card: React.FC<{ children: React.ReactNode, title: string, icon: React.ReactNode, className?: string }> = ({ children, title, icon, className = '' }) => (
-    <div className={`p-6 bg-gray-800/70 border border-gray-700 rounded-xl shadow-lg ${className}`}>
-        <h3 className="flex items-center text-xl font-semibold text-cyan-400  mb-4 border-b border-gray-700 pb-2">
+    <div className={`p-4 sm:p-5 md:p-6 bg-gray-800/70 border border-gray-700 rounded-xl shadow-lg ${className} w-full max-w-full`}>
+        <h3 className="flex items-center text-lg sm:text-xl font-semibold text-cyan-400 mb-3 sm:mb-4 border-b border-gray-700 pb-2">
             {icon}
             <span className="ml-2">{title}</span>
         </h3>
@@ -349,7 +349,7 @@ export default function EventDetailsClientContent() {
 
     // --- Render Main Page ---
     return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans">
+        <div className="min-h-screen bg-gray-900 text-white font-sans w-full overflow-x-hidden max-w-full">
             <Toaster position="top-right" />
             
             {/* Ticket Modal */}
@@ -366,7 +366,7 @@ export default function EventDetailsClientContent() {
             
             {/* 1. Header and Banner */}
             {/* ... (Existing Banner/Header UI) ... */}
-            <div className="relative h-[30rem] sm:h-130 overflow-hidden pb-5"> 
+            <div className="relative h-[25rem] sm:h-[30rem] md:h-[35rem] lg:h-[40rem] overflow-hidden pb-5 w-full max-w-full"> 
                 {/* Banner Image (Nature Theme Background) */}
                 <div 
                     className="absolute inset-0 bg-cover bg-center transition-opacity duration-500"
@@ -382,46 +382,46 @@ export default function EventDetailsClientContent() {
                 </div>
 
                 {/* Adjusted Outer Content Wrapper (Increased mobile top padding to pt-16 for overall shift down) */}
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pt-16 pb-4 sm:pb-8"> 
+                <div className="relative max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 h-full flex flex-col justify-end pt-12 sm:pt-16 pb-4 sm:pb-6 md:pb-8 w-full"> 
                     
                     {/* Back Button - Remains anchored to the top (z-10 ensures it's above the content shift) */}
                     <button
                         onClick={() => router.push('/event-page')}
-                        className="absolute top-8 left-4 sm:left-6 lg:left-8 flex items-center text-gray-200 hover:text-cyan-400  transition text-sm bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg z-10"
+                        className="absolute top-4 sm:top-6 md:top-8 left-3 sm:left-4 md:left-6 lg:left-8 flex items-center text-gray-200 hover:text-cyan-400 transition text-xs sm:text-sm bg-gray-900/50 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg z-10"
                     >
-                        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Events
+                        <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Back to Events</span><span className="sm:hidden">Back</span>
                     </button>
 
                     {/* Main Title and Details (Added pt-12 to push content down and clear the back button) */}
-                    <div className="flex flex-col pt-12 sm:pt-0">
-                        <div className="flex items-center">
+                    <div className="flex flex-col pt-8 sm:pt-12 md:pt-0">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                             {/* Date Tag */}
-                            <span className="text-base sm:text-xl font-medium text-gray-200">{formatEventDate(event.start_date, false)}</span>
+                            <span className="text-sm sm:text-base md:text-xl font-medium text-gray-200">{formatEventDate(event.start_date, false)}</span>
                             {/* Upcoming Badge */}
                             {isUpcoming && (
-                                <span className={`ml-3 px-3 py-1 text-xs font-bold rounded-full ${isPaid ? 'bg-cyan-600 text-white' : 'bg-cyan-400 text-gray-900'}`}>
+                                <span className={`px-2 sm:px-3 py-1 text-xs font-bold rounded-full ${isPaid ? 'bg-cyan-600 text-white' : 'bg-cyan-400 text-gray-900'}`}>
                                     Upcoming
                                 </span>
                             )}
                         </div>
 
                         {/* Main Title */}
-                        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight drop-shadow-lg" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white mb-3 sm:mb-4 leading-tight tracking-tight drop-shadow-lg" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
                             {event.title}
                         </h1>
 
                         {/* Sub-Details */}
-                        <div className="flex flex-wrap items-center text-sm sm:text-lg text-gray-300 space-x-2 sm:space-x-4">
-                            <span className="flex items-center mt-2">
-                                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-red-400" />
-                                {event.location}
+                        <div className="flex flex-wrap items-center text-xs sm:text-sm md:text-base lg:text-lg text-gray-300 gap-2 sm:gap-3 md:gap-4">
+                            <span className="flex items-center">
+                                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1 sm:mr-2 text-red-400 flex-shrink-0" />
+                                <span className="truncate">{event.location}</span>
                             </span>
-                            <span className="flex items-center mt-2">
-                                <User className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-purple-400" />
-                                Organized by <a href="#" className="font-bold text-cyan-400  hover:underline ml-1">{event.organizer_name}</a>
+                            <span className="flex items-center">
+                                <User className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1 sm:mr-2 text-purple-400 flex-shrink-0" />
+                                <span className="truncate">Organized by <a href="#" className="font-bold text-cyan-400 hover:underline ml-1">{event.organizer_name}</a></span>
                             </span>
-                            <span className="flex items-center mt-2">
-                                <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-blue-400" />
+                            <span className="flex items-center">
+                                <Clock className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 mr-1 sm:mr-2 text-blue-400 flex-shrink-0" />
                                 {/* Changed span to block/flex for better wrapping on small screens */}
                                 <span className="flex flex-wrap">
                                     {formatUTC(startDate)} - {formatUTC(endDate)} <span className="ml-1">({duration})</span>
@@ -433,23 +433,23 @@ export default function EventDetailsClientContent() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-6 lg:p-8 mt-[-1rem] sm:mt-[-3rem] relative">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 p-3 sm:p-4 md:p-6 lg:p-8 mt-[-1rem] sm:mt-[-2rem] md:mt-[-3rem] relative w-full overflow-x-hidden">
                 
                 {/* 4. Main Content Cards (Left Column - Span 2) */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-4 sm:space-y-6 md:space-y-8">
                     
                     {/* Card B: Registration CTA (Modified) */}
                     
-                        <div className="p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-4">
-                        <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3">Registration</h3>
+                        <div className="p-4 sm:p-5 md:p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-3 sm:space-y-4 w-full max-w-full">
+                        <h3 className="text-xl sm:text-2xl font-bold text-white border-b border-gray-700 pb-2 sm:pb-3">Registration</h3>
                         
                         {/* Ticket Info */}
-                        <div className="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
-                            <span className="text-3xl font-extrabold text-cyan-400 ">{priceDisplay}</span>
-                            <span className="text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
+                        <div className="flex justify-between items-center bg-gray-700 p-2 sm:p-3 rounded-lg">
+                            <span className="text-2xl sm:text-3xl font-extrabold text-cyan-400">{priceDisplay}</span>
+                            <span className="text-xs sm:text-sm font-semibold text-gray-300">{isPaid ? 'Ticket Fee' : 'Entry Cost'}</span>
                         </div>
                        
-                       <p className="text-yellow-300 text-sm border-l-4 border-yellow-500 p-2 rounded-lg ">
+                       <p className="text-yellow-300 text-xs sm:text-sm border-l-4 border-yellow-500 p-2 rounded-lg">
                             Limit: {event.max_participants} participants only
                         </p>
 
@@ -457,10 +457,10 @@ export default function EventDetailsClientContent() {
                         <button
                             onClick={buttonAction}
                             disabled={isButtonDisabled || !isUpcoming} // Disable if not upcoming as well
-                            className={`w-full py-3 text-lg font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center
+                            className={`w-full py-2.5 sm:py-3 text-sm sm:text-base md:text-lg font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center
                                 ${isButtonDisabled || !isUpcoming ? 'bg-gray-500 cursor-not-allowed' : buttonClass}`}
                         >
-                            {isButtonDisabled && regStatus !== 'registered' ? <AlertTriangle className='w-5 h-5 mr-2' /> : null}
+                            {isButtonDisabled && regStatus !== 'registered' ? <AlertTriangle className='w-4 h-4 sm:w-5 sm:h-5 mr-2' /> : null}
                             {buttonText}
                         </button>
 
@@ -471,9 +471,9 @@ export default function EventDetailsClientContent() {
                         <button
                             // Conditional check for navigator.share is good practice
                             onClick={() => navigator.share ? navigator.share({ title: event.title, url: window.location.href }) : toast.error('Share function unavailable.')}
-                            className="w-full py-3 border border-gray-600 text-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-700 transition duration-150"
+                            className="w-full py-2.5 sm:py-3 border border-gray-600 text-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-700 transition duration-150 text-sm sm:text-base"
                         >
-                            <Share2 className="w-5 h-5 mr-2" /> Share Event
+                            <Share2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2" /> Share Event
                         </button>
                     </div>
 
@@ -481,7 +481,7 @@ export default function EventDetailsClientContent() {
                     <Card title="About the Event" icon={<List />} className="bg-gray-800/90">
 
                     <p
-                    className="text-gray-300 text-lg leading-relaxed"
+                    className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed"
                     dangerouslySetInnerHTML={{
                         __html: (event.description || "Default description").replace(/\n/g, '<br />')
                     }}
@@ -491,11 +491,11 @@ export default function EventDetailsClientContent() {
 
                     {/* Card B: Event Details and Timeline */}
                     <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
 
                             {/* Essentials Section */}
-                            <div className="space-y-3">
-                            <h4 className="font-semibold text-white text-lg mb-2">Essentials</h4>
+                            <div className="space-y-2 sm:space-y-3">
+                            <h4 className="font-semibold text-white text-base sm:text-lg mb-2">Essentials</h4>
 
                             {/* Each Detail Item (Using the general DetailItem component for consistency) */}
                             <div className="flex items-center justify-between">
@@ -548,13 +548,13 @@ export default function EventDetailsClientContent() {
                             </div>
 
                             {/* Event Timeline Section */}
-                            <div className="space-y-3">
-                            <h4 className="font-semibold text-white text-lg mb-2">Event Timeline</h4>
-                            <div className="p-4 border-l-4 border-cyan-500 bg-gray-700/50 rounded-md space-y-2">
-                                <p className="text-gray-300">
+                            <div className="space-y-2 sm:space-y-3">
+                            <h4 className="font-semibold text-white text-base sm:text-lg mb-2">Event Timeline</h4>
+                            <div className="p-3 sm:p-4 border-l-4 border-cyan-500 bg-gray-700/50 rounded-md space-y-2">
+                                <p className="text-gray-300 text-sm sm:text-base">
                                 <span className="font-semibold text-white">Start Time:</span> {formatUTC(startDate)}
                                 </p>
-                                <p className="text-gray-300">
+                                <p className="text-gray-300 text-sm sm:text-base">
                                 <span className="font-semibold text-white">End Time:</span> {formatUTC(endDate)}
                                 </p>
                             </div>
@@ -569,29 +569,29 @@ export default function EventDetailsClientContent() {
                 </div>
 
                 {/* 3. Registration / CTA Sidebar (Right Column) */}
-                <div className="lg:col-span-1 space-y-8 lg:sticky lg:top-8 h-fit">
+                <div className="lg:col-span-1 space-y-4 sm:space-y-6 md:space-y-8 lg:sticky lg:top-8 h-fit">
                     
                     {/* Card F: Event Information Summary (Chips) */}
                     <Card title="Event Summary" icon={<List />}>
-                        <div className="grid grid-cols-2 gap-4 text-center">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 text-center">
                             {/* Chip 1: Price */}
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <div className="text-xl font-bold text-cyan-400 ">{priceDisplay}</div>
+                            <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                                <div className="text-lg sm:text-xl font-bold text-cyan-400">{priceDisplay}</div>
                                 <div className="text-xs text-gray-400 mt-1">Entry Fee</div>
                             </div>
                             {/* Chip 2: Max Participants */}
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <div className="text-xl font-bold text-white">{event.max_participants || '∞'}</div>
+                            <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                                <div className="text-lg sm:text-xl font-bold text-white">{event.max_participants || '∞'}</div>
                                 <div className="text-xs text-gray-400 mt-1">Max Participants</div>
                             </div>
                             {/* Chip 3: Category */}
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <div className="text-xl font-bold text-white">{event.category}</div>
+                            <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                                <div className="text-lg sm:text-xl font-bold text-white truncate">{event.category}</div>
                                 <div className="text-xs text-gray-400 mt-1">Category</div>
                             </div>
                             {/* Chip 4: Duration */}
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <div className="text-xl font-bold text-white">{duration}</div>
+                            <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
+                                <div className="text-lg sm:text-xl font-bold text-white">{duration}</div>
                                 <div className="text-xs text-gray-400 mt-1">Duration</div>
                             </div>
                         </div>
@@ -599,7 +599,7 @@ export default function EventDetailsClientContent() {
 
                     {/* Card D: Contact Information - Uses the fixed DetailItem */}
                     <Card title="Contact Information" icon={<User />}>
-                        <div className="space-y-3">
+                        <div className="space-y-2 sm:space-y-3">
                             <DetailItem icon={<Mail />} label="Email" value={event.contact_email} />
                             <DetailItem icon={<Phone />} label="Phone" value={event.contact_phone} />
                             <DetailItem icon={<User />} label="Organizer" value={event.organizer_name} />
@@ -610,22 +610,22 @@ export default function EventDetailsClientContent() {
                     <Card title="Quick Actions" icon={<ExternalLink />}>
                         <div className="flex flex-col space-y-2">
                             {/* Quick Action: Register/Pay Button */}
-                            <button onClick={buttonAction} className="text-cyan-400  hover:text-cyan-500 text-left font-medium disabled:text-gray-500" disabled={isButtonDisabled}>
+                            <button onClick={buttonAction} className="text-cyan-400 hover:text-cyan-500 text-left font-medium disabled:text-gray-500 text-sm sm:text-base" disabled={isButtonDisabled}>
                                 {regStatus === 'pending_payment' ? 'Complete Payment' : 'Register for Event'}
                             </button>
                             {/* Quick Action: View Ticket Button */}
                             {regStatus === 'registered' && (
-                                <button onClick={() => setShowTicketModal(true)} className="text-cyan-400  hover:text-cyan-500 text-left font-medium">
+                                <button onClick={() => setShowTicketModal(true)} className="text-cyan-400 hover:text-cyan-500 text-left font-medium text-sm sm:text-base">
                                     View My Ticket
                                 </button>
                             )}
-                            <button onClick={() => navigator.share ? navigator.share({ title: event.title, url: window.location.href }) : toast.error('Share function unavailable.')} className="text-gray-400 hover:text-gray-300 text-left font-medium">
+                            <button onClick={() => navigator.share ? navigator.share({ title: event.title, url: window.location.href }) : toast.error('Share function unavailable.')} className="text-gray-400 hover:text-gray-300 text-left font-medium text-sm sm:text-base">
                                 Share with Friends
                             </button>
-                            <a href={`mailto:${event.contact_email || 'support@example.com'}`} className="text-gray-400 hover:text-gray-300 text-left font-medium">
+                            <a href={`mailto:${event.contact_email || 'support@example.com'}`} className="text-gray-400 hover:text-gray-300 text-left font-medium text-sm sm:text-base break-all">
                                 Ask a Question
                             </a>
-                            <a href={`tel:${event.contact_phone || '#'}`} className="text-gray-400 hover:text-gray-300 text-left font-medium">
+                            <a href={`tel:${event.contact_phone || '#'}`} className="text-gray-400 hover:text-gray-300 text-left font-medium text-sm sm:text-base">
                                 Call Organizer
                             </a>
                         </div>

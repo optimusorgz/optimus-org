@@ -53,15 +53,15 @@ interface EventCardProps {
 
 // --- 2. COMPONENTS ---
 const StatCard: React.FC<{ data: StatsCardData; bgColor: string }> = ({ data, bgColor }) => (
-  <div className={`p-6 rounded-xl shadow-lg ${bgColor}`}>
+  <div className={`p-3 sm:p-4 md:p-6 rounded-xl shadow-lg ${bgColor}`}>
     <div className="flex justify-between items-start mb-2">
-      <div>
-        <p className="text-5xl font-extrabold text-white">{data.value}</p>
-        <p className="text-base font-medium text-gray-100 mt-1">{data.label}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white truncate">{data.value}</p>
+        <p className="text-xs sm:text-sm md:text-base font-medium text-gray-100 mt-1 truncate">{data.label}</p>
       </div>
-      <div className="text-3xl opacity-70 mt-1">{data.icon}</div>
+      <div className="text-xl sm:text-2xl md:text-3xl opacity-70 mt-1 flex-shrink-0 ml-2">{data.icon}</div>
     </div>
-    <p className="text-sm font-light text-gray-200">{data.change}</p>
+    <p className="text-xs sm:text-sm font-light text-gray-200 truncate">{data.change}</p>
   </div>
 );
 
@@ -69,9 +69,9 @@ const EventCard: React.FC<{ data: EventData; onClick?: () => void }> = ({ data, 
   
   <div
     onClick={onClick}
-    className="flex items-center p-4 bg-gray-800 rounded-lg transition duration-150 hover:bg-gray-700/70 cursor-pointer"
+    className="flex items-center p-3 sm:p-4 bg-gray-800 rounded-lg transition duration-150 hover:bg-gray-700/70 cursor-pointer w-full max-w-full"
   >
-    <div className="w-14 h-14 bg-gray-600 rounded-lg flex-shrink-0 mr-4 overflow-hidden">
+    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-600 rounded-lg flex-shrink-0 mr-3 sm:mr-4 overflow-hidden">
       <img
         src={data.imageUrl}
         alt={data.title}
@@ -83,13 +83,13 @@ const EventCard: React.FC<{ data: EventData; onClick?: () => void }> = ({ data, 
       />
     </div>
     <div className="flex-grow min-w-0">
-      <p className="text-lg font-semibold truncate text-white">{data.title}</p>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm sm:text-base md:text-lg font-semibold truncate text-white">{data.title}</p>
+      <p className="text-xs sm:text-sm text-gray-400 truncate">
         {data.date} • <span className="text-blue-400 font-medium">{data.registered} registered</span>
       </p>
     </div>
     <svg
-      className="ml-4 w-5 h-5 text-gray-400 flex-shrink-0"
+      className="ml-2 sm:ml-4 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -102,11 +102,11 @@ const EventCard: React.FC<{ data: EventData; onClick?: () => void }> = ({ data, 
 
 
 const OrganizationPill: React.FC<{ data: OrganizationData }> = ({ data }) => (
-  <a className="p-4 bg-gray-800 rounded-xl text-center cursor-pointer transition duration-150 hover:bg-gray-700/70">
-    <div className="mx-auto w-14 h-14 bg-green-600 rounded-full mb-3 flex items-center justify-center text-xl font-bold text-white">
+  <a className="p-3 sm:p-4 bg-gray-800 rounded-xl text-center cursor-pointer transition duration-150 hover:bg-gray-700/70 w-full max-w-full">
+    <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 bg-green-600 rounded-full mb-2 sm:mb-3 flex items-center justify-center text-lg sm:text-xl font-bold text-white">
       {data.logoUrl}
     </div>
-    <p className="font-semibold truncate text-white">{data.name}</p>
+    <p className="font-semibold truncate text-white text-sm sm:text-base">{data.name}</p>
     <p className="text-xs text-gray-400">{data.members} members</p>
   </a>
 );
@@ -115,10 +115,10 @@ const RegistrationRow: React.FC<{ data: RegistrationData }> = ({ data }) => {
   const isConfirmed = data.status === 'confirmed';
   const statusClasses = isConfirmed ? 'bg-green-600/20 text-green-400' : 'bg-blue-600/20 text-blue-400';
   return (
-    <div className="flex justify-between items-center p-4 bg-gray-800 rounded-lg">
-      <div>
-        <p className="text-lg font-semibold text-white truncate">{data.eventTitle}</p>
-        <p className="text-sm text-gray-400">
+    <div className="flex justify-between items-center p-3 sm:p-4 bg-gray-800 rounded-lg w-full max-w-full">
+      <div className="min-w-0 flex-1">
+        <p className="text-sm sm:text-base md:text-lg font-semibold text-white truncate">{data.eventTitle}</p>
+        <p className="text-xs sm:text-sm text-gray-400 truncate">
           Ticket: <span className="font-medium">{data.ticketType}</span>
         </p>
       </div>
@@ -128,10 +128,10 @@ const RegistrationRow: React.FC<{ data: RegistrationData }> = ({ data }) => {
 };
 
 const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data }) => (
-  <div className="p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-8">
-    <h3 className="text-xl font-bold text-white mb-4 flex items-center">Your Hosted Organization</h3>
-    <div className="flex items-center space-x-4">
-      <div className="w-16 h-16 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-purple-600">
+  <div className="p-4 sm:p-5 md:p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-6 sm:mb-8 w-full max-w-full">
+    <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center">Your Hosted Organization</h3>
+    <div className="flex items-center space-x-3 sm:space-x-4">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-purple-600">
         {data.logoUrl ? (
           <img
             src={data.logoUrl}
@@ -143,16 +143,16 @@ const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data 
             }}
           />
         ) : (
-          <span className="text-3xl font-bold text-white">{data.name[0]}</span>
+          <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white">{data.name[0]}</span>
         )}
       </div>
-      <div>
-        <p className="text-2xl font-extrabold text-white truncate">{data.name}</p>
-        <p className="text-sm text-gray-400">{data.members} Total Members</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-lg sm:text-xl md:text-2xl font-extrabold text-white truncate">{data.name}</p>
+        <p className="text-xs sm:text-sm text-gray-400">{data.members} Total Members</p>
       </div>
     </div>
-    <div className="mt-4 pt-4 border-t border-gray-700/50">
-      <button className="w-full px-4 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-purple-700 transition">
+    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-700/50">
+      <button className="w-full px-3 sm:px-4 py-2 bg-purple-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md hover:bg-purple-700 transition">
         Manage Profile & Settings
       </button>
     </div>
@@ -324,13 +324,13 @@ const App: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 lg:p-10 font-sans mt-10 w-full">
-      <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 flex items-center">
+    <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 lg:p-10 font-sans mt-10 sm:mt-12 md:mt-16 w-full overflow-x-hidden max-w-full">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 flex items-center">
         Welcome back! <span className="ml-2">👋</span>
       </h1>
-      <p className="text-lg text-gray-300 mb-8">Here&apos;s what&apos;s happening with your events</p>
+      <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8">Here&apos;s what&apos;s happening with your events</p>
 
-      <section className="mb-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <section className="mb-6 sm:mb-8 md:mb-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {statsData.map((stat, index) => (
           <StatCard key={stat.label} data={stat} bgColor={['bg-teal-600', 'bg-gray-700', 'bg-blue-600', 'bg-gray-700'][index]} />
         ))}
@@ -340,9 +340,9 @@ const App: React.FC = () => {
         {/* Left Column */}
         <div className="lg:col-span-2">
           {/* Upcoming Events */}
-          <section className="mb-10">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl sm:text-2xl font-bold">Upcoming Events</h2>
+          <section className="mb-6 sm:mb-8 md:mb-10">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Upcoming Events</h2>
             </div>
             {upcomingEvents.length > 0 ? (
               <div className="space-y-4">
@@ -363,9 +363,9 @@ const App: React.FC = () => {
 
 
           {/* Registrations */}
-          <section className="mb-10">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl sm:text-2xl font-bold">Recent Registrations</h2>
+          <section className="mb-6 sm:mb-8 md:mb-10">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Recent Registrations</h2>
             </div>
             {registrations.length > 0 ? (
               <div className="space-y-4">{registrations.map(r => <RegistrationRow key={r.id} data={r} />)}</div>
@@ -375,9 +375,9 @@ const App: React.FC = () => {
           </section>
 
           {/* Hosted Events */}
-          <section className="mb-10">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl sm:text-2xl font-bold">Hosted Events</h2>
+          <section className="mb-6 sm:mb-8 md:mb-10">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Hosted Events</h2>
             </div>
             {hostedEvents.length > 0 ? (
               <div className="space-y-4">
@@ -404,15 +404,15 @@ const App: React.FC = () => {
           )}
 
           <section>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl sm:text-2xl font-bold">Member of Organizations</h2>
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Member of Organizations</h2>
             </div>
             {memberOrganizations.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
                 {memberOrganizations.map(org => <OrganizationPill key={org.id} data={org} />)}
               </div>
             ) : (
-              <p className="text-gray-400 italic">You are not a member of any organization.</p>
+              <p className="text-gray-400 italic text-sm sm:text-base">You are not a member of any organization.</p>
             )}
           </section>
         </div>

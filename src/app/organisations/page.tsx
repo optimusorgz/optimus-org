@@ -77,14 +77,14 @@ const getRoleStyle = (role: Role) => {
 
 const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
   return (
-    <div className="p-4 md:p-8 rounded-xl bg-gray-800/50">
-        <h3 className="flex items-center text-lg font-semibold text-gray-200 mb-4">
-            <Users className="w-5 h-5 mr-2 text-teal-400" /> Team Members
+    <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl bg-gray-800/50 w-full max-w-full overflow-x-auto">
+        <h3 className="flex items-center text-base sm:text-lg font-semibold text-gray-200 mb-3 sm:mb-4">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-teal-400" /> Team Members
         </h3>
 
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
             {/* Table Header - hidden on mobile */}
-            <div className="hidden md:grid md:grid-cols-5 text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">
+            <div className="hidden md:grid md:grid-cols-5 text-xs sm:text-sm font-medium text-gray-400 border-b border-gray-700 pb-2">
             <div className="col-span-2">Name</div>
             <div>Role</div>
             <div className="col-span-2">Joined</div>
@@ -97,7 +97,7 @@ const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
                 className="grid grid-cols-2 md:grid-cols-5 items-center py-2 border-b border-gray-800 last:border-b-0 text-white/90 gap-2"
             >
                 {/* Name */}
-                <div className="text-sm font-medium truncate">{member.name}</div>
+                <div className="text-xs sm:text-sm font-medium truncate">{member.name}</div>
 
                 {/* Role */}
                 <div className="flex justify-start">
@@ -107,7 +107,7 @@ const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
                 </div>
 
                 {/* Joined Date - hidden on mobile */}
-                <div className="hidden md:block md:col-span-2 text-sm text-gray-400">{member.joined}</div>
+                <div className="hidden md:block md:col-span-2 text-xs sm:text-sm text-gray-400">{member.joined}</div>
             </div>
             ))}
         </div>
@@ -123,57 +123,57 @@ const StatCard: React.FC<{ count: number; label: string; icon: React.ReactNode; 
   bgColor,
 }) => (
   <div
-    className={`flex flex-col items-start p-4 rounded-xl shadow-lg transition-all hover:ring-2 ring-offset-2 ring-offset-gray-900 ${bgColor}`}
+    className={`flex flex-col items-start p-3 sm:p-4 rounded-xl shadow-lg transition-all hover:ring-2 ring-offset-2 ring-offset-gray-900 ${bgColor} w-full`}
   >
     <div className="flex items-center text-white">
       {icon}
-      <span className="ml-2 font-semibold text-white/90">{label}</span>
+      <span className="ml-2 font-semibold text-white/90 text-xs sm:text-sm">{label}</span>
     </div>
-    <div className="text-3xl font-extrabold mt-1 text-white">{count}</div>
+    <div className="text-2xl sm:text-3xl font-extrabold mt-1 text-white">{count}</div>
   </div>
 );
 
 const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
   return (
-    <div className="bg-gray-800/70 p-4 md:p-6 rounded-2xl shadow-2xl backdrop-blur-sm border border-gray-700/50">
-      <div className="md:grid md:grid-cols-3 md:gap-8">
+    <div className="bg-gray-800/70 p-3 sm:p-4 md:p-6 rounded-2xl shadow-2xl backdrop-blur-sm border border-gray-700/50 w-full max-w-full">
+      <div className="md:grid md:grid-cols-3 md:gap-6 lg:gap-8">
         {/* Left Section: Info and Stats (1/3 width on desktop) */}
         <div className="mb-6 md:mb-0 md:col-span-1 flex flex-col justify-between">
-          <div>
+          <div className="w-full">
             <div className="flex items-center mb-4">
               <img
                 src={org.logo}
                 alt={`${org.name} Logo`}
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-teal-500"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-teal-500 flex-shrink-0"
                 onError={(e: any) => {
                   e.target.onerror = null;
                   e.target.src = 'https://placehold.co/40x40/374151/FFFFFF?text=Org';
                 }}
               />
-              <div className="ml-3">
-                <h2 className="text-xl font-bold text-white">{org.name}</h2>
-                <p className="text-sm text-gray-400">{org.description}</p>
+              <div className="ml-2 sm:ml-3 min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg md:text-xl font-bold text-white truncate">{org.name}</h2>
+                <p className="text-xs sm:text-sm text-gray-400 line-clamp-2">{org.description}</p>
               </div>
             </div>
 
             {/* Stats: Responsive layout (row on desktop, column on mobile) */}
-            <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
               <StatCard
                 count={org.membersCount}
                 label="Members"
-                icon={<Users className="w-5 h-5" />}
+                icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />}
                 bgColor="bg-gradient-to-br from-cyan-500/80 to-blue-600/80 hover:from-cyan-400 hover:to-blue-500"
               />
               <StatCard
                 count={org.eventsCount}
                 label="Events"
-                icon={<Calendar className="w-5 h-5" />}
+                icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
                 bgColor="bg-gradient-to-br from-amber-500/80 to-yellow-600/80 hover:from-amber-400 hover:to-yellow-500"
               />
             </div>
 
             <button
-              className="w-full text-center py-3 px-6 rounded-xl font-bold text-white transition-all duration-300
+              className="w-full text-center py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-bold text-white transition-all duration-300 text-sm sm:text-base
                          bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400
                          shadow-lg shadow-teal-500/30 active:scale-[0.98]"
             >
@@ -195,17 +195,17 @@ const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
 
 const App: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-900 font-sans p-4 sm:p-8">
-      <header className="text-center py-10 px-4">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-2 tracking-tight">
+    <div className="min-h-screen bg-gray-900 font-sans p-3 sm:p-4 md:p-6 lg:p-8 w-full overflow-x-hidden max-w-full">
+      <header className="text-center py-6 sm:py-8 md:py-10 px-4 w-full">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-2 tracking-tight">
           Organizations
         </h1>
-        <p className="text-lg text-gray-400">
+        <p className="text-sm sm:text-base md:text-lg text-gray-400 px-2">
           Discover top event organizers and join communities that match your interests
         </p>
       </header>
 
-      <main className="max-w-6xl mx-auto space-y-10 pb-20">
+      <main className="max-w-6xl mx-auto space-y-6 sm:space-y-8 md:space-y-10 pb-12 sm:pb-16 md:pb-20 px-2 sm:px-4 w-full">
         {mockOrganizations.map((org) => (
           <OrganizationCard key={org.id} org={org} />
         ))}

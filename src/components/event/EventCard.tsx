@@ -39,7 +39,7 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
       <Link href={`/event-page/event-details?id=${event.id}`}>
       <div
         className="
-          w-full max-w-[90%] m-auto md:max-w-[420px]
+          w-full max-w-full m-auto sm:max-w-[90%] md:max-w-[420px]
           rounded-2xl overflow-hidden bg-[#0f172a] 
           border border-gray-800
           shadow-[0_8px_30px_rgba(0,0,0,0.35)]
@@ -49,11 +49,11 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
         "
       >          
           {/* IMAGE SECTION */}
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
             <img
               src={event.banner_url || "/placeholder.jpg"}
               alt={event.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 max-w-full"
             />
 
             {/* Gradient Overlay */}
@@ -82,41 +82,41 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
           </div>
 
           {/* CONTENT */}
-          <div className="px-5 py-4 space-y-3">
+          <div className="px-3 sm:px-4 md:px-5 py-3 sm:py-4 space-y-2 sm:space-y-3">
 
             {/* Title */}
-            <h3 className="font-bold text-xl text-white leading-tight group-hover:text-blue-400 transition">
+            <h3 className="font-bold text-base sm:text-lg md:text-xl text-white leading-tight group-hover:text-blue-400 transition line-clamp-2">
               {event.title}
             </h3>
 
             {/* Description */}
-            <p className="text-gray-400 text-sm line-clamp-3 hidden sm:hidden">
+            <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 hidden sm:hidden">
               {event.description}
             </p>
 
             {/* DETAILS LIST */}
-            <div className="space-y-2 text-sm text-gray-300">
+            <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-300">
               
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                <span>{formattedDate}</span>
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 flex-shrink-0" />
+                <span className="truncate">{formattedDate}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-green-400" />
-                <span>{event.location}</span>
+                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 flex-shrink-0" />
+                <span className="truncate">{event.location}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-purple-400" />
-                <span>Organizer: {event.organizer_name}</span>
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 flex-shrink-0" />
+                <span className="truncate">Organizer: {event.organizer_name}</span>
               </div>
 
             </div>
 
             {/* CTA BUTTON */}
             <Button
-              className="w-full mt-4 py-5 text-base font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 transition"
+              className="w-full mt-3 sm:mt-4 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 transition"
             >
               Register Now
             </Button>

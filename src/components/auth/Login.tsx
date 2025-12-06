@@ -77,25 +77,25 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
   }
 
   return (
-    <Card className="w-full bg-transparent border-t border-b border-gray-700" >
+    <Card className="w-full max-w-full bg-transparent border-t border-b border-gray-700 overflow-x-hidden" >
       {/* Google Login Button */}
-      <div className="px-6 pt-4 pb-2">
+      <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2">
         <Button
           type="button"
-          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
+          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
           onClick={handleGoogleLogin}
         >
           Continue with Google
         </Button>
       </div>
 
-      <CardHeader>
-        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2">Login</CardTitle>
-        <CardDescription className="text-gray-300">Sign in to your account</CardDescription>
+      <CardHeader className="px-4 sm:px-6">
+        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2 text-lg sm:text-xl">Login</CardTitle>
+        <CardDescription className="text-gray-300 text-sm sm:text-base">Sign in to your account</CardDescription>
       </CardHeader>
 
       <form onSubmit={handleLogin}>
-        <CardContent className="space-y-4 px-6">
+        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input 
@@ -130,19 +130,19 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
           </div>
         </CardContent>
 
-        <div className="px-6">
+        <div className="px-4 sm:px-6">
           <p
             onClick={() => setShowForgot(true)}
-            className="text-sm text-white-600 hover:underline cursor-pointer text-right"
+            className="text-xs sm:text-sm text-white-600 hover:underline cursor-pointer text-right"
           >
             Forgot password?
           </p>
         </div>
 
-        <CardFooter className="px-6 py-4">
+        <CardFooter className="px-4 sm:px-6 py-3 sm:py-4">
           <Button 
             type="submit" 
-            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
             disabled={loading}
           >
             {loading ? 'Logging In...' : 'Sign In'}

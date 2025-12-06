@@ -83,8 +83,8 @@ const BottomNavbar: React.FC = () => {
   return (
     <>
       <Toaster position="bottom-center" />
-      <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-gray-900 border-t border-gray-700 shadow-inner w-full">
-        <div className="flex justify-around items-center h-20 px-2">
+      <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-gray-900 border-t border-gray-700 shadow-inner w-full max-w-full overflow-x-hidden">
+        <div className="flex justify-around items-center h-16 sm:h-20 px-1 sm:px-2 max-w-full">
           {mobileNavItems.map((item) => {
             const active = isActive(item.href);
             return (
@@ -95,13 +95,13 @@ const BottomNavbar: React.FC = () => {
                 >
                 {/* Circle background */}
                 <span
-                    className={`absolute top-1/2 left-1/2 w-20 h-20 -translate-x-1/2 -translate-y-1/2 rounded-3xl transition-colors duration-200
+                    className={`absolute top-1/2 left-1/2 w-16 h-16 sm:w-20 sm:h-20 -translate-x-1/2 -translate-y-1/2 rounded-3xl transition-colors duration-200
                     ${active ? 'bg-cyan-900' : 'bg-transparent group-hover:bg-cyan-600'}`}
                 ></span>
 
                 {/* Icon */}
                 <div
-                    className={`flex justify-center items-center w-8 h-8 relative z-10 ${
+                    className={`flex justify-center items-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 relative z-10 ${
                     active ? 'text-white' : 'text-gray-400 hover:text-white'
                     }`}
                 >

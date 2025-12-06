@@ -72,25 +72,25 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
   }
 
   return (
-    <Card className="w-full bg-gray-800/90 border-gray-700">
+    <Card className="w-full max-w-full bg-gray-800/90 border-gray-700 overflow-x-hidden">
       {/* Google Signup Button */}
-      <div className="px-6 pt-4 pb-2">
+      <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2">
         <Button
           type="button"
-          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
+          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
           onClick={handleGoogleSignup}
         >
           Continue with Google
         </Button>
       </div>
 
-      <CardHeader>
-        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2">Sign Up</CardTitle>
-        <CardDescription className="text-gray-300">Create a new account</CardDescription>
+      <CardHeader className="px-4 sm:px-6">
+        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2 text-lg sm:text-xl">Sign Up</CardTitle>
+        <CardDescription className="text-gray-300 text-sm sm:text-base">Create a new account</CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSignup}>
-        <CardContent className="space-y-4 px-6">
+        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input 
@@ -150,10 +150,10 @@ const Signup: React.FC<AuthComponentProps> = ({ onSuccess }) => {
           </div>
         </CardContent>
 
-        <CardFooter className="px-6 py-4">
+        <CardFooter className="px-4 sm:px-6 py-3 sm:py-4">
           <Button 
             type="submit" 
-            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
             disabled={loading}
           >
             {loading ? 'Signing Up...' : 'Create Account'}

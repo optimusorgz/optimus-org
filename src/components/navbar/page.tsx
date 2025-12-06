@@ -188,34 +188,34 @@ const Navbar: React.FC = () => {
     });
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10 w-full">
-            <div className="mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
+        <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/10 w-full max-w-full overflow-x-hidden">
+            <div className="mx-auto px-2 sm:px-4 md:px-6 lg:px-8 max-w-full">
+                <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
 
                     {/* Logo and App Name (omitted for brevity) */}
-                    <div className="flex items-center">
+                    <div className="flex items-center flex-shrink-0">
                         {/* <div className="flex-shrink-0 bg-cyan-600 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold text-lg mr-2"> O </div>
                         <span className="text-white text-xl font-semibold tracking-wider"> Optimus </span> */}
 
-                        <img src={Logo.src} alt="Optimus Logo" style={{ width: 'auto', height: '60px' }} />
+                        <img src={Logo.src} alt="Optimus Logo" className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto max-w-full object-contain" />
                     </div>
 
-                    <div className="flex-1 flex justify-center">
+                    <div className="flex-1 flex justify-center min-w-0">
 
                         {/* Desktop Navigation Links - Modern Link Usage (No <a> tag needed) */}
-                        <div className="hidden md:flex space-x-4">
+                        <div className="hidden md:flex space-x-2 lg:space-x-4">
                             {navItems.map((item) => (
                                <Link 
                                     key={item.name} 
                                     href={item.href} 
-                                    className="text-gray-300 hover:bg-gray-800 hover:text-cyan-400 px-3 py-2 rounded-md text-xl font-medium transition duration-150 ease-in-out"
+                                    className="text-gray-300 hover:bg-gray-800 hover:text-cyan-400 px-2 lg:px-3 py-2 rounded-md text-sm lg:text-base xl:text-xl font-medium transition duration-150 ease-in-out whitespace-nowrap"
                                     >
                                     {item.name}
                                 </Link>
                             ))}
                         </div>
                         </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
 
                         {/* Search Button (omitted for brevity) */}
                         
@@ -223,7 +223,7 @@ const Navbar: React.FC = () => {
                         {!isLoggedIn ? (
                             <Dialog open={isAuthModalOpen} onOpenChange={setIsAuthModalOpen}>
                                 <DialogTrigger asChild>
-                                    <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-1.5 px-4 rounded-lg transition duration-150 ease-in-out text-sm">
+                                    <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-1.5 px-3 sm:px-4 rounded-lg transition duration-150 ease-in-out text-xs sm:text-sm whitespace-nowrap">
                                         Sign In
                                     </button>
                                 </DialogTrigger>
@@ -247,8 +247,8 @@ const Navbar: React.FC = () => {
                                     aria-haspopup="true"
                                 >
                                     <span className="sr-only">Open user menu</span>
-                                    <img className="h-8 w-8 rounded-full bg-gray-600 border-2 border-white" src={avatarUrl} alt="User Profile" />
-                                    <svg className={`ml-1 h-4 w-4 text-white transform ${isProfileMenuOpen ? 'rotate-180' : 'rotate-0'} transition-transform duration-200`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <img className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gray-600 border-2 border-white object-cover" src={avatarUrl} alt="User Profile" />
+                                    <svg className={`ml-0.5 sm:ml-1 h-3 w-3 sm:h-4 sm:w-4 text-white transform ${isProfileMenuOpen ? 'rotate-180' : 'rotate-0'} transition-transform duration-200 flex-shrink-0`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
@@ -261,7 +261,7 @@ const Navbar: React.FC = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2, ease: "easeOut" }}
-                                        className="origin-top-right absolute right-0 mt-2 w-58 rounded-lg shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                                        className="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 md:w-64 rounded-lg shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-w-[90vw]"
                                         role="menu"
                                         tabIndex={-1}
                                         >

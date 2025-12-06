@@ -192,16 +192,16 @@ export default function EventsPage() {
     router.push('/form/create-event'); 
   };
 
-  return (
-    <div className="min-h-screen bg-gray-900 text-white sm:p-1 ">
-        {/* 1. Header (Updated to match image content and center alignment) */}
-          <header className="text-center hidden md:block mt-20 max-w-3xl mx-auto px-4">
-                <h1 className="text-cyan-400 text-4xl md:text-5xl lg:text-6xl font-extrabold ">Explore Events</h1>
-                <p className="text-gray-300 mt-1">Discover amazing events happening near you and around the world</p>
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+        {/* 1. Header (Updated to match image content and center alignment) */}
+            <header className="text-center mt-16 sm:mt-20 max-w-3xl mx-auto px-4 w-full">
+                <h1 className="text-cyan-400 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold">Explore Events</h1>
+                <p className="text-gray-300 mt-1 text-sm sm:text-base md:text-lg">Discover amazing events happening near you and around the world</p>
             </header>
-        
-        {/* 2. Main Content Area */}
-        <div className="max-w-7xl mx-auto">
+        
+        {/* 2. Main Content Area */}
+        <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 md:px-6">
             {loading ? (
                 <div className="flex items-center justify-center min-h-screen bg-gray-900">
                     <Loader />
@@ -223,45 +223,45 @@ export default function EventsPage() {
                         onFilterChange={handleFilterChange}
                     />
                     
-                    {/* Results Count & Create Button */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-400">
-                        <p className="text-lg font-medium mb-3 sm:mb-0">Showing {eventCount} events</p>
+                    {/* Results Count & Create Button */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-gray-400 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <p className="text-sm sm:text-base md:text-lg font-medium">Showing {eventCount} events</p>
                         
                         <Button 
-                            className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm px-4 py-2 w-full sm:w-auto" 
+                            className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs sm:text-sm px-3 sm:px-4 py-2 w-full sm:w-auto" 
                             onClick={handleCreateEventClick}
                         >
                             Create New Event
                         </Button>
                     </div>
 
-                    {/* Event Grid/List - Updated to match the grid structure of the second image */}
-                    <section>
-                        {hasEvents ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {/* Event Grid/List - Updated to match the grid structure of the second image */}
+                    <section className="w-full overflow-x-hidden">
+                        {hasEvents ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
                                 {filteredEvents.map(event => (
                                     <EventCard key={event.id} event={event} />
                                 ))}
                             </div>
-                        ) : (
-                            /* No Events Found State */
-                            !loading && !error && (
-                                <div className="flex flex-col items-center justify-center py-20 text-center">
-                                    <CalendarIcon className="w-16 h-16 text-gray-600 mb-4" />
-                                    <h2 className="text-2xl font-semibold text-white mb-2">No events found</h2>
-                                    <p className="text-gray-400 mb-6 max-w-sm">
-                                        No events match your current filters. Try adjusting the filters or check back later for new events.
-                                    </p>
-                                    <button
-                                        onClick={resetAllFilters}
-                                        className="px-6 py-2 border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition rounded-lg flex items-center"
-                                    >
-                                        <XCircleIcon className="w-5 h-5 mr-2" />
-                                        Reset All Filters
-                                    </button>
-                                </div>
-                            )
-                        )}
+                        ) : (
+                            /* No Events Found State */
+                            !loading && !error && (
+                                <div className="flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 text-center px-4">
+                                    <CalendarIcon className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-gray-600 mb-3 sm:mb-4" />
+                                    <h2 className="text-xl sm:text-2xl font-semibold text-white mb-2">No events found</h2>
+                                    <p className="text-gray-400 mb-4 sm:mb-6 max-w-sm text-sm sm:text-base">
+                                        No events match your current filters. Try adjusting the filters or check back later for new events.
+                                    </p>
+                                    <button
+                                        onClick={resetAllFilters}
+                                        className="px-4 sm:px-6 py-2 border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition rounded-lg flex items-center text-sm sm:text-base"
+                                    >
+                                        <XCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                                        Reset All Filters
+                                    </button>
+                                </div>
+                            )
+                        )}
                     </section>
                 </>
             )}

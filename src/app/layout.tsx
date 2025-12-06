@@ -25,13 +25,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className="dark">
       {/* ... head elements ... */}
-      <body className="bg-gray-900 text-white font-sans">
+      <body className="bg-gray-900 text-white font-sans overflow-x-hidden max-w-full">
         <AuthProvider> 
           {/* 2. Use the dynamic import */}
-          <DynamicNavbar />
-          {children}
-          <BottomNavbar />
-          <Footer />
+          <div className="w-full overflow-x-hidden max-w-full">
+            <DynamicNavbar />
+            <main className="w-full overflow-x-hidden max-w-full">
+              {children}
+            </main>
+            <BottomNavbar />
+            <Footer />
+          </div>
         </AuthProvider>
         <Toaster position="top-right" richColors />
       </body>

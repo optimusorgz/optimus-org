@@ -144,13 +144,13 @@
   };
 
   return (
-    <div className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full  snap-center hover:scale-[1.01] transition-transform duration-300 border border-[#1f2430]">
+    <div className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full max-w-full snap-center hover:scale-[1.01] transition-transform duration-300 border border-[#1f2430]">
       {/* Image with overlays */}
       <div className="relative h-40 flex items-center justify-center">
         <img
           src={event.banner_url ? event.banner_url : '/placeholder.png'}
           alt={event.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover max-w-full"
         />
         <div className="absolute inset-0 bg-black/50"></div>
         <span className="absolute top-2 right-2 z-10 bg-cyan-600 text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -159,9 +159,9 @@
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">{event.title}</h3>
-        <div className="space-y-2 text-sm text-gray-300">
+      <div className="p-3 sm:p-4 md:p-5">
+        <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-2 line-clamp-2">{event.title}</h3>
+        <div className="space-y-2 text-xs sm:text-sm text-gray-300">
           <div className="flex items-center">
             <Zap className="w-4 h-4 mr-2 text-cyan-400" />
             <span>
@@ -191,7 +191,7 @@
         {/* Register Button */}
         <button
           onClick={handleRegister}
-          className="mt-5 w-full bg-cyan-600 hover:bg-cyan-500 transition duration-200 text-white font-semibold py-2 rounded-lg shadow-lg"
+          className="mt-3 sm:mt-4 md:mt-5 w-full bg-cyan-600 hover:bg-cyan-500 transition duration-200 text-white font-semibold text-sm sm:text-base py-2 sm:py-2.5 rounded-lg shadow-lg"
         >
           Register Now
         </button>
@@ -203,23 +203,23 @@
 
   const HowItWorksStep: React.FC<{ step: Step }> = ({ step }) => (
     // The line is handled by the parent container's CSS
-    <div className="relative h-full z-10 text-l md:text-l">
-      <div className="bg-[#1f2430] rounded-xl p-2 md:p-6 pt-5 md:pt-10 shadow-2xl border border-[#2c3240] h-full flex flex-col items-center text-center hover:scale-[1.02] transition-transform duration-300">
+    <div className="relative h-full z-10">
+      <div className="bg-[#1f2430] rounded-xl p-3 sm:p-4 md:p-6 pt-4 sm:pt-6 md:pt-10 shadow-2xl border border-[#2c3240] h-full flex flex-col items-center text-center hover:scale-[1.02] transition-transform duration-300">
 
         {/* 1. Number at Top Left */}
-        <span className="absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-sm font-bold text-white bg-cyan-600 border-2 border-cyan-400 rounded-full shadow-lg z-20">
+        <span className="absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center text-xs sm:text-sm font-bold text-white bg-cyan-600 border-2 border-cyan-400 rounded-full shadow-lg z-20">
           {step.id}
         </span>
 
         {/* 2. Increased Icon Size (moved to top center) */}
-        <div className="mx-auto mb-6 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-[#181d29] rounded-full border-2 border-cyan-400 shadow-xl">
+        <div className="mx-auto mb-4 sm:mb-5 md:mb-6 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center bg-[#181d29] rounded-full border-2 border-cyan-400 shadow-xl">
           {/* Adjusted icon size class directly here (w-10 h-10 is larger than w-8 h-8 used previously) */}
-        {React.cloneElement(step.icon as React.ReactElement<any>, { className: "w-8 h-8 md:w-10 md:h-10 text-cyan-400" })}
+        {React.cloneElement(step.icon as React.ReactElement<any>, { className: "w-6 h-6 sm:w-7 sm:h-7 md:w-10 md:h-10 text-cyan-400" })}
         </div>
 
         {/* 3. Content below Icon (vertical layout) */}
-        <h3 className="text-l md:text-xl font-bold text-white mb-2">{step.title}</h3>
-        <p className="text-xs md:text-sm text-gray-400">{step.description}</p>
+        <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2">{step.title}</h3>
+        <p className="text-xs sm:text-sm text-gray-400 px-1">{step.description}</p>
       </div>
     </div>
   );
@@ -234,26 +234,26 @@
     const prev = () => setCurrent((prev) => (prev - 1 + total) % total);
 
     return (
-      <section className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
+      <section className="py-8 sm:py-12 md:py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full overflow-x-hidden">
+        <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
           What People Say
         </h2>
-        <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl mb-12">
+        <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2">
           Hear from our community of event organizers and attendees
         </p>
 
-        <div className="relative max-w-2xl mx-auto bg-[#181d29] rounded-xl p-6 sm:p-10 shadow-2xl border border-[#1f2430]">
+        <div className="relative max-w-full sm:max-w-2xl mx-auto bg-[#181d29] rounded-xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-2xl border border-[#1f2430] mx-2 sm:mx-auto">
           <StarRating rating={testimonial.rating} />
-          <p className="text-l md:text-xl italic text-gray-200 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl italic text-gray-200 leading-relaxed px-2">
             {testimonial.quote}
           </p>
-          <div className="mt-8 pt-4 border-t border-gray-700 flex flex-col items-center">
+          <div className="mt-6 sm:mt-8 pt-4 border-t border-gray-700 flex flex-col items-center">
             {/* Avatar Placeholder */}
-            <div className="w-12 h-12 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold mb-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold mb-2 sm:mb-3 text-sm sm:text-base">
               {testimonial.name.charAt(0)}
             </div>
-            <p className="text-l md:text-lg font-semibold text-white">{testimonial.name}</p>
-            <p className="text-xs md:text-sm text-cyan-400">{testimonial.role}</p>
+            <p className="text-sm sm:text-base md:text-lg font-semibold text-white">{testimonial.name}</p>
+            <p className="text-xs sm:text-sm text-cyan-400">{testimonial.role}</p>
           </div>
 
           {/* Carousel Controls */}
@@ -290,9 +290,7 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
     const allPartners = useMemo(() => [...partners, ...partners], [partners]);
 
     return (
-      
-
-      <section className="py-10  border-gray-800 overflow-hidden w-[80%] mx-auto my-16 rounded-lg">
+      <section className="py-6 sm:py-8 md:py-10 border-gray-800 overflow-hidden w-full max-w-[90%] sm:max-w-[85%] md:max-w-[80%] mx-auto my-8 sm:my-12 md:my-16 rounded-lg">
         {/* <div className="text-center mb-6">
           <h3 className="text-lg font-semibold text-gray-300">
             Trusted by leading organizations 
@@ -304,10 +302,10 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
             {allPartners.map((partner, index) => (
               <div
               key={`${partner.id}-${index}`}
-              className="flex-shrink-0 flex items-center justify-center w-64 h-16 opacity-70 hover:opacity-100 transition duration-300 group "
+              className="flex-shrink-0 flex items-center justify-center w-48 sm:w-56 md:w-64 h-12 sm:h-14 md:h-16 opacity-70 hover:opacity-100 transition duration-300 group px-2"
               >
-                <div className="mr-2">{partner.icon}</div>
-                <span className="text-xl font-bold text-white group-hover:text-cyan-400 transition whitespace-nowrap">
+                <div className="mr-1 sm:mr-2">{partner.icon}</div>
+                <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white group-hover:text-cyan-400 transition whitespace-nowrap">
                   {partner.name}
                 </span>
               </div>
@@ -445,9 +443,9 @@ if (loading) {
     };
 
     return (
-      <div className="min-h-screen font-sans" style={heroStyle}>
+      <div className="min-h-screen font-sans w-full overflow-x-hidden max-w-full" style={heroStyle}>
         {/* -------------------- HERO SECTION -------------------- */}
-      <section className="relative min-h-[50vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-10 md:pt-24 md:pb-32 text-center">
+      <section className="relative min-h-[50vh] sm:min-h-[60vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20 pb-8 sm:pb-10 md:pt-24 md:pb-32 text-center w-full max-w-full px-4">
 
       {/* ================= BACKGROUND + GLOW ================= */}
       <div className="absolute inset-0 [background:var(--gradient-hero)]" />
@@ -491,12 +489,12 @@ if (loading) {
       />
 
       {/* ================= CONTENT ================= */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4">
+      <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 w-full">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-s font-semibold text-cyan-400 tracking-widest uppercase mb-2"
+          className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-2"
         >
           #1 Event Management Platform
         </motion.p>
@@ -505,7 +503,7 @@ if (loading) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl sm:text-6xl md:text-8xl font-extrabold text-white mb-6 leading-tight"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-white mb-4 sm:mb-6 leading-tight px-2"
         >
           Discover and Host <br className="hidden sm:inline" />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400 drop-shadow-lg">
@@ -517,7 +515,7 @@ if (loading) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto"
+          className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto px-2"
         >
           Connect with thousands of attendees, manage registrations effortlessly,
           and create unforgettable experiences with OPTIMUS.
@@ -526,15 +524,15 @@ if (loading) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-row sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2"
           >
-            <Link href="/event-page">
-              <Button className="group bg-transparent border-2 border-cyan-500 hover:bg-cyan-600 hover:border-cyan-600 text-white font-bold text-lg gap-2 p-5 rounded-md flex items-center">
+            <Link href="/event-page" className="w-full sm:w-auto">
+              <Button className="group bg-transparent border-2 border-cyan-500 hover:bg-cyan-600 hover:border-cyan-600 text-white font-bold text-sm sm:text-base md:text-lg gap-2 px-4 sm:px-5 py-2.5 sm:py-3 md:p-5 rounded-md flex items-center justify-center w-full sm:w-auto">
                 Explore Events
               </Button>
             </Link>
-            <Link href="/dashboard/{userID}">
-              <Button className="group bg-cyan-500 hover:border-cyan-600 text-white font-bold text-lg px-6 py-3 flex items-center gap-2 p-5">
+            <Link href="/dashboard/{userID}" className="w-full sm:w-auto">
+              <Button className="group bg-cyan-500 hover:border-cyan-600 text-white font-bold text-sm sm:text-base md:text-lg px-4 sm:px-6 py-2.5 sm:py-3 md:p-5 flex items-center justify-center gap-2 w-full sm:w-auto">
                 Host Your Event
               </Button>
             </Link>
@@ -547,13 +545,13 @@ if (loading) {
         <LogoMarquee partners={partners}/>
 
         {/* -------------------- FEATURED EVENTS SECTION -------------------- */}
-        <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-8">
-            <div>
-              <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
+        <section className="py-8 sm:py-12 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-hidden">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+            <div className="w-full sm:w-auto">
+              <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
                 Featured Events
               </h2>
-              <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white">
                 Discover the most popular events happening soon
               </p>
             </div>
@@ -577,7 +575,7 @@ if (loading) {
           {/* Event Cards Carousel (Horizontal Scroll on mobile) */}
           <div
             ref={scrollContainerRef} // Ref attached here for scrolling control
-            className="flex space-x-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
+            className="flex space-x-4 sm:space-x-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide w-full max-w-full"
           >
             {events.length > 0 ? (
             events.map((event) => (
@@ -664,15 +662,15 @@ if (loading) {
         </section>
 
         {/* -------------------- HOW IT WORKS SECTION -------------------- */}
-        <section className="py-12 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
+        <section className="py-8 sm:py-12 md:py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full overflow-x-hidden">
+          <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
             How It Works
           </h2>
-          <p className="text-xl md:text-3xl font-extrabold text-white sm:text-4xl mb-12">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2">
             Get started with OPTIMUS in four simple steps
           </p>
           
-          <div className="relative grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10 mt-12 steps-container">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 mt-6 sm:mt-8 md:mt-12 steps-container">
             {MOCK_STEPS.map((step) => (
               <HowItWorksStep key={step.id} step={step} />
             ))}
