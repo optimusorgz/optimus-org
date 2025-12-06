@@ -97,24 +97,24 @@ export default function EventsPage() {
     ];
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold lowercase text-white">
+        <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden max-w-full">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold lowercase text-white">
                 🗓️ Event Management
             </h1>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
                 <ExportButton data={events} filename="events_data" />
                 <button
                     onClick={handleOpenInsert}
-                    className="flex items-center bg-green-600 text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors"
+                    className="flex items-center bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
                 >
-                    <Plus size={20} className="mr-2" />
+                    <Plus size={18} className="sm:w-5 sm:h-5 mr-2" />
                     Add New Event
                 </button>
             </div>
 
             {/* Desktop Table */}
-            <div className="hidden md:block">
+            <div className="hidden md:block opacity-0" data-animate-on-visible="fade-up">
                 <DataTable
                     data={events}
                     columns={columns}
@@ -126,27 +126,29 @@ export default function EventsPage() {
             </div>
 
             {/* Mobile Cards */}
-            <div className="md:hidden space-y-4">
-  {events.map((event) => (
+            <div className="md:hidden space-y-3 sm:space-y-4 w-full">
+  {events.map((event, index) => (
     <div
       key={event.id}
-      className="bg-gray-800 p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition-colors"
+      className="bg-gray-800 p-3 sm:p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition-colors w-full max-w-full opacity-0"
+      data-animate-on-visible="fade-up"
+      style={{ animationDelay: `${index * 0.1}s` }}
       onClick={() => setSelectedEvent(event)}
     >
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-white">{event.title}</h2>
-        <div className="flex justify-end mt-2 space-x-2 text-white">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <h2 className="text-base sm:text-lg font-bold text-white truncate flex-1">{event.title}</h2>
+        <div className="flex justify-end space-x-2 text-white flex-shrink-0">
             <span title="Edit" className="cursor-pointer">
-                <Edit onClick={(e) => { e.stopPropagation(); handleOpenEdit(event); }} />
+                <Edit size={18} onClick={(e) => { e.stopPropagation(); handleOpenEdit(event); }} />
             </span>
             
             <span title="Registrations" className="cursor-pointer">
-                <Eye onClick={(e) => { e.stopPropagation(); handleViewRegistrations(event); }} />
+                <Eye size={18} onClick={(e) => { e.stopPropagation(); handleViewRegistrations(event); }} />
             </span>
         </div>
       </div>
         <span
-          className={`px-2 py-1 rounded-md text-sm font-semibold ${
+          className={`px-2 py-1 rounded-md text-xs sm:text-sm font-semibold inline-block ${
             event.status.toLowerCase() === 'approved'
               ? 'bg-green-500 text-white'
               : event.status.toLowerCase() === 'pending'

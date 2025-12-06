@@ -23,30 +23,30 @@ export default function DataTable<T extends DataRowWithId>({
   };
   
   return (
-    <div className="overflow-x-auto bg-gray-800/90 border border-gray-700 rounded-xl shadow-lg">
+    <div className="overflow-x-auto bg-gray-800/90 border border-gray-700 rounded-xl shadow-lg w-full max-w-full">
       <table className="min-w-full divide-y divide-gray-700">
         <thead className="bg-gray-800">
           <tr>
             {columns.map((col: Column<T>) => ( // <-- Map parameter is typed
-              <th key={col.accessorKey as string} className="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase tracking-wider border-b border-gray-700">
+              <th key={col.accessorKey as string} className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-green-400 uppercase tracking-wider border-b border-gray-700">
                 {col.header}
               </th>
             ))}
-            <th className="px-6 py-3 text-right text-xs font-medium text-green-400 uppercase tracking-wider border-b border-gray-700">
+            <th className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-right text-xs font-medium text-green-400 uppercase tracking-wider border-b border-gray-700">
               Actions
             </th>
           </tr>
         </thead>
         <tbody className="bg-gray-800/90 divide-y divide-gray-700">
-          {data.map((row: T) => ( // <-- Map parameter is typed
-            <tr key={getRowId(row)} className="hover:bg-gray-700/50">
+          {data.map((row: T, index: number) => ( // <-- Map parameter is typed
+            <tr key={getRowId(row)} className="hover:bg-gray-700/50 opacity-0" data-animate-on-visible="fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
               {columns.map((col: Column<T>) => (
-                <td key={`${getRowId(row)}-${col.accessorKey as string}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                <td key={`${getRowId(row)}-${col.accessorKey as string}`} className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-300 break-words max-w-[200px] sm:max-w-none sm:whitespace-nowrap">
                   {col.render ? col.render((row as any)[col.accessorKey], row) : (row as any)[col.accessorKey]}
                 </td>
               ))}
 
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+              <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium space-x-1 sm:space-x-2 flex-shrink-0">
                 
                 {/* 1. Only show Eye button if the prop is provided (e.g., for 'events' table) */}
                 {/* We also check if tableName is 'events' for explicit logic */}

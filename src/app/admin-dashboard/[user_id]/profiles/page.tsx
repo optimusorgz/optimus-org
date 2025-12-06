@@ -118,24 +118,24 @@ export default function ProfilesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden max-w-full">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white">
         🧑‍💻 User Profiles Management
       </h1>
 
-      <div className="flex flex-wrap gap-4 justify-between items-center">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-between items-start sm:items-center">
         {/* Search & Role filter & Org sort */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto">
           <input
             type="text"
             placeholder="Search by name or email..."
-            className="px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 text-sm sm:text-base w-full sm:w-auto min-w-[200px]"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
 
           <select
-            className="px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 text-sm sm:text-base w-full sm:w-auto"
             value={selectedRole}
             onChange={e => setSelectedRole(e.target.value as 'all' | 'organiser' | 'user' | 'admin')}
           >
@@ -148,9 +148,9 @@ export default function ProfilesPage() {
           {/* Sort by organization button */}
           <button
             onClick={handleSortOrgClick}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap ${
               sortOrgFirst ? 'bg-green-500 text-white' : 'bg-gray-700 text-white'
-            } focus:outline-none focus:ring-2 focus:ring-green-400`}
+            } focus:outline-none focus:ring-2 focus:ring-green-400 w-full sm:w-auto`}
           >
             {sortOrgFirst ? 'Organization First ✅' : 'Sort by Organization'}
           </button>
@@ -159,13 +159,15 @@ export default function ProfilesPage() {
         <ExportButton data={filteredProfiles} filename="profiles_data" />
       </div>
 
-      <DataTable<ProfileWithOrg>
-        data={filteredProfiles}
-        columns={columns}
-        tableName="profiles"
-        onDelete={handleDelete}
-        onEdit={handleOpenEdit}
-      />
+      <div className="opacity-0" data-animate-on-visible="fade-up">
+        <DataTable<ProfileWithOrg>
+          data={filteredProfiles}
+          columns={columns}
+          tableName="profiles"
+          onDelete={handleDelete}
+          onEdit={handleOpenEdit}
+        />
+      </div>
 
       {isFormOpen && selectedProfile && (
         <Modal onClose={() => setIsFormOpen(false)}>

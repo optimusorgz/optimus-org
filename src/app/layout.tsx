@@ -8,6 +8,7 @@ import { Toaster } from 'sonner';
 import BottomNavbar from "@/components/navbar/bottomNavbar";
 import Footer from "@/components/footer/footer";
 import dynamic from 'next/dynamic'; // <-- Import dynamic
+import { AnimationProvider } from '@/components/AnimationProvider';
 
 // 1. Dynamically import the Navbar with SSR disabled
 const DynamicNavbar = dynamic(() => import('@/components/navbar/page'), {
@@ -27,15 +28,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
       {/* ... head elements ... */}
       <body className="bg-gray-900 text-white font-sans overflow-x-hidden max-w-full">
         <AuthProvider> 
-          {/* 2. Use the dynamic import */}
-          <div className="w-full overflow-x-hidden max-w-full">
-            <DynamicNavbar />
-            <main className="w-full overflow-x-hidden max-w-full">
-              {children}
-            </main>
-            <BottomNavbar />
-            <Footer />
-          </div>
+          <AnimationProvider>
+            {/* 2. Use the dynamic import */}
+            <div className="w-full overflow-x-hidden max-w-full">
+              <DynamicNavbar />
+              <main className="w-full overflow-x-hidden max-w-full">
+                {children}
+              </main>
+              <BottomNavbar />
+              <Footer />
+            </div>
+          </AnimationProvider>
         </AuthProvider>
         <Toaster position="top-right" richColors />
       </body>

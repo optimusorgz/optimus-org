@@ -76,7 +76,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-xl shadow-2xl overflow-hidden 
-                    transition-all duration-300 hover:shadow-3xl transform hover:-translate-y-1 my-8">
+                    transition-all duration-300 hover:shadow-3xl transform hover:-translate-y-1 my-8 opacity-0" data-animate-on-visible="fade-up">
       
       {/* Header Section: User Info */}
       <div className="flex items-center p-4 border-b border-gray-100">

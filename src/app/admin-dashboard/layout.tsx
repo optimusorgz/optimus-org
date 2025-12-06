@@ -83,16 +83,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         // The component is wrapped in UserProvider only if the user is authorized and userId is set
         <UserProvider value={{ userId }}>
-            <div className="flex h-screen bg-gray-900">
+            <div className="flex h-screen bg-gray-900 w-full overflow-x-hidden max-w-full">
                 <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userId={userId} />
-                <div className="flex-1 flex flex-col overflow-hidden">
-                    <header className="flex items-center p-4 bg-gray-800 border-b border-gray-700 shadow-md md:hidden">
-                        <button onClick={toggleSidebar} className="text-gray-300 mr-4">
-                            <Menu size={24} />
+                <div className="flex-1 flex flex-col overflow-hidden min-w-0 w-full">
+                    <header className="flex items-center p-3 sm:p-4 bg-gray-800 border-b border-gray-700 shadow-md md:hidden w-full">
+                        <button onClick={toggleSidebar} className="text-gray-300 mr-3 sm:mr-4 flex-shrink-0">
+                            <Menu size={20} className="sm:w-6 sm:h-6" />
                         </button>
-                        <h1 className="text-lg font-semibold text-white">Admin Dashboard</h1>
+                        <h1 className="text-base sm:text-lg font-semibold text-white truncate">Admin Dashboard</h1>
                     </header>
-                    <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-gray-900">
+                    <main className="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-4 md:p-6 bg-gray-900 w-full max-w-full">
                         {children}
                     </main>
                 </div>

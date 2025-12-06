@@ -195,9 +195,9 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
         {/* 1. Header (Updated to match image content and center alignment) */}
-            <header className="text-center mt-16 sm:mt-20 max-w-3xl mx-auto px-4 w-full">
-                <h1 className="text-cyan-400 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold">Explore Events</h1>
-                <p className="text-gray-300 mt-1 text-sm sm:text-base md:text-lg">Discover amazing events happening near you and around the world</p>
+            <header className="text-center mt-16 sm:mt-20 max-w-3xl mx-auto px-4 w-full fade-down">
+                <h1 className="text-cyan-400 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold fade-up animate-delay-100">Explore Events</h1>
+                <p className="text-gray-300 mt-1 text-sm sm:text-base md:text-lg fade-in animate-delay-200">Discover amazing events happening near you and around the world</p>
             </header>
         
         {/* 2. Main Content Area */}
@@ -236,11 +236,11 @@ export default function EventsPage() {
                     </div>
 
                     {/* Event Grid/List - Updated to match the grid structure of the second image */}
-                    <section className="w-full overflow-x-hidden">
+                    <section className="w-full overflow-x-hidden opacity-0" data-animate-on-visible="fade-left">
                         {hasEvents ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-                                {filteredEvents.map(event => (
-                                    <EventCard key={event.id} event={event} />
+                                {filteredEvents.map((event, index) => (
+                                    <EventCard key={event.id} event={event} index={index} />
                                 ))}
                             </div>
                         ) : (

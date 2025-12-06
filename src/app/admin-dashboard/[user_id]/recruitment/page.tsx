@@ -74,28 +74,30 @@ export default function RecruitmentPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold lowercase text-white">📋 Recruitment Management</h1>
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden max-w-full">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold lowercase text-white">📋 Recruitment Management</h1>
       
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <ExportButton data={recruitmentData} filename="recruitment_data" />
         <button 
           onClick={handleOpenInsert} 
-          className="flex items-center bg-green-600 text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors"
+          className="flex items-center bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
         >
-          <Plus size={20} className="mr-2" />
+          <Plus size={18} className="sm:w-5 sm:h-5 mr-2" />
           Add New Entry
         </button>
       </div>
 
-      <DataTable 
-        data={recruitmentData} 
-        columns={columns} 
-        tableName="recruitment"
-        onDelete={handleDelete}
-        onEdit={handleOpenEdit} 
-        // Note: No onViewRegistrations for recruitment table
-      />
+      <div className="opacity-0" data-animate-on-visible="fade-up">
+        <DataTable 
+          data={recruitmentData} 
+          columns={columns} 
+          tableName="recruitment"
+          onDelete={handleDelete}
+          onEdit={handleOpenEdit} 
+          // Note: No onViewRegistrations for recruitment table
+        />
+      </div>
       
       {/* CRUD Form Modal */}
       {isFormOpen && (

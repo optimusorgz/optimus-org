@@ -48,17 +48,19 @@ const ParticipatedEventsList: React.FC<EventListProps> = ({ events, title }) => 
 
   return (
     <>
-      <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-sm h-full overflow-y-scroll scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-900">
+      <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-sm h-full overflow-y-scroll scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-gray-900 opacity-0" data-animate-on-visible="fade-in-scale">
         <h2 className="text-lg font-semibold text-green-400 border-b border-gray-700 pb-2 mb-4">{title}</h2>
 
         <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
           {events.length > 0 ? (
             events
               .filter(event => event.is_paid === 'PAID' || event.is_paid === 'free')
-              .map(event => (
+              .map((event, index) => (
                 <div
                   key={event.id}
-                  className="flex space-x-3 items-center justify-between border-b border-gray-700 pb-4 last:border-b-0 last:pb-0"
+                  className="flex space-x-3 items-center justify-between border-b border-gray-700 pb-4 last:border-b-0 last:pb-0 opacity-0"
+                  data-animate-on-visible="fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex space-x-3 items-start flex-1 min-w-0">
                     <div className="w-1 h-10 mt-1 rounded-full bg-green-400 flex-shrink-0"></div>

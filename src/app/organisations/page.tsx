@@ -77,7 +77,7 @@ const getRoleStyle = (role: Role) => {
 
 const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
   return (
-    <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl bg-gray-800/50 w-full max-w-full overflow-x-auto">
+    <div className="p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl bg-gray-800/50 w-full max-w-full overflow-x-auto opacity-0" data-animate-on-visible="fade-right">
         <h3 className="flex items-center text-base sm:text-lg font-semibold text-gray-200 mb-3 sm:mb-4">
             <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-teal-400" /> Team Members
         </h3>
@@ -94,7 +94,9 @@ const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
             {members.map((member, index) => (
             <div
                 key={index}
-                className="grid grid-cols-2 md:grid-cols-5 items-center py-2 border-b border-gray-800 last:border-b-0 text-white/90 gap-2"
+                className="grid grid-cols-2 md:grid-cols-5 items-center py-2 border-b border-gray-800 last:border-b-0 text-white/90 gap-2 opacity-0"
+                data-animate-on-visible="fade-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
             >
                 {/* Name */}
                 <div className="text-xs sm:text-sm font-medium truncate">{member.name}</div>
@@ -116,14 +118,17 @@ const TeamMemberTable: React.FC<{ members: TeamMember[] }> = ({ members }) => {
   );
 };
 
-const StatCard: React.FC<{ count: number; label: string; icon: React.ReactNode; bgColor: string }> = ({
+const StatCard: React.FC<{ count: number; label: string; icon: React.ReactNode; bgColor: string; index?: number }> = ({
   count,
   label,
   icon,
   bgColor,
+  index = 0,
 }) => (
   <div
-    className={`flex flex-col items-start p-3 sm:p-4 rounded-xl shadow-lg transition-all hover:ring-2 ring-offset-2 ring-offset-gray-900 ${bgColor} w-full`}
+    className={`flex flex-col items-start p-3 sm:p-4 rounded-xl shadow-lg transition-all hover:ring-2 ring-offset-2 ring-offset-gray-900 ${bgColor} w-full opacity-0`}
+    data-animate-on-visible="pop-in"
+    style={{ animationDelay: `${index * 0.1}s` }}
   >
     <div className="flex items-center text-white">
       {icon}
@@ -133,9 +138,9 @@ const StatCard: React.FC<{ count: number; label: string; icon: React.ReactNode; 
   </div>
 );
 
-const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
+const OrganizationCard: React.FC<{ org: Organization; index?: number }> = ({ org, index = 0 }) => {
   return (
-    <div className="bg-gray-800/70 p-3 sm:p-4 md:p-6 rounded-2xl shadow-2xl backdrop-blur-sm border border-gray-700/50 w-full max-w-full">
+    <div className="bg-gray-800/70 p-3 sm:p-4 md:p-6 rounded-2xl shadow-2xl backdrop-blur-sm border border-gray-700/50 w-full max-w-full opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: `${index * 0.15}s` }}>
       <div className="md:grid md:grid-cols-3 md:gap-6 lg:gap-8">
         {/* Left Section: Info and Stats (1/3 width on desktop) */}
         <div className="mb-6 md:mb-0 md:col-span-1 flex flex-col justify-between">
@@ -163,12 +168,14 @@ const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
                 label="Members"
                 icon={<Users className="w-4 h-4 sm:w-5 sm:h-5" />}
                 bgColor="bg-gradient-to-br from-cyan-500/80 to-blue-600/80 hover:from-cyan-400 hover:to-blue-500"
+                index={0}
               />
               <StatCard
                 count={org.eventsCount}
                 label="Events"
                 icon={<Calendar className="w-4 h-4 sm:w-5 sm:h-5" />}
                 bgColor="bg-gradient-to-br from-amber-500/80 to-yellow-600/80 hover:from-amber-400 hover:to-yellow-500"
+                index={1}
               />
             </div>
 
@@ -206,8 +213,8 @@ const App: React.FC = () => {
       </header>
 
       <main className="max-w-6xl mx-auto space-y-6 sm:space-y-8 md:space-y-10 pb-12 sm:pb-16 md:pb-20 px-2 sm:px-4 w-full">
-        {mockOrganizations.map((org) => (
-          <OrganizationCard key={org.id} org={org} />
+        {mockOrganizations.map((org, index) => (
+          <OrganizationCard key={org.id} org={org} index={index} />
         ))}
       </main>
     </div>

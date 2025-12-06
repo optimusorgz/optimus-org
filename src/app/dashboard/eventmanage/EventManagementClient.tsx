@@ -125,16 +125,16 @@ const EventManagementPage: React.FC = () => {
   // ---------------- If event not selected ----------------
   if (!selectedEventId) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-6">
-        <h1 className="text-3xl font-bold mb-8">Hosted Events</h1>
-        <div className="space-y-4">
+      <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 md:mb-8">Hosted Events</h1>
+        <div className="space-y-3 sm:space-y-4">
           {hostedEventsMock.map((e) => (
             <div
               key={e.id}
               onClick={() => { setLoading(true); setSelectedEventId(e.id); setTimeout(() => setLoading(false), 500); }}
-              className="cursor-pointer p-5 rounded-lg bg-[#15181d] border border-gray-800 hover:border-gray-600 hover:bg-[#1b1f24] transition"
+              className="cursor-pointer p-4 sm:p-5 rounded-lg bg-[#15181d] border border-gray-800 hover:border-gray-600 hover:bg-[#1b1f24] transition w-full max-w-full"
             >
-              <h2 className="text-lg font-semibold">{e.title}</h2>
+              <h2 className="text-base sm:text-lg font-semibold">{e.title}</h2>
             </div>
           ))}
         </div>
@@ -142,16 +142,16 @@ const EventManagementPage: React.FC = () => {
     );
   }
 
-  // ---------------- RENDER UI ----------------
+  // ---------------- RENDER UI ---------------- 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-extrabold mb-8 mt-10">Manage Event</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+      <div className="max-w-7xl mx-auto w-full">
+        <h1 className="text-2xl sm:text-3xl font-extrabold mb-4 sm:mb-6 md:mb-8 mt-6 sm:mt-8 md:mt-10">Manage Event</h1>
 
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
           {/* Sidebar */}
           <nav className="hidden lg:block">
-            <div className="p-4 bg-gray-800 rounded-xl border border-gray-800 shadow-xl space-y-3">
+            <div className="p-3 sm:p-4 bg-gray-800 rounded-xl border border-gray-800 shadow-xl space-y-2 sm:space-y-3">
               {tabs.map((tab) => (
                 <TabButton key={tab.key} tab={tab} />
               ))}
@@ -159,7 +159,7 @@ const EventManagementPage: React.FC = () => {
           </nav>
 
           {/* MOBILE TABS */}
-          <div className="lg:hidden flex space-x-3 overflow-x-auto pb-3 mb-4">
+          <div className="lg:hidden flex space-x-2 sm:space-x-3 overflow-x-auto pb-3 mb-4 scrollbar-hide">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -167,12 +167,12 @@ const EventManagementPage: React.FC = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`
-                    flex items-center px-4 py-2 rounded-xl whitespace-nowrap border-2
+                    flex items-center px-3 sm:px-4 py-2 rounded-xl whitespace-nowrap border-2 text-xs sm:text-sm
                     ${getAccentColorClass(tab.color)}
                     ${getActiveTabClass(tab.key, tab.color)}
                   `}
                 >
-                  <Icon className="mr-2" />
+                  <Icon className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="font-semibold">{tab.title}</span>
                 </button>
               );
@@ -180,7 +180,7 @@ const EventManagementPage: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <section className="lg:col-span-3 bg-gray-800 rounded-xl border border-gray-700 min-h-[500px]">
+          <section className="lg:col-span-3 bg-gray-800 rounded-xl border border-gray-700 min-h-[400px] sm:min-h-[500px] w-full max-w-full overflow-x-hidden p-3 sm:p-4 md:p-6 opacity-0" data-animate-on-visible="fade-in-scale">
             {activeTab === "edit" && (
               <EventEditForm
                 eventId={selectedEventId}

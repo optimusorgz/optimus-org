@@ -75,15 +75,19 @@ const getDuration = (startStr: string, endStr: string): string => {
 
 // --- 4. SHARED UI COMPONENTS (Kept here for simplicity) ---
 
-const Card: React.FC<{ children: React.ReactNode, title: string, icon: React.ReactNode, className?: string }> = ({ children, title, icon, className = '' }) => (
-    <div className={`p-4 sm:p-5 md:p-6 bg-gray-800/70 border border-gray-700 rounded-xl shadow-lg ${className} w-full max-w-full`}>
-        <h3 className="flex items-center text-lg sm:text-xl font-semibold text-cyan-400 mb-3 sm:mb-4 border-b border-gray-700 pb-2">
-            {icon}
-            <span className="ml-2">{title}</span>
-        </h3>
-        {children}
-    </div>
-);
+const Card: React.FC<{ children: React.ReactNode, title: string, icon: React.ReactNode, className?: string }> = ({ children, title, icon, className = '' }) => {
+    // Extract animation classes from className if present
+    const hasAnimation = className.includes('opacity-0') || className.includes('data-animate-on-visible');
+    return (
+        <div className={`p-4 sm:p-5 md:p-6 bg-gray-800/70 border border-gray-700 rounded-xl shadow-lg ${className} w-full max-w-full`}>
+            <h3 className="flex items-center text-lg sm:text-xl font-semibold text-cyan-400 mb-3 sm:mb-4 border-b border-gray-700 pb-2">
+                {icon}
+                <span className="ml-2">{title}</span>
+            </h3>
+            {children}
+        </div>
+    );
+};
 
 // MODIFIED DetailItem for better mobile alignment
 const DetailItem: React.FC<{ icon: React.ReactNode, label: string, value: string | number | null }> = ({ icon, label, value }) => (
@@ -406,7 +410,7 @@ export default function EventDetailsClientContent() {
                         </div>
 
                         {/* Main Title */}
-                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white mb-3 sm:mb-4 leading-tight tracking-tight drop-shadow-lg" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white mb-3 sm:mb-4 leading-tight tracking-tight drop-shadow-lg fade-up animate-delay-200" style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.8)' }}>
                             {event.title}
                         </h1>
 
@@ -440,7 +444,7 @@ export default function EventDetailsClientContent() {
                     
                     {/* Card B: Registration CTA (Modified) */}
                     
-                        <div className="p-4 sm:p-5 md:p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-3 sm:space-y-4 w-full max-w-full">
+                        <div className="p-4 sm:p-5 md:p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-3 sm:space-y-4 w-full max-w-full opacity-0" data-animate-on-visible="fade-in-scale">
                         <h3 className="text-xl sm:text-2xl font-bold text-white border-b border-gray-700 pb-2 sm:pb-3">Registration</h3>
                         
                         {/* Ticket Info */}
@@ -478,7 +482,7 @@ export default function EventDetailsClientContent() {
                     </div>
 
                     {/* Card A: About the Event */}
-                    <Card title="About the Event" icon={<List />} className="bg-gray-800/90">
+                    <Card title="About the Event" icon={<List />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up">
 
                     <p
                     className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed"
@@ -490,7 +494,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card B: Event Details and Timeline */}
-                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90">
+                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: '0.1s' }}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
 
                             {/* Essentials Section */}
@@ -572,7 +576,7 @@ export default function EventDetailsClientContent() {
                 <div className="lg:col-span-1 space-y-4 sm:space-y-6 md:space-y-8 lg:sticky lg:top-8 h-fit">
                     
                     {/* Card F: Event Information Summary (Chips) */}
-                    <Card title="Event Summary" icon={<List />}>
+                    <Card title="Event Summary" icon={<List />} className="opacity-0" data-animate-on-visible="fade-right">
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 text-center">
                             {/* Chip 1: Price */}
                             <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
@@ -598,7 +602,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card D: Contact Information - Uses the fixed DetailItem */}
-                    <Card title="Contact Information" icon={<User />}>
+                    <Card title="Contact Information" icon={<User />} className="opacity-0" data-animate-on-visible="fade-right" style={{ animationDelay: '0.1s' }}>
                         <div className="space-y-2 sm:space-y-3">
                             <DetailItem icon={<Mail />} label="Email" value={event.contact_email} />
                             <DetailItem icon={<Phone />} label="Phone" value={event.contact_phone} />
@@ -607,7 +611,7 @@ export default function EventDetailsClientContent() {
                     </Card>
                     
                     {/* Card E: Quick Actions */}
-                    <Card title="Quick Actions" icon={<ExternalLink />}>
+                    <Card title="Quick Actions" icon={<ExternalLink />} className="opacity-0" data-animate-on-visible="fade-right" style={{ animationDelay: '0.2s' }}>
                         <div className="flex flex-col space-y-2">
                             {/* Quick Action: Register/Pay Button */}
                             <button onClick={buttonAction} className="text-cyan-400 hover:text-cyan-500 text-left font-medium disabled:text-gray-500 text-sm sm:text-base" disabled={isButtonDisabled}>

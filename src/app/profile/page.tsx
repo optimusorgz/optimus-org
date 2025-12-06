@@ -118,7 +118,7 @@ const ProfileDashboard = () => {
       </div>
 
       {/* PROFILE HEADER */}
-      <div className="border-1 p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center space-y-3 sm:space-y-4 bg-gradient-to-r from-cyan-900 to-indigo-1000 drop-shadow-lg relative z-10 w-full max-w-full">
+      <div className="border-1 p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center space-y-3 sm:space-y-4 bg-gradient-to-r from-cyan-900 to-indigo-1000 drop-shadow-lg relative z-10 w-full max-w-full fade-in-scale">
         <img
           src={profile.avatar_url || 'https://placehold.co/100x100'}
           className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-gray-800 object-cover"
@@ -139,19 +139,19 @@ const ProfileDashboard = () => {
       {/* STATS */}
       {isorg && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10 w-full">
-          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center opacity-0" data-animate-on-visible="pop-in" style={{ animationDelay: '0.1s' }}>
             <BuildingIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mb-2" />
             <p className="text-xs sm:text-sm text-gray-300 text-center">Events Participated</p>
             <p className="text-2xl sm:text-3xl font-bold text-white">{eventcnt}</p>
           </div>
 
-          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center opacity-0" data-animate-on-visible="pop-in" style={{ animationDelay: '0.2s' }}>
             <TicketIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mb-2" />
             <p className="text-xs sm:text-sm text-gray-300 text-center">Events Hosted</p>
             <p className="text-2xl sm:text-3xl font-bold text-white">{hostcnt}</p>
           </div>
 
-          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center opacity-0" data-animate-on-visible="pop-in" style={{ animationDelay: '0.3s' }}>
             <CalendarIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mb-2" />
             <p className="text-xs sm:text-sm text-gray-300 text-center">Organisations</p>
             <p className="text-2xl sm:text-3xl font-bold text-white">1</p>
@@ -160,15 +160,15 @@ const ProfileDashboard = () => {
       )}
 
       {/* EVENTS */}
-      <div className="space-y-3 mt-4 relative z-10 w-full">
+      <div className="space-y-3 mt-4 relative z-10 w-full opacity-0" data-animate-on-visible="fade-left">
         <h2 className="text-lg sm:text-xl text-white font-bold">Registered Events</h2>
 
         {events.length === 0 && (
           <p className="text-gray-500 text-sm sm:text-base">No registered events.</p>
         )}
 
-        {events.map(event => (
-          <div key={event.id} className="bg-gray-800 p-3 sm:p-4 rounded-xl flex items-center space-x-3 sm:space-x-4 w-full max-w-full">
+        {events.map((event, index) => (
+          <div key={event.id} className="bg-gray-800 p-3 sm:p-4 rounded-xl flex items-center space-x-3 sm:space-x-4 w-full max-w-full opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
             <img src={event.image_url} className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0" alt={event.title} />
             <div className="flex-1 min-w-0">
               <p className="text-white font-semibold text-sm sm:text-base truncate">{event.title}</p>

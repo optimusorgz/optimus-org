@@ -52,8 +52,8 @@ interface EventCardProps {
 
 
 // --- 2. COMPONENTS ---
-const StatCard: React.FC<{ data: StatsCardData; bgColor: string }> = ({ data, bgColor }) => (
-  <div className={`p-3 sm:p-4 md:p-6 rounded-xl shadow-lg ${bgColor}`}>
+const StatCard: React.FC<{ data: StatsCardData; bgColor: string; index: number }> = ({ data, bgColor, index }) => (
+  <div className={`p-3 sm:p-4 md:p-6 rounded-xl shadow-lg ${bgColor} opacity-0`} data-animate-on-visible="pop-in" style={{ animationDelay: `${index * 0.1}s` }}>
     <div className="flex justify-between items-start mb-2">
       <div className="min-w-0 flex-1">
         <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white truncate">{data.value}</p>
@@ -65,11 +65,13 @@ const StatCard: React.FC<{ data: StatsCardData; bgColor: string }> = ({ data, bg
   </div>
 );
 
-const EventCard: React.FC<{ data: EventData; onClick?: () => void }> = ({ data, onClick }) => (
+const EventCard: React.FC<{ data: EventData; onClick?: () => void; index?: number }> = ({ data, onClick, index = 0 }) => (
   
   <div
     onClick={onClick}
-    className="flex items-center p-3 sm:p-4 bg-gray-800 rounded-lg transition duration-150 hover:bg-gray-700/70 cursor-pointer w-full max-w-full"
+    className="flex items-center p-3 sm:p-4 bg-gray-800 rounded-lg transition duration-150 hover:bg-gray-700/70 cursor-pointer w-full max-w-full opacity-0"
+    data-animate-on-visible="fade-up"
+    style={{ animationDelay: `${index * 0.1}s` }}
   >
     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-600 rounded-lg flex-shrink-0 mr-3 sm:mr-4 overflow-hidden">
       <img
@@ -128,7 +130,7 @@ const RegistrationRow: React.FC<{ data: RegistrationData }> = ({ data }) => {
 };
 
 const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data }) => (
-  <div className="p-4 sm:p-5 md:p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-6 sm:mb-8 w-full max-w-full">
+  <div className="p-4 sm:p-5 md:p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-6 sm:mb-8 w-full max-w-full opacity-0" data-animate-on-visible="fade-in-scale">
     <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center">Your Hosted Organization</h3>
     <div className="flex items-center space-x-3 sm:space-x-4">
       <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-purple-600">
@@ -325,14 +327,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 lg:p-10 font-sans mt-10 sm:mt-12 md:mt-16 w-full overflow-x-hidden max-w-full">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 flex items-center">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 flex items-center fade-down">
         Welcome back! <span className="ml-2">👋</span>
       </h1>
-      <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8">Here&apos;s what&apos;s happening with your events</p>
+      <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8 fade-in animate-delay-100">Here&apos;s what&apos;s happening with your events</p>
 
       <section className="mb-6 sm:mb-8 md:mb-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {statsData.map((stat, index) => (
-          <StatCard key={stat.label} data={stat} bgColor={['bg-teal-600', 'bg-gray-700', 'bg-blue-600', 'bg-gray-700'][index]} />
+          <StatCard key={stat.label} data={stat} bgColor={['bg-teal-600', 'bg-gray-700', 'bg-blue-600', 'bg-gray-700'][index]} index={index} />
         ))}
       </section>
 
@@ -340,19 +342,19 @@ const App: React.FC = () => {
         {/* Left Column */}
         <div className="lg:col-span-2">
           {/* Upcoming Events */}
-          <section className="mb-6 sm:mb-8 md:mb-10">
+          <section className="mb-6 sm:mb-8 md:mb-10 opacity-0" data-animate-on-visible="fade-left">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Upcoming Events</h2>
             </div>
             {upcomingEvents.length > 0 ? (
               <div className="space-y-4">
-                {upcomingEvents.map(e => (
+                {upcomingEvents.map((e, index) => (
                   <div
                     key={e.id}
                     className="transform transition duration-300 hover:shadow-lg rounded-lg"
                     onClick={() => handleEventClick(e)}
                   >
-                    <EventCard data={e} />
+                    <EventCard data={e} index={index} />
                   </div>
                 ))}
               </div>
@@ -363,28 +365,33 @@ const App: React.FC = () => {
 
 
           {/* Registrations */}
-          <section className="mb-6 sm:mb-8 md:mb-10">
+          <section className="mb-6 sm:mb-8 md:mb-10 opacity-0" data-animate-on-visible="fade-left">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Recent Registrations</h2>
             </div>
             {registrations.length > 0 ? (
-              <div className="space-y-4">{registrations.map(r => <RegistrationRow key={r.id} data={r} />)}</div>
+              <div className="space-y-4">{registrations.map((r, index) => (
+                <div key={r.id} className="opacity-0" data-animate-on-visible="fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <RegistrationRow data={r} />
+                </div>
+              ))}</div>
             ) : (
               <p className="text-gray-400 italic">No registrations yet.</p>
             )}
           </section>
 
           {/* Hosted Events */}
-          <section className="mb-6 sm:mb-8 md:mb-10">
+          <section className="mb-6 sm:mb-8 md:mb-10 opacity-0" data-animate-on-visible="fade-left">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Hosted Events</h2>
             </div>
             {hostedEvents.length > 0 ? (
               <div className="space-y-4">
-                {hostedEvents.map(e => (
+                {hostedEvents.map((e, index) => (
                   <EventCard
                     key={e.id}
                     data={e}
+                    index={index}
                     onClick={() => router.push(`/dashboard/eventmanage?id=${e.id}`)}
                   />
                 ))}
@@ -403,13 +410,17 @@ const App: React.FC = () => {
             <p className="text-gray-400 italic mb-6">You are not hosting any organization.</p>
           )}
 
-          <section>
+          <section className="opacity-0" data-animate-on-visible="fade-right">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Member of Organizations</h2>
             </div>
             {memberOrganizations.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
-                {memberOrganizations.map(org => <OrganizationPill key={org.id} data={org} />)}
+                {memberOrganizations.map((org, index) => (
+                  <div key={org.id} className="opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <OrganizationPill data={org} />
+                  </div>
+                ))}
               </div>
             ) : (
               <p className="text-gray-400 italic text-sm sm:text-base">You are not a member of any organization.</p>

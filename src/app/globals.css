@@ -143,3 +143,243 @@
     position: relative;
   }
 }
+
+/* ============================================
+   PAGE LOAD ANIMATIONS
+   ============================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blurIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* ============================================
+   ANIMATION CLASSES (Viewport Triggered)
+   ============================================ */
+
+/* Base class for viewport-triggered animations */
+.animate-on-visible {
+  animation-fill-mode: forwards;
+}
+
+.animate-on-visible.fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.animate-on-visible.fade-down {
+  animation: fadeDown 0.6s ease-out forwards;
+}
+
+.animate-on-visible.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-on-visible.fade-in-scale {
+  animation: fadeInScale 0.7s ease-out forwards;
+}
+
+.animate-on-visible.fade-left {
+  animation: fadeLeft 0.6s ease-out forwards;
+}
+
+.animate-on-visible.fade-right {
+  animation: fadeRight 0.6s ease-out forwards;
+}
+
+.animate-on-visible.slide-up {
+  animation: slideUp 0.7s ease-out forwards;
+}
+
+.animate-on-visible.slide-down {
+  animation: slideDown 0.7s ease-out forwards;
+}
+
+.animate-on-visible.pop-in {
+  animation: popIn 0.6s ease-out forwards;
+}
+
+.animate-on-visible.blur-in {
+  animation: blurIn 0.8s ease-out forwards;
+}
+
+/* Legacy classes for immediate animations (page load) */
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.fade-down {
+  opacity: 0;
+  animation: fadeDown 0.6s ease-out forwards;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.fade-in-scale {
+  opacity: 0;
+  animation: fadeInScale 0.7s ease-out forwards;
+}
+
+.fade-left {
+  opacity: 0;
+  animation: fadeLeft 0.6s ease-out forwards;
+}
+
+.fade-right {
+  opacity: 0;
+  animation: fadeRight 0.6s ease-out forwards;
+}
+
+.slide-up {
+  opacity: 0;
+  animation: slideUp 0.7s ease-out forwards;
+}
+
+.slide-down {
+  opacity: 0;
+  animation: slideDown 0.7s ease-out forwards;
+}
+
+.pop-in {
+  opacity: 0;
+  animation: popIn 0.6s ease-out forwards;
+}
+
+.blur-in {
+  opacity: 0;
+  animation: blurIn 0.8s ease-out forwards;
+}
+
+/* Staggered Animation Delays */
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animate-delay-600 {
+  animation-delay: 0.6s;
+}

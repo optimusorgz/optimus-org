@@ -235,14 +235,14 @@
 
     return (
       <section className="py-8 sm:py-12 md:py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full overflow-x-hidden">
-        <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
+        <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1 fade-down">
           What People Say
         </h2>
-        <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2">
+        <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2 fade-up animate-delay-100">
           Hear from our community of event organizers and attendees
         </p>
 
-        <div className="relative max-w-full sm:max-w-2xl mx-auto bg-[#181d29] rounded-xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-2xl border border-[#1f2430] mx-2 sm:mx-auto">
+        <div className="relative max-w-full sm:max-w-2xl mx-auto bg-[#181d29] rounded-xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-2xl border border-[#1f2430] mx-2 sm:mx-auto fade-in-scale animate-delay-200">
           <StarRating rating={testimonial.rating} />
           <p className="text-sm sm:text-base md:text-lg lg:text-xl italic text-gray-200 leading-relaxed px-2">
             {testimonial.quote}
@@ -490,42 +490,22 @@ if (loading) {
 
       {/* ================= CONTENT ================= */}
       <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 w-full">
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-2"
-        >
+        <p className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-2 fade-down">
           #1 Event Management Platform
-        </motion.p>
+        </p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-white mb-4 sm:mb-6 leading-tight px-2"
-        >
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-white mb-4 sm:mb-6 leading-tight px-2 fade-up animate-delay-100">
           Discover and Host <br className="hidden sm:inline" />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400 drop-shadow-lg">
             Amazing Events
           </span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto px-2"
-        >
+        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400 mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto px-2 fade-in animate-delay-200">
           Connect with thousands of attendees, manage registrations effortlessly,
           and create unforgettable experiences with OPTIMUS.
-        </motion.p>
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2"
-          >
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 fade-up animate-delay-300">
             <Link href="/event-page" className="w-full sm:w-auto">
               <Button className="group bg-transparent border-2 border-cyan-500 hover:bg-cyan-600 hover:border-cyan-600 text-white font-bold text-sm sm:text-base md:text-lg gap-2 px-4 sm:px-5 py-2.5 sm:py-3 md:p-5 rounded-md flex items-center justify-center w-full sm:w-auto">
                 Explore Events
@@ -536,7 +516,7 @@ if (loading) {
                 Host Your Event
               </Button>
             </Link>
-          </motion.div>
+          </div>
 
       </div>
     </section>
@@ -546,7 +526,7 @@ if (loading) {
 
         {/* -------------------- FEATURED EVENTS SECTION -------------------- */}
         <section className="py-8 sm:py-12 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full overflow-x-hidden">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4 fade-up">
             <div className="w-full sm:w-auto">
               <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
                 Featured Events
@@ -663,16 +643,18 @@ if (loading) {
 
         {/* -------------------- HOW IT WORKS SECTION -------------------- */}
         <section className="py-8 sm:py-12 md:py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full overflow-x-hidden">
-          <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1">
+          <h2 className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-1 fade-down">
             How It Works
           </h2>
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white mb-6 sm:mb-8 md:mb-12 px-2 fade-up animate-delay-100">
             Get started with OPTIMUS in four simple steps
           </p>
           
           <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 mt-6 sm:mt-8 md:mt-12 steps-container">
-            {MOCK_STEPS.map((step) => (
-              <HowItWorksStep key={step.id} step={step} />
+            {MOCK_STEPS.map((step, index) => (
+              <div key={step.id} className={`fade-in-scale animate-delay-${(index + 1) * 100}`}>
+                <HowItWorksStep step={step} />
+              </div>
             ))}
           </div>
         </section>
