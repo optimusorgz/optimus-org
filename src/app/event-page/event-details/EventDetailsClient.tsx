@@ -444,7 +444,7 @@ export default function EventDetailsClientContent() {
                     
                     {/* Card B: Registration CTA (Modified) */}
                     
-                        <div className="p-4 sm:p-5 md:p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-3 sm:space-y-4 w-full max-w-full opacity-0" data-animate-on-visible="fade-in-scale">
+                        <div className="p-4 sm:p-5 md:p-6 bg-gray-800 border border-cyan-600 rounded-xl shadow-2xl space-y-3 sm:space-y-4 w-full max-w-full" data-animate-on-visible="fade-in-scale">
                         <h3 className="text-xl sm:text-2xl font-bold text-white border-b border-gray-700 pb-2 sm:pb-3">Registration</h3>
                         
                         {/* Ticket Info */}
@@ -482,7 +482,7 @@ export default function EventDetailsClientContent() {
                     </div>
 
                     {/* Card A: About the Event */}
-                    <Card title="About the Event" icon={<List />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up">
+                    <Card title="About the Event" icon={<List />} className="bg-gray-800/90" data-animate-on-visible="fade-up">
 
                     <p
                     className="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed"
@@ -494,7 +494,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card B: Event Details and Timeline */}
-                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up">
+                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90" data-animate-on-visible="fade-up">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
 
                             {/* Essentials Section */}
@@ -576,7 +576,7 @@ export default function EventDetailsClientContent() {
                 <div className="lg:col-span-1 space-y-4 sm:space-y-6 md:space-y-8 lg:sticky lg:top-8 h-fit">
                     
                     {/* Card F: Event Information Summary (Chips) */}
-                    <Card title="Event Summary" icon={<List />} className="opacity-0" data-animate-on-visible="fade-right">
+                    <Card title="Event Summary" icon={<List />} data-animate-on-visible="fade-right">
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 text-center">
                             {/* Chip 1: Price */}
                             <div className="bg-gray-700 p-3 sm:p-4 rounded-lg">
@@ -602,7 +602,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card D: Contact Information - Uses the fixed DetailItem */}
-                    <Card title="Contact Information" icon={<User />} className="opacity-0" data-animate-on-visible="fade-right" >
+                    <Card title="Contact Information" icon={<User />} data-animate-on-visible="fade-right">
                         <div className="space-y-2 sm:space-y-3">
                             <DetailItem icon={<Mail />} label="Email" value={event.contact_email} />
                             <DetailItem icon={<Phone />} label="Phone" value={event.contact_phone} />
@@ -611,7 +611,7 @@ export default function EventDetailsClientContent() {
                     </Card>
                     
                     {/* Card E: Quick Actions */}
-                    <Card title="Quick Actions" icon={<ExternalLink />} className="opacity-0" data-animate-on-visible="fade-right" >
+                    <Card title="Quick Actions" icon={<ExternalLink />} data-animate-on-visible="fade-right">
                         <div className="flex flex-col space-y-2">
                             {/* Quick Action: Register/Pay Button */}
                             <button onClick={buttonAction} className="text-cyan-400 hover:text-cyan-500 text-left font-medium disabled:text-gray-500 text-sm sm:text-base" disabled={isButtonDisabled}>

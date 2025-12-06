@@ -261,7 +261,7 @@ const Navbar: React.FC = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2, ease: "easeOut" }}
-                                        className="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 md:w-64 rounded-lg shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-[100] max-w-[90vw]"
+                                        className="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 md:w-64 rounded-lg shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-[9999] max-w-[90vw]"
                                         role="menu"
                                         tabIndex={-1}
                                         >

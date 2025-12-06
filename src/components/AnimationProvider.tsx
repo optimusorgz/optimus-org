@@ -21,8 +21,12 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
           // Get the animation type from data attribute
           const animationType = element.getAttribute('data-animate-on-visible');
           if (animationType && !element.classList.contains('animate-on-visible')) {
+            // Remove opacity-0 class if present (Tailwind class)
+            element.classList.remove('opacity-0');
             // Add the animation class to trigger the CSS animation
             element.classList.add('animate-on-visible', animationType);
+            // Ensure opacity is set for animation to work
+            element.style.opacity = '';
           }
         }
       });
@@ -36,14 +40,31 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
         const element = el as HTMLElement;
         // Ensure element starts with opacity 0
         if (!element.classList.contains('animate-on-visible')) {
-          element.style.opacity = '0';
-          observer.observe(element);
+          // Check if element is already in viewport
+          const rect = element.getBoundingClientRect();
+          const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+          
+          if (isInViewport) {
+            // If already visible, trigger animation immediately
+            const animationType = element.getAttribute('data-animate-on-visible');
+            if (animationType) {
+              element.classList.remove('opacity-0');
+              element.classList.add('animate-on-visible', animationType);
+              element.style.opacity = '';
+            }
+          } else {
+            // If not in viewport, set opacity and observe
+            element.style.opacity = '0';
+            observer.observe(element);
+          }
         }
       });
     };
 
-    // Initial observation
-    observeElements();
+    // Initial observation with a small delay to ensure DOM is ready
+    setTimeout(() => {
+      observeElements();
+    }, 100);
 
     // Also observe dynamically added elements
     const mutationObserver = new MutationObserver(() => {

@@ -109,10 +109,10 @@ const ProfileDashboard = () => {
 ;
 
   return (
-    <div className="h-fit p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 md:pb-28 space-y-6 sm:space-y-8 relative mt-12 sm:mt-15 w-full max-w-[95%] sm:max-w-[90%] mx-auto overflow-x-hidden">
+    <div className="p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 md:pb-28 space-y-6 sm:space-y-8 relative mt-12 sm:mt-15 w-full max-w-[95%] sm:max-w-[90%] mx-auto overflow-x-hidden">
 
       {/* BG EFFECTS */}
-      <div className="absolute inset-0 z-0 opacity-10">
+      <div className="absolute inset-0 z-0 opacity-10 overflow-hidden pointer-events-none">
         <div className="glow-blur-1 w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] bg-cyan-500 rounded-full mix-blend-lighten opacity-50 blur-[100px] absolute -top-[10%] -left-[10%]"></div>
         <div className="glow-blur-2 w-[70vw] h-[70vw] sm:w-[60vw] sm:h-[60vw] bg-indigo-500 rounded-full mix-blend-lighten opacity-50 blur-[120px] absolute -bottom-[10%] -right-[10%]"></div>
       </div>

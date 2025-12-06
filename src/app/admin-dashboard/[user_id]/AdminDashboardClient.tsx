@@ -41,11 +41,11 @@ export default function AdminDashboardClient() {
   const ActiveComponent = TABS.find(tab => tab.id === activeTab)?.component || EventsPage;
 
   return (
-    <div className="p-3 sm:p-4 md:p-6 bg-gray-900 min-h-screen w-full overflow-x-hidden max-w-full">
+    <div className="p-2 sm:p-3 md:p-6 bg-gray-900 min-h-full w-full overflow-x-hidden max-w-full">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 sm:mb-6">✨ Admin Dashboard</h1>
 
       {/* Horizontal Tabs */}
-      <div className="flex space-x-2 sm:space-x-3 md:space-x-4 mb-4 sm:mb-6 overflow-x-auto scrollbar-hide pb-2">
+      <div className="flex space-x-2 sm:space-x-3 md:space-x-4 mb-4 sm:mb-6 overflow-x-auto -mx-2 sm:mx-0 pb-2">
         {TABS.map((tab) => (
           <button
             key={tab.id}

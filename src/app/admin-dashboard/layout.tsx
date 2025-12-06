@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         // The component is wrapped in UserProvider only if the user is authorized and userId is set
         <UserProvider value={{ userId }}>
-            <div className="flex h-screen bg-gray-900 w-full overflow-x-hidden max-w-full">
+            <div className="flex min-h-screen bg-gray-900 w-full overflow-x-hidden max-w-full">
                 <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userId={userId} />
                 <div className="flex-1 flex flex-col overflow-hidden min-w-0 w-full">
                     <header className="flex items-center p-3 sm:p-4 bg-gray-800 border-b border-gray-700 shadow-md md:hidden w-full">
