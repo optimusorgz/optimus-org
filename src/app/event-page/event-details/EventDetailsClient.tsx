@@ -494,7 +494,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card B: Event Details and Timeline */}
-                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: '0.1s' }}>
+                    <Card title="Event Details" icon={<Calendar />} className="bg-gray-800/90 opacity-0" data-animate-on-visible="fade-up">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
 
                             {/* Essentials Section */}
@@ -602,7 +602,7 @@ export default function EventDetailsClientContent() {
                     </Card>
 
                     {/* Card D: Contact Information - Uses the fixed DetailItem */}
-                    <Card title="Contact Information" icon={<User />} className="opacity-0" data-animate-on-visible="fade-right" style={{ animationDelay: '0.1s' }}>
+                    <Card title="Contact Information" icon={<User />} className="opacity-0" data-animate-on-visible="fade-right" >
                         <div className="space-y-2 sm:space-y-3">
                             <DetailItem icon={<Mail />} label="Email" value={event.contact_email} />
                             <DetailItem icon={<Phone />} label="Phone" value={event.contact_phone} />
@@ -611,7 +611,7 @@ export default function EventDetailsClientContent() {
                     </Card>
                     
                     {/* Card E: Quick Actions */}
-                    <Card title="Quick Actions" icon={<ExternalLink />} className="opacity-0" data-animate-on-visible="fade-right" style={{ animationDelay: '0.2s' }}>
+                    <Card title="Quick Actions" icon={<ExternalLink />} className="opacity-0" data-animate-on-visible="fade-right" >
                         <div className="flex flex-col space-y-2">
                             {/* Quick Action: Register/Pay Button */}
                             <button onClick={buttonAction} className="text-cyan-400 hover:text-cyan-500 text-left font-medium disabled:text-gray-500 text-sm sm:text-base" disabled={isButtonDisabled}>

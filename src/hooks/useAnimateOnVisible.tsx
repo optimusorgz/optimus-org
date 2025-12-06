@@ -53,7 +53,7 @@ export function useAnimateOnVisible(options: UseAnimateOnVisibleOptions = {}) {
     observer.observe(element);
 
     return () => {
-      observer.disobserve(element);
+      observer.unobserve(element);
     };
   }, [threshold, rootMargin, triggerOnce, hasAnimated]);
 
