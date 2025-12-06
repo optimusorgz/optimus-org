@@ -169,18 +169,12 @@
                 ? new Date(event.start_date).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })
                 : ''}
               {' '}
-              {event.start_date
-                ? new Date(event.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : ''}
-              {' • '}
-              {event.end_date
-                ? new Date(event.end_date).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })
-                : ''}
-              {' '}
-              {event.end_date
-                ? new Date(event.end_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                : ''}
             </span>
+          </div>
+          <div className="flex items-center">
+            <Briefcase className="w-4 h-4 mr-2 text-cyan-400" />
+            <span>{event.organizer_name}</span>
+
           </div>
           <div className="flex items-center">
             <CheckCircle className="w-4 h-4 mr-2 text-cyan-400" />
@@ -489,10 +483,8 @@ if (loading) {
       />
 
       {/* ================= CONTENT ================= */}
-      <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 w-full">
-        <p className="text-xs sm:text-sm font-semibold text-cyan-400 tracking-widest uppercase mb-2 fade-down">
-          #1 Event Management Platform
-        </p>
+      <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 w-full pt-20">
+        
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold text-white mb-4 sm:mb-6 leading-tight px-2 fade-up animate-delay-100">
           Discover and Host <br className="hidden sm:inline" />

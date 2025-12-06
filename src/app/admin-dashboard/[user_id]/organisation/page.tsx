@@ -86,7 +86,7 @@ export default function OrganizationsPage() {
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden max-w-full">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden max-w-full h-[1000px] p-1 sm:p-3 md:p-6 bg-gray-900 rounded-lg">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold lowercase text-white">
         🏛️ Organization Management
       </h1>

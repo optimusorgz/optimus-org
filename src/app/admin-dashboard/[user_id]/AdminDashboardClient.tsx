@@ -41,11 +41,11 @@ export default function AdminDashboardClient() {
   const ActiveComponent = TABS.find(tab => tab.id === activeTab)?.component || EventsPage;
 
   return (
-    <div className="p-2 sm:p-3 md:p-6 bg-gray-900 min-h-full w-full overflow-x-hidden max-w-full">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 sm:mb-6">✨ Admin Dashboard</h1>
+    <div className=" sm:p-3 md:p-6 bg-gray-900 h-[1200px] w-full overflow-y-visible max-w-full">
+      <h1 className="pt-4 px-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 sm:mb-6">✨ Admin Dashboard</h1>
 
       {/* Horizontal Tabs */}
-      <div className="flex space-x-2 sm:space-x-3 md:space-x-4 mb-4 sm:mb-6 overflow-x-auto -mx-2 sm:mx-0 pb-2">
+      <div className="px-4 flex space-x-2 sm:space-x-3 md:space-x-4 mb-4 sm:mb-6 overflow-x-auto -mx-2 sm:mx-0 pb-2">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -63,7 +63,7 @@ export default function AdminDashboardClient() {
       </div>
 
       {/* Active Tab Content */}
-      <div className="p-3 sm:p-4 md:p-6 bg-gray-800 rounded-xl shadow-lg min-h-[300px] sm:min-h-[400px] w-full max-w-full overflow-x-hidden opacity-0" data-animate-on-visible="fade-in-scale">
+      <div className=" sm:p-4 md:p-6 bg-gray-900 rounded-xl shadow-lg min-h-[300px] sm:min-h-[400px] w-full max-w-full overflow-visible opacity-0" data-animate-on-visible="fade-in-scale">
         {loading ? (
           <div className="flex items-center justify-center min-h-[200px]">
             <Loader />

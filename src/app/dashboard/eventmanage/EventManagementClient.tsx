@@ -144,7 +144,7 @@ const EventManagementPage: React.FC = () => {
 
   // ---------------- RENDER UI ---------------- 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+    <div className="min-h-screen bg-gray-900 text-white p-1 mt-10 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
       <div className="max-w-7xl mx-auto w-full">
         <h1 className="text-2xl sm:text-3xl font-extrabold mb-4 sm:mb-6 md:mb-8 mt-6 sm:mt-8 md:mt-10">Manage Event</h1>
 
@@ -180,7 +180,7 @@ const EventManagementPage: React.FC = () => {
           </div>
 
           {/* Main Content */}
-          <section className="lg:col-span-3 bg-gray-800 rounded-xl border border-gray-700 min-h-[400px] sm:min-h-[500px] w-full max-w-full overflow-x-hidden p-3 sm:p-4 md:p-6 opacity-0" data-animate-on-visible="fade-in-scale">
+          <section className="lg:col-span-3 bg-gray-800 rounded-xl border border-gray-700 min-h-[400px] sm:min-h-[500px] w-full max-w-full overflow-x-hidden p-1 sm:p-4 md:p-6 opacity-0" data-animate-on-visible="fade-in-scale">
             {activeTab === "edit" && (
               <EventEditForm
                 eventId={selectedEventId}

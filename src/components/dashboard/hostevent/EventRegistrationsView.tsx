@@ -127,63 +127,82 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
 
     return (
       <div
-        key={idx}
-        className="bg-gray-700/70 p-4 rounded-lg shadow-md mb-3 border border-gray-600 cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-2">
-          <div className="space-y-1">
-            {visibleFields.map((field) => (
-              <div key={field} className="flex justify-between text-sm">
-                <span className="text-gray-400 font-medium">{field.replace(/_/g, ' ')}:</span>
-                <span className="text-white">{reg.form_data[field] || 'N/A'}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center space-x-2">
-            {reg.is_paid.toLowerCase() === 'paid' ? (
-              <span className="flex items-center text-green-500">
-                <CheckCircle2 className="w-4 h-4 mr-1" /> Paid
-              </span>
-            ) : (
-              <span className="flex items-center text-red-500">
-                <XCircle className="w-4 h-4 mr-1" /> Unpaid
-              </span>
-            )}
-            <span className="text-gray-400">{expanded ? '▲' : '▼'}</span>
-          </div>
+  key={idx}
+  className="bg-gray-700/70 py-2 px-1 rounded-lg shadow-md mb-3 border border-gray-600 cursor-pointer"
+  onClick={() => setExpanded(!expanded)}
+>
+  {/* Header */}
+  <div className="flex justify-between items-center mb-2">
+    <div className="space-y-1">
+      {visibleFields.map((field) => (
+        <div key={field} className="flex gap-1 text-xs md:text-base">
+          <span className="text-gray-400 font-medium">{field.replace(/_/g, ' ')}:</span>
+          <span
+            className="text-white truncate max-w-[120px] sm:max-w-[200px] md:max-w-full"
+            title={reg.form_data[field] || 'N/A'}
+          >
+            {reg.form_data[field]
+              ? reg.form_data[field].length > 15
+                ? reg.form_data[field].slice(0, 15) + '...'
+                : reg.form_data[field]
+              : 'N/A'}
+          </span>
         </div>
+      ))}
+    </div>
+    <div className="flex items-center space-x-2">
+      {reg.is_paid.toLowerCase() === 'paid' ? (
+        <span className="flex items-center text-green-500">
+          <CheckCircle2 className="w-4 h-4 mr-1" /> Paid
+        </span>
+      ) : (
+        <span className="flex items-center text-red-500">
+          <XCircle className="w-4 h-4 mr-1" /> Unpaid
+        </span>
+      )}
+      <span className="text-gray-400">{expanded ? '▲' : '▼'}</span>
+    </div>
+  </div>
 
-        {/* Expanded Details */}
-        {expanded && (
-          <div className="mt-2 space-y-2 border-t border-gray-600 pt-2">
-            {formHeaders.slice(2).map((field) => (
-              <div key={field} className="flex justify-between text-sm">
-                <span className="text-gray-400 font-medium">{field.replace(/_/g, ' ')}:</span>
-                <span className="text-white">{reg.form_data[field] || 'N/A'}</span>
-              </div>
-            ))}
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400 font-medium">Status:</span>
-              <StatusBadge status={reg.status} />
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400 font-medium">Checked in:</span>
-              <span className="text-white">{reg.check_in || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400 font-medium">Registration Date:</span>
-              <span className="text-gray-400">{new Date(reg.registration_date).toLocaleDateString()}</span>
-            </div>
-          </div>
-        )}
+  {/* Expanded Details */}
+  {expanded && (
+    <div className="mt-2 space-y-2 border-t border-gray-600 pt-2">
+      {formHeaders.slice(2).map((field) => (
+        <div key={field} className="flex justify-between text-sm md:text-base">
+          <span className="text-gray-400 font-medium">{field.replace(/_/g, ' ')}:</span>
+          <span
+            className="text-white truncate max-w-[120px] sm:max-w-[200px] md:max-w-full"
+            title={reg.form_data[field] || 'N/A'}
+          >
+            {reg.form_data[field]
+              ? reg.form_data[field].length > 15
+                ? reg.form_data[field].slice(0, 15) + '...'
+                : reg.form_data[field]
+              : 'N/A'}
+          </span>
+        </div>
+      ))}
+      <div className="flex justify-between text-sm md:text-base">
+        <span className="text-gray-400 font-medium">Status:</span>
+        <StatusBadge status={reg.status} />
       </div>
+      <div className="flex justify-between text-sm md:text-base">
+        <span className="text-gray-400 font-medium">Checked in:</span>
+        <span className="text-white">{reg.check_in || 'N/A'}</span>
+      </div>
+      <div className="flex justify-between text-sm md:text-base">
+        <span className="text-gray-400 font-medium">Registration Date:</span>
+        <span className="text-gray-400">{new Date(reg.registration_date).toLocaleDateString()}</span>
+      </div>
+    </div>
+  )}
+</div>
+
     );
   };
 
   return (
-    <div className="bg-gray-800/90 border border-gray-700 p-4 md:p-6 rounded-xl shadow-2xl min-h-[500px] h-[1000px] overflow-scroll">
+    <div className=" p-1 md:p-6 rounded-xl shadow-2xl min-h-[500px] h-[800px] ">
 
       {/* Header & Count Section */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 border-b border-gray-700 pb-3">
