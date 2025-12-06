@@ -9,6 +9,7 @@ import {
 import supabase from "@/api/client" // Ensure this path is correct
 import { toast, Toaster } from 'react-hot-toast';
 import { max } from 'date-fns';
+import TicketModal from '@/components/dashboard/TicketModal';
 
 
 // --- 1. TYPE DEFINITIONS ---
@@ -95,43 +96,7 @@ const DetailItem: React.FC<{ icon: React.ReactNode, label: string, value: string
     </div>
 );
 
-// --- New Ticket Modal Component ---
-const TicketModal: React.FC<{ event: Event, onClose: () => void }> = ({ event, onClose }) => {
-    return (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl shadow-2xl p-8 max-w-lg w-full transform transition-all duration-300 scale-100">
-                <div className="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
-                    <h2 className="text-2xl font-bold text-cyan-400  flex items-center">
-                        <Ticket className="w-6 h-6 mr-2" /> Your Event Ticket
-                    </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white transition">
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
-                
-                <div className="bg-gray-900 p-6 rounded-lg border border-cyan-600/50 space-y-4">
-                    <p className="text-lg font-semibold text-white">{event.title}</p>
-                    <DetailItem icon={<User />} label="Attendee" value="Current User (Placeholder)" />
-                    <DetailItem icon={<Calendar />} label="Date" value={formatEventDate(event.start_date)} />
-                    <DetailItem icon={<MapPin />} label="Location" value={event.location} />
-                    <DetailItem icon={<DollarSign />} label="Status" value="Payment Confirmed" />
-                    <p className="text-sm text-center text-gray-400 pt-3 border-t border-gray-700">
-                        Please keep this ticket for entry. A detailed email confirmation has been sent to your registered email.
-                    </p>
-                </div>
 
-                <div className="mt-6 flex justify-end">
-                    <button
-                        onClick={onClose}
-                        className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition"
-                    >
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 // --- 5. MAIN CONTENT COMPONENT ---
 
@@ -151,6 +116,9 @@ export default function EventDetailsClientContent() {
     const [regStatus, setRegStatus] = useState<RegistrationStatus>('unregistered');
     const [showTicketModal, setShowTicketModal] = useState(false);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+    const [ticketId, setTicketId] = useState<string>('');
+
 
 
     // Utility to simulate Razorpay button opening
@@ -385,7 +353,16 @@ export default function EventDetailsClientContent() {
             <Toaster position="top-right" />
             
             {/* Ticket Modal */}
-            {showTicketModal && event && <TicketModal event={event} onClose={() => setShowTicketModal(false)} />}
+            {regStatus === 'registered' && (
+                <TicketModal
+                    ticketId={ticketId}
+                    eventId={eventId}
+                    isOpen={showTicketModal}
+                    onClose={() => setShowTicketModal(false)}
+                    />
+
+            )}
+
             
             {/* 1. Header and Banner */}
             {/* ... (Existing Banner/Header UI) ... */}
@@ -488,14 +465,7 @@ export default function EventDetailsClientContent() {
                         </button>
 
                         {/* NEW: Show Ticket Button if Registered */}
-                        {regStatus === 'registered' && (
-                             <button
-                                onClick={() => setShowTicketModal(true)}
-                                className="w-full py-3 mt-2 border border-cyan-600 text-cyan-400  rounded-lg flex items-center justify-center hover:bg-cyan-600 hover:text-white transition duration-150 font-bold"
-                            >
-                                <Ticket className="w-5 h-5 mr-2" /> View My Ticket
-                            </button>
-                        )}
+                        
                         
 
                         <button

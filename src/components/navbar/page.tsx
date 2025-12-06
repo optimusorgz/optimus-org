@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from "framer-motion";
 // Importing the Supabase client utility correctly
 import { createClient } from '@supabase/supabase-js'; // Assuming your client utility uses createClient or similar
 import supabaset from '@/api/client'; // Corrected import name: supabaset
@@ -253,46 +254,54 @@ const Navbar: React.FC = () => {
                                 </button>
 
                                 {/* Profile Dropdown Menu */}
-                                {isProfileMenuOpen && (
-                                    <div
-                                        className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                <AnimatePresence>
+                                    {isProfileMenuOpen && (
+                                        <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="origin-top-right absolute right-0 mt-2 w-58 rounded-lg shadow-lg py-1 bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                                         role="menu"
                                         tabIndex={-1}
-                                    >
+                                        >
                                         {updatedProfileMenuItems.map((item) => {
-                                            const className = "block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition duration-100";
-                                            const isAction = item.name === 'Logout' || item.name === 'Settings';
+                                            const className =
+                                            "block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-cyan-400 transition-colors duration-150 ease-in-out rounded-md";
+
+                                            const isAction = item.name === "Logout" || item.name === "Settings";
 
                                             if (isAction) {
-                                                const handleClick = item.name === 'Logout' ? handleLogout : handleSettingsClick;
-                                                return (
-                                                    <div
-                                                        key={item.name}
-                                                        onClick={handleClick}
-                                                        className={`${className} cursor-pointer`}
-                                                        role="menuitem"
-                                                        tabIndex={-1}
-                                                    >
-                                                        {item.name}
-                                                    </div>
-                                                );
-                                            } 
-                                            
+                                            const handleClick = item.name === "Logout" ? handleLogout : handleSettingsClick;
                                             return (
-                                                <Link 
-                                                    key={item.name} 
-                                                    href={item.href} 
-                                                    className={className} 
-                                                    role="menuitem"
-                                                    tabIndex={-1}
-                                                    onClick={() => setIsProfileMenuOpen(false)} 
+                                                <div
+                                                key={item.name}
+                                                onClick={handleClick}
+                                                className={`${className} cursor-pointer`}
+                                                role="menuitem"
+                                                tabIndex={-1}
                                                 >
-                                                    {item.name}
-                                                </Link>
+                                                {item.name}
+                                                </div>
+                                            );
+                                            }
+
+                                            return (
+                                            <Link
+                                                key={item.name}
+                                                href={item.href}
+                                                className={className}
+                                                role="menuitem"
+                                                tabIndex={-1}
+                                                onClick={() => setIsProfileMenuOpen(false)}
+                                            >
+                                                {item.name}
+                                            </Link>
                                             );
                                         })}
-                                    </div>
-                                )}
+                                        </motion.div>
+                                    )}
+                                    </AnimatePresence>
                             </div>
                         )}
                     </div>

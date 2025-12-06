@@ -41,26 +41,31 @@ const ProfileDashboard = () => {
   const [eventcnt, setEventcnt] = useState(0);
   const [hostcnt, setHostcnt] = useState(0);
   const [isorg, setIsorg] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
 
   /* ---------------- Fetch Profile ---------------- */
   const fetchProfile = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-    const { data: profileData } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('uuid', user.id)
-      .single();
+  setUserId(user.id); // ⭐ STORE USER ID
 
-    setProfile(profileData);
+  const { data: profileData } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('uuid', user.id)
+    .single();
 
-    const organisation_id = profileData?.organisation_id || null;
-    if (organisation_id) setIsorg(true);
+  setProfile(profileData);
 
-    const role = profileData?.role_type?.toLowerCase();
-    if (role === "admin" || role === "organiser") setIsAdmin(true);
-  };
+  const organisation_id = profileData?.organisation_id || null;
+  if (organisation_id) setIsorg(true);
+
+  const role = profileData?.role_type?.toLowerCase();
+  if (role === "admin" || role === "organiser") setIsAdmin(true);
+};
+
 
   /* ---------------- Fetch Events ---------------- */
   const fetchEvents = async () => {
@@ -90,7 +95,7 @@ const ProfileDashboard = () => {
   /* ---------------- Logout ---------------- */
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push('/');
   };
 
   useEffect(() => {
@@ -133,19 +138,19 @@ const ProfileDashboard = () => {
       {/* STATS */}
       {isorg && (
         <div className="grid grid-cols-3 gap-6 relative z-10">
-          <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
             <BuildingIcon className="w-8 h-8 text-green-400 mb-2" />
             <p className="text-gray-300">Events Participated</p>
             <p className="text-3xl font-bold text-white">{eventcnt}</p>
           </div>
 
-          <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
             <TicketIcon className="w-8 h-8 text-green-400 mb-2" />
             <p className="text-gray-300">Events Hosted</p>
             <p className="text-3xl font-bold text-white">{hostcnt}</p>
           </div>
 
-          <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-lg flex flex-col justify-center items-center">
+          <div className="bg-gray-800/90 border border-gray-700 p-4 rounded-xl shadow-lg flex flex-col justify-center items-center">
             <CalendarIcon className="w-8 h-8 text-green-400 mb-2" />
             <p className="text-gray-300">Organisations</p>
             <p className="text-3xl font-bold text-white">1</p>
@@ -155,10 +160,10 @@ const ProfileDashboard = () => {
 
       {/* EVENTS */}
       <div className="space-y-3 mt-4 relative z-10">
-        <h2 className="text-xl text-white font-bold">Upcoming Events</h2>
+        <h2 className="text-xl text-white font-bold">Registered Events</h2>
 
         {events.length === 0 && (
-          <p className="text-gray-500">No upcoming events.</p>
+          <p className="text-gray-500">No registered events.</p>
         )}
 
         {events.map(event => (
@@ -168,9 +173,7 @@ const ProfileDashboard = () => {
               <p className="text-white font-semibold">{event.title}</p>
               <p className="text-gray-400 text-sm">Registered</p>
             </div>
-            <span className="px-3 py-1 bg-green-600 text-white rounded-full text-xs">
-              {event.status}
-            </span>
+            
           </div>
         ))}
       </div>
@@ -179,7 +182,7 @@ const ProfileDashboard = () => {
       <div className="space-y-4 relative z-10">
         {isAdmin && (
           <button
-            onClick={() => router.push('/admin')}
+            onClick={() => router.push(`/admin-dashboard/${userId}`)}
             className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
           >
             <LayoutDashboardIcon className="w-5 h-5" />

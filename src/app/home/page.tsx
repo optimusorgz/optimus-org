@@ -4,7 +4,9 @@
   import Link from "next/link";
   import { Button } from '@/components/ui/button';
   import Loader from '@/components/ui/Loader';
-  import { ArrowRight } from 'lucide-react';
+  import { ArrowRight, Router } from 'lucide-react';
+  import { useRouter } from 'next/navigation'; // add this at the top
+
 
 
   // Assuming lucide-react is available for icons
@@ -58,6 +60,10 @@
     partners: Partner[];
   }
 
+
+  interface EventCardProps extends Event {
+    onRegister?: (event: Event) => void; // optional callback for registration
+  }
   // --- 2. MOCK DATA ---
 
 
@@ -126,30 +132,29 @@
     </div>
   );
 
-  const EventCard: React.FC<Event> = (event) => (
+  const EventCard: React.FC<EventCardProps> = (event) => {
+  const handleRegister = () => {
+    console.log("Register clicked for event:", event.id);
+    // TODO: Call your Supabase registration API here
+    // Example:
+    // supabase.from('registrations').insert({ event_id: event.id, user_id: currentUser.id });
+    if (event.onRegister) event.onRegister(event);
+  };
+
+  return (
     <div className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full sm:w-[350px] lg:w-[300px] snap-center hover:scale-[1.01] transition-transform duration-300 border border-[#1f2430]">
-    {/* Image with overlays */}
-  <div className="relative h-40 flex items-center justify-center">
-    <img
-      src={event.banner_url ? event.banner_url : '/placeholder.png'}
-      alt={event.title}
-      className="w-full h-full object-cover"
-    />
-
-    {/* Dark overlay */}
-    <div className="absolute inset-0 bg-black/50"></div> {/* 50% black overlay */}
-
-
-
-    {/* Ticket price badge */}
-    <span className="absolute top-2 right-2 z-10 bg-cyan-600 text-white text-sm font-bold px-3 py-1 rounded-full">
-      {event.ticket_price ? `$${event.ticket_price}` : 'Free'}
-    </span>
-  </div>
-
-
-
-
+      {/* Image with overlays */}
+      <div className="relative h-40 flex items-center justify-center">
+        <img
+          src={event.banner_url ? event.banner_url : '/placeholder.png'}
+          alt={event.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+        <span className="absolute top-2 right-2 z-10 bg-cyan-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+          {event.ticket_price ? `$${event.ticket_price}` : 'Free'}
+        </span>
+      </div>
 
       {/* Content */}
       <div className="p-5">
@@ -158,44 +163,41 @@
           <div className="flex items-center">
             <Zap className="w-4 h-4 mr-2 text-cyan-400" />
             <span>
-    {event.start_date
-      ? new Date(event.start_date).toLocaleDateString([], { 
-          day: '2-digit', month: 'short', year: 'numeric' 
-        }) 
-      : ''}
-    {' '}
-    {event.start_date
-      ? new Date(event.start_date).toLocaleTimeString([], { 
-          hour: '2-digit', minute: '2-digit' 
-        }) 
-      : ''}
-    {' • '}
-    {event.end_date
-      ? new Date(event.end_date).toLocaleDateString([], { 
-          day: '2-digit', month: 'short', year: 'numeric' 
-        }) 
-      : ''}
-    {' '}
-    {event.end_date
-      ? new Date(event.end_date).toLocaleTimeString([], { 
-          hour: '2-digit', minute: '2-digit' 
-        }) 
-      : ''}
-  </span>
-
+              {event.start_date
+                ? new Date(event.start_date).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })
+                : ''}
+              {' '}
+              {event.start_date
+                ? new Date(event.start_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : ''}
+              {' • '}
+              {event.end_date
+                ? new Date(event.end_date).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })
+                : ''}
+              {' '}
+              {event.end_date
+                ? new Date(event.end_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : ''}
+            </span>
           </div>
           <div className="flex items-center">
             <CheckCircle className="w-4 h-4 mr-2 text-cyan-400" />
             <span>{event.location}</span>
           </div>
-          
         </div>
-        <button className="mt-5 w-full bg-cyan-600 hover:bg-cyan-500 transition duration-200 text-white font-semibold py-2 rounded-lg shadow-lg">
+
+        {/* Register Button */}
+        <button
+          onClick={handleRegister}
+          className="mt-5 w-full bg-cyan-600 hover:bg-cyan-500 transition duration-200 text-white font-semibold py-2 rounded-lg shadow-lg"
+        >
           Register Now
         </button>
       </div>
     </div>
   );
+};
+
 
   const HowItWorksStep: React.FC<{ step: Step }> = ({ step }) => (
     // The line is handled by the parent container's CSS
@@ -338,6 +340,8 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
     const [events, setEvents] = useState<Event[]>([]);
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter(); // initialize router
+
 
 
 
@@ -441,7 +445,7 @@ if (loading) {
     return (
       <div className="min-h-screen font-sans" style={heroStyle}>
         {/* -------------------- HERO SECTION -------------------- */}
-<section className="relative min-h-[50vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-10 md:pt-24 md:pb-32 text-center">
+      <section className="relative min-h-[50vh] md:min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-10 md:pt-24 md:pb-32 text-center">
 
       {/* ================= BACKGROUND + GLOW ================= */}
       <div className="absolute inset-0 [background:var(--gradient-hero)]" />
@@ -522,12 +526,12 @@ if (loading) {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="/events">
+            <Link href="/event-page">
               <Button className="group bg-transparent border-2 border-cyan-500 hover:bg-cyan-600 hover:border-cyan-600 text-white font-bold text-lg gap-2 p-5 rounded-md flex items-center">
                 Explore Events
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/dashboard/{userID}">
               <Button className="group bg-cyan-500 hover:border-cyan-600 text-white font-bold text-lg px-6 py-3 flex items-center gap-2 p-5">
                 Host Your Event
               </Button>
@@ -574,10 +578,19 @@ if (loading) {
             className="flex space-x-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide"
           >
             {events.length > 0 ? (
-              events.map((event) => <EventCard key={event.id} {...event} />)
-            ) : (
-              <p className="text-gray-400">Loading events...</p>
-            )}
+            events.map((event) => (
+              <EventCard
+                key={event.id}
+                {...event}
+                onRegister={() => {
+                  router.push(`/event-page`);
+                  // Add API call logic here if needed
+                }}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400">Loading events...</p>
+          )}
 
             {/* Faked scrollbar utility for better mobile experience */}
             <style jsx>{`

@@ -64,11 +64,11 @@ const BottomNavbar: React.FC = () => {
   };
 
   const mobileNavItems: NavItem[] = [
-    { name: 'Home', href: '/', icon: <HomeIcon /> },
-    { name: 'Events', href: '/event-page', icon: <EventsIcon /> },
     { name: 'Join Us', href: '/form/joinus', icon: <JoinIcon /> },
-    { name: 'Profile', href: '/profile', icon: <ProfileIcon />, requiresAuth: true },
+    { name: 'Events', href: '/event-page', icon: <EventsIcon /> },
+    { name: 'Home', href: '/', icon: <HomeIcon /> },
     { name: 'Dashboard', href: userId ? `/dashboard/${userId}` : '/dashboard', icon: <DashboardIcon />, requiresAuth: true },
+    { name: 'Profile', href: '/profile', icon: <ProfileIcon />, requiresAuth: true },
   ];
 
   const handleNavClick = (item: NavItem) => {
