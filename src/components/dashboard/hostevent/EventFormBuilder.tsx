@@ -129,8 +129,8 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
     );
 
   return (
-    <div className=" p-4 rounded-xl shadow-xl space-y-4 max-h-[80vh] overflow-y-auto border border-gray-700 ">
-      <h2 className="text-4xl font-bold text-green-400 mb-8 text-center">
+    <div className=" p-1 rounded-xl shadow-xl space-y-4 max-h-[80vh] overflow-y-auto  ">
+      <h2 className="text-2xl font-bold text-green-400 mb-8 text-center">
         Event Registration Form Builder
       </h2>
 

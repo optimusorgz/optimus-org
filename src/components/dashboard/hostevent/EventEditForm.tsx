@@ -243,10 +243,10 @@ const EventEditForm: React.FC<EventEditFormProps> = ({ eventId, onCancel, onEven
 
     // --- 3. Render Form ---
     return (
-        <div className="bg-gray-800/90 border border-gray-700 p-6 rounded-xl shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div className="bg-gray-800/90 rounded-xl shadow-2xl overflow-y-auto max-h-[90vh]">
             
-            <h2 className="text-3xl font-bold text-orange-400 mb-6 border-b border-gray-700 pb-3">
-                ✏️ Edit Event Details
+            <h2 className="text-3xl font-bold text-orange-400 mb-6 p-1 border-b border-gray-700 pb-3">
+                Edit Event Details
             </h2>
             <p className="text-gray-400 mb-4">Editing Event </p>
             
