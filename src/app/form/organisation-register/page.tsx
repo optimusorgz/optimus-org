@@ -1,21 +1,33 @@
-// app/form/organisation-register/page.tsx
 'use client';
-import OrganizationForm from '@/components/dashboard/OrganizationForm';
+
 import { useRouter } from 'next/navigation';
+import OrganizationForm from '@/components/form/OrganizationForm';
+import { use, useEffect, useState } from 'react';
+import supabase  from '@/api/client';
 
 const OrganisationRegisterPage = () => {
     const router = useRouter();
+    const [userID, setUserID] = useState("");
 
-    const handleSuccess = () => {
-        // Redirect to dashboard after successful registration
-        router.push('/dashboard'); 
-    };
+    // fetching the user id
+    useEffect(() => {
+        const fetchUserID = async () => {
+            const { data, error } = await supabase.auth.getUser();
+            if (error || !data.user) {
+                router.push('/auth');
+                return;
+            }
+            const uid = data.user.id;
+            setUserID(uid);
+        }
+        
+    }, [router]);
 
     return (
-        <div className="min-h-screen bg-gray-900 p-8">
-            <OrganizationForm 
-                onSuccess={handleSuccess} // This is correct for registration!
-                onCancel={() => router.push('/dashboard')}
+        <div className="min-h-screen bg-gray-900 pt-10">
+            <OrganizationForm
+                onSuccess={() => router.push(`/dashboard/${userID}`)}
+                onCancel={() => router.push(`/dashboard/${userID}`)}
             />
         </div>
     );

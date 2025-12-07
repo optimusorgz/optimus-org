@@ -322,7 +322,7 @@ const RegisterPage = () => {
   if (loading || isPaymentProcessing || registrationStatus === 'submitting_data') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500 mr-2" />
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-500 mr-2" />
         <p className="text-white">
           {registrationStatus === 'submitting_data'
             ? 'Finalizing registration...'
@@ -349,7 +349,7 @@ const RegisterPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-900">
         <div className="max-w-md w-full bg-gray-800/90 border border-gray-700 p-8 rounded-xl shadow-2xl text-center">
-          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <CheckCircle className="w-16 h-16 text-cyan-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white mb-2">
             {fetchError?.includes('already registered') ? 'Already Registered!' : 'Registration Complete!'}
           </h2>
@@ -360,18 +360,18 @@ const RegisterPage = () => {
           </p>
           {ticketUid && (
             <div className="mt-6 p-6 border border-gray-700 rounded-xl bg-gray-800 flex flex-col items-center text-center shadow-lg">
-              <svg className="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-16 h-16 text-cyan-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <h3 className="text-2xl font-bold text-white mb-2">Registration Successful!</h3>
               <p className="text-gray-300 text-sm">
-                Your E-ticket has been generated. You can view and download it from your <span className="text-green-400 font-semibold">Dashboard</span>.
+                Your E-ticket has been generated. You can view and download it from your <span className="text-cyan-400 font-semibold">Dashboard</span>.
               </p>
             </div>
           )}
           <button
             onClick={() => router.push(`/event-page`)}
-            className="mt-6 py-2 px-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-200 flex items-center justify-center mx-auto"
+            className="mt-6 py-2 px-4 bg-cyan-600 text-white font-bold rounded-lg shadow-md hover:bg-cyan-700 transition duration-200 flex items-center justify-center mx-auto"
           >
             View Event Details <ArrowRight className="w-4 h-4 ml-2" />
           </button>
@@ -402,7 +402,7 @@ const displayPrice = Number(formDataRef.current.ticketPrice ?? paymentAmount);
             <button
               onClick={handleProceedToPayment}
               disabled={isPaymentProcessing}
-              className="w-full py-3 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-200 flex items-center justify-center disabled:bg-green-400"
+              className="w-full py-3 bg-cyan-600 text-white font-bold rounded-lg shadow-md hover:bg-cyan-700 transition duration-200 flex items-center justify-center disabled:bg-cyan-400"
             >
               {isPaymentProcessing ? (
                 <> <Loader2 className="w-5 h-5 animate-spin mr-2" /> Initializing...</>

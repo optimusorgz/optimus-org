@@ -60,7 +60,7 @@ const PaymentPage = () => {
                     <button
                         onClick={handlePayment}
                         disabled={isPaymentProcessing}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 font-bold"
+                        className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50 font-bold"
                         >
                         {isPaymentProcessing ? "Processing..." : "Pay Now"}
                     </button>

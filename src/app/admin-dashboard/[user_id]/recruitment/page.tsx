@@ -81,7 +81,7 @@ export default function RecruitmentPage() {
         <ExportButton data={recruitmentData} filename="recruitment_data" />
         <button 
           onClick={handleOpenInsert} 
-          className="flex items-center bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
+          className="flex items-center bg-cyan-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-cyan-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
         >
           <Plus size={18} className="sm:w-5 sm:h-5 mr-2" />
           Add New Entry

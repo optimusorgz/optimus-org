@@ -9,7 +9,7 @@ export default function EventDetailsPage() {
         <Suspense fallback={
             // ... your loading UI (uses Tailwind CSS)
             <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500 mb-4" />
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-500 mb-4" />
                 <p className="text-xl">Initializing Event Page...</p>
             </div>
         }>

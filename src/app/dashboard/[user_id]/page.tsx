@@ -33,6 +33,7 @@ interface OrganizationData {
   name: string;
   members: number;
   logoUrl: string;
+  status?: 'Pending' | 'Approved' | 'rejected';
 }
 
 interface RegistrationData {
@@ -129,9 +130,18 @@ const RegistrationRow: React.FC<{ data: RegistrationData }> = ({ data }) => {
   );
 };
 
+
+
 const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data }) => (
-  <div className="p-4 sm:p-5 md:p-6 bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500/50 mb-6 sm:mb-8 w-full max-w-full opacity-0" data-animate-on-visible="fade-in-scale">
-    <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center">Your Hosted Organization</h3>
+<div
+  className="p-4 sm:p-5 md:p-6 bg-gray-800 rounded-t-xl rounded-b-none shadow-lg border-b-0 border-2 border-purple-500/50 w-full max-w-full opacity-0"
+  data-animate-on-visible="fade-in-scale"
+>
+      {data.status == 'Pending' && (
+        <p className="text-yellow-400 italic text-s sm:text-base pb-3 border-b border-yellow-400/50 mb-4">
+          Pending approval - You cannot make the event until approved
+        </p>
+      )}
     <div className="flex items-center space-x-3 sm:space-x-4">
       <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center bg-purple-600">
         {data.logoUrl ? (
@@ -153,11 +163,7 @@ const HostedOrganizationProfile: React.FC<{ data: OrganizationData }> = ({ data 
         <p className="text-xs sm:text-sm text-gray-400">{data.members} Total Members</p>
       </div>
     </div>
-    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-700/50">
-      <button className="w-full px-3 sm:px-4 py-2 bg-purple-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md hover:bg-purple-700 transition">
-        Manage Profile & Settings
-      </button>
-    </div>
+    
   </div>
 );
 
@@ -195,6 +201,13 @@ const App: React.FC = () => {
   setIsModalOpen(true);
   };
 
+  const handleClick = () => {
+    if (!hostedOrganization) return;
+
+    router.push(`/form/organisation-edit/${hostedOrganization.id}`);
+  };
+
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -214,8 +227,11 @@ const App: React.FC = () => {
           name: hostedOrgData.name,
           members: 0,
           logoUrl: hostedOrgData.avatar_url || hostedOrgData.name[0],
+          status: hostedOrgData.status,
         });
       }
+      console.log('Hosted organization data:', hostedOrgData);
+      
 
       // Member orgs
       const { data: profileData } = await supabase
@@ -437,11 +453,47 @@ const App: React.FC = () => {
 
         {/* Right Column */}
         <div className="lg:col-span-1">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Organisation</h2>
+
+            {!hostedOrganization && (
+              <button
+                className="px-3 sm:px-4 py-2 bg-purple-600 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md hover:bg-purple-700 transition"
+                onClick={() => {
+                  // Redirect to organization registration page
+                  window.location.href = "/form/organisation-register";
+                }}
+              >
+                Register Your Organization
+              </button>
+            )}
+          </div>
+
           {hostedOrganization ? (
-            <HostedOrganizationProfile data={hostedOrganization} />
+            <>
+              <HostedOrganizationProfile data={hostedOrganization} />
+              <div
+                className="mt-0 px-4 pb-4 sm:px-5 md:px-6 bg-gray-800 rounded-b-xl shadow-lg 
+                border-l-2 border-r-2 border-b-2 border-t-0 border-purple-500/50 w-full max-w-full mb-3"
+                
+              >
+                <button
+                  onClick={handleClick}
+                  className="w-full px-3 sm:px-4 py-2 bg-purple-600 text-white text-xs sm:text-sm 
+                  font-semibold rounded-lg shadow-md hover:bg-purple-700 transition"
+                  data-animate-on-visible="fade-in-scale"
+                >
+                  Manage Profile & Settings
+                </button>
+              </div>
+
+            </>
           ) : (
-            <p className="text-gray-400 italic mb-6">You are not hosting any organization.</p>
+            <p className="text-gray-400 italic mb-6">
+              Start hosting by registering your organization.
+            </p>
           )}
+
 
           <section className="opacity-0" data-animate-on-visible="fade-right">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
@@ -450,16 +502,25 @@ const App: React.FC = () => {
             {memberOrganizations.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
                 {memberOrganizations.map((org, index) => (
-                  <div key={org.id} className="opacity-0" data-animate-on-visible="fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div
+                    key={org.id}
+                    className="opacity-0"
+                    data-animate-on-visible="fade-up"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
                     <OrganizationPill data={org} />
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-400 italic text-sm sm:text-base">You are not a member of any organization.</p>
+              <p className="text-gray-400 italic text-sm sm:text-base">
+                You are not a member of any organization.
+              </p>
             )}
           </section>
         </div>
+
+
       </div>
       {selectedEvent && (
         <TicketModal

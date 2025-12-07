@@ -54,13 +54,13 @@ const ResetPasswordPage = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-0 top-2 text-gray-400 hover:text-green-400"
+            className="absolute left-0 top-2 text-gray-400 hover:text-cyan-400"
             onClick={() => router.push('/')}
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
 
-          <CardTitle className="text-green-400 border-b border-gray-700 pb-2 text-center">
+          <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2 text-center">
             Reset Password
           </CardTitle>
           <CardDescription className="text-gray-300 text-center">
@@ -116,7 +116,7 @@ const ResetPasswordPage = () => {
           <Button
             onClick={handleUpdatePassword}
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-md"
+            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-md"
           >
             {loading ? 'Updating...' : 'Update Password'}
           </Button>

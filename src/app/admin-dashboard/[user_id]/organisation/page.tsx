@@ -95,7 +95,7 @@ export default function OrganizationsPage() {
         <ExportButton data={organizations} filename="organizations_data" />
         <button
           onClick={handleOpenInsert}
-          className="flex items-center bg-green-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-green-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
+          className="flex items-center bg-cyan-600 text-white px-4 sm:px-5 py-2 rounded-lg font-bold shadow-md hover:bg-cyan-700 transition-colors text-sm sm:text-base w-full sm:w-auto justify-center"
         >
           <Plus size={18} className="sm:w-5 sm:h-5 mr-2" />
           Add New Organization
@@ -126,7 +126,7 @@ export default function OrganizationsPage() {
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold text-white">{org.name}</h2>
               <span
-                className={`px-2 py-1 rounded-md text-sm font-semibold text-green-600 `}
+                className={`px-2 py-1 rounded-md text-sm font-semibold text-cyan-600 `}
               >
                 {org.status}
               </span>

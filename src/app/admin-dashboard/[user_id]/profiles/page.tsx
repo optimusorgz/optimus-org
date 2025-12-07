@@ -129,13 +129,13 @@ export default function ProfilesPage() {
           <input
             type="text"
             placeholder="Search by name or email..."
-            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 text-sm sm:text-base w-full sm:w-auto min-w-[200px]"
+            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm sm:text-base w-full sm:w-auto min-w-[200px]"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
 
           <select
-            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 text-sm sm:text-base w-full sm:w-auto"
+            className="px-3 sm:px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm sm:text-base w-full sm:w-auto"
             value={selectedRole}
             onChange={e => setSelectedRole(e.target.value as 'all' | 'organiser' | 'user' | 'admin')}
           >
@@ -149,8 +149,8 @@ export default function ProfilesPage() {
           <button
             onClick={handleSortOrgClick}
             className={`px-3 sm:px-4 py-2 rounded-md text-sm sm:text-base whitespace-nowrap ${
-              sortOrgFirst ? 'bg-green-500 text-white' : 'bg-gray-700 text-white'
-            } focus:outline-none focus:ring-2 focus:ring-green-400 w-full sm:w-auto`}
+              sortOrgFirst ? 'bg-cyan-500 text-white' : 'bg-gray-700 text-white'
+            } focus:outline-none focus:ring-2 focus:ring-cyan-400 w-full sm:w-auto`}
           >
             {sortOrgFirst ? 'Organization First ✅' : 'Sort by Organization'}
           </button>
