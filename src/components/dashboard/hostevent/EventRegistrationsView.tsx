@@ -142,8 +142,8 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
             title={reg.form_data[field] || 'N/A'}
           >
             {reg.form_data[field]
-              ? reg.form_data[field].length > 15
-                ? reg.form_data[field].slice(0, 15) + '...'
+              ? reg.form_data[field].length > 30
+                ? reg.form_data[field].slice(0, 30) + '...'
                 : reg.form_data[field]
               : 'N/A'}
           </span>
@@ -168,15 +168,15 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
   {expanded && (
     <div className="mt-2 space-y-2 border-t border-gray-600 pt-2">
       {formHeaders.slice(2).map((field) => (
-        <div key={field} className="flex justify-between text-sm md:text-base">
+        <div key={field} className="flex justify-between text-xs md:text-base">
           <span className="text-gray-400 font-medium">{field.replace(/_/g, ' ')}:</span>
           <span
             className="text-white truncate max-w-[120px] sm:max-w-[200px] md:max-w-full"
             title={reg.form_data[field] || 'N/A'}
           >
             {reg.form_data[field]
-              ? reg.form_data[field].length > 15
-                ? reg.form_data[field].slice(0, 15) + '...'
+              ? reg.form_data[field].length > 20
+                ? reg.form_data[field].slice(0, 20) + '...'
                 : reg.form_data[field]
               : 'N/A'}
           </span>
@@ -202,7 +202,7 @@ const EventRegistrationsView: React.FC<EventRegistrationsViewProps> = ({ eventId
   };
 
   return (
-    <div className="md:p-6 rounded-xl shadow-2xl min-h-[500px] h-[800px] ">
+    <div className="md:p-6 rounded-xl p-1 shadow-2xl min-h-[500px] h-[800px] ">
 
       {/* Header & Count Section */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 border-b border-gray-700 pb-3">

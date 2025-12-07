@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Search as SearchIcon, ChevronDown as ChevronDownIcon } from "lucide-react";
 import type { Filters } from "@/app/event-page/page";
 
-type PriceFilter = "Upcoming Events" | "Free" | "Paid";
+type PriceFilter = "Upcoming Events" | "Free" | "Paid" | "All Events";
 type SortOption = "Event Date" | "Recently Added" | "Title (A-Z)";
 
 interface FilterBarProps {
@@ -13,7 +13,7 @@ interface FilterBarProps {
   onFilterChange: <K extends keyof Filters>(key: K, value: Filters[K]) => void;
 }
 
-const PRICE_OPTIONS: PriceFilter[] = ["Upcoming Events", "Free", "Paid"];
+const PRICE_OPTIONS: PriceFilter[] = ["All Events", "Upcoming Events", "Free", "Paid"];
 const SORT_OPTIONS: SortOption[] = ["Event Date", "Recently Added", "Title (A-Z)"];
 
 export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
@@ -24,7 +24,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
   };
 
   return (
-<div className="space-y-3 sm:space-y-4 p-3 sm:p-4 bg-gray-800 rounded-xl border border-gray-700 mt-6 sm:mt-8 md:mt-0 w-full max-w-full md:w-auto"> 
+    <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 bg-gray-800 rounded-xl border border-gray-700 mt-6 sm:mt-8 md:mt-0 w-full max-w-full md:w-auto"> 
       
       {/* Search + Sort */}
       <div className="flex flex-col gap-3 sm:gap-4 w-full flex-wrap md:flex-row">

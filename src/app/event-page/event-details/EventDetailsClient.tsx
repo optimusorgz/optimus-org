@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-    ArrowLeft, MapPin, Clock, Calendar, User, DollarSign, List, Users, Mail, Phone, Share2, AlertTriangle, Loader2, Check, ExternalLink, Ticket, X
+    ArrowLeft, MapPin, Clock, Calendar,CheckCircle, XCircle, User, DollarSign, List, Users, Mail, Phone, Share2, AlertTriangle, Loader2, Check, ExternalLink, Ticket, X
 } from 'lucide-react';
 import supabase from "@/api/client" // Ensure this path is correct
 import { toast, Toaster } from 'react-hot-toast';
@@ -31,8 +31,32 @@ interface Event {
     status: 'draft' | 'pending' | 'approved' | 'cancelled' | 'ended';
 }
 
+
+const statusConfig = {
+  registered: {
+    icon: <CheckCircle className="w-5 h-5 text-green-400 mr-2" />,
+    colorClass: "bg-gray-500 cursor-not-allowed text-white",
+  },
+  pending_payment: {
+    icon: <Clock className="w-5 h-5 text-yellow-400 mr-2" />,
+    colorClass: "bg-yellow-500 text-gray-900 hover:bg-yellow-600",
+  },
+  full: {
+    icon: <XCircle className="w-5 h-5 text-red-400 mr-2" />,
+    colorClass: "bg-red-500 cursor-not-allowed text-white",
+  },
+  Completed: {
+    icon: null,
+    colorClass: "bg-gray-500 cursor-not-allowed text-white",
+  },
+  unregistered: {
+    icon: null,
+    colorClass: "bg-cyan-600 text-white hover:bg-cyan-700",
+  },
+};
+
 // Custom type for registration status
-type RegistrationStatus = 'unregistered' | 'pending_payment' | 'registered' | 'full';
+type RegistrationStatus = 'unregistered' | 'pending_payment' | 'registered' | 'full' | 'Completed';
 
 
 // --- 2. UTILITY FUNCTIONS (Kept here for simplicity) ---
@@ -204,14 +228,16 @@ export default function EventDetailsClientContent() {
         
         const currentCount = regCount || 0;
         setCurrentRegistrations(currentCount);
+        const now = new Date().toISOString();
 
-        if (event.max_participants && currentCount >= event.max_participants) {
+        if (event.end_date < now) {
+            setRegStatus('Completed');
+        } else if (event.max_participants && currentCount >= event.max_participants) {
             setRegStatus('full');
         } else if (userId) {
-            // Fetch User Registration Status
-            const { data: userReg, error: userRegError } = await supabase
-                .from('event_registrations') // Assuming a 'registrations' table
-                .select('is_paid') // Assuming a 'payment_status' column ('pending', 'completed')
+            const { data: userReg } = await supabase
+                .from('event_registrations')
+                .select('is_paid')
                 .eq('event_id', event.id)
                 .eq('user_id', userId)
                 .single();
@@ -222,7 +248,6 @@ export default function EventDetailsClientContent() {
                 } else if (userReg.is_paid === 'pending' && event.ticket_price! > 0) {
                     setRegStatus('pending_payment');
                 } else {
-                     // Fallback in case of registration record but weird status
                     setRegStatus('unregistered');
                 }
             } else {
@@ -231,7 +256,7 @@ export default function EventDetailsClientContent() {
         } else {
             setRegStatus('unregistered');
         }
-
+        
         setLoading(false);
     }, [eventId]);
 
@@ -326,7 +351,7 @@ export default function EventDetailsClientContent() {
             buttonText = 'Registered! 🎉';
             isButtonDisabled = true;
             buttonAction = () => {}; // No action
-            buttonClass = 'bg-gray-500 cursor-not-allowed text-white';
+            buttonClass = 'bg-green-500 cursor-not-allowed text-white';
             break;
         case 'pending_payment':
             buttonText = 'Registration Pending: Pay Now';
@@ -339,6 +364,12 @@ export default function EventDetailsClientContent() {
             buttonAction = () => {};
             buttonClass = 'bg-red-500 cursor-not-allowed text-white';
             break;
+        case 'Completed':
+            buttonText = 'Event Completed';
+            isButtonDisabled = true;
+            buttonAction = () => {};
+            buttonClass = 'bg-green-500 cursor-not-allowed text-white';
+            break;
         case 'unregistered':
         default:
             buttonText = isPaid ? `Register & Pay ${priceDisplay}` : 'Register for Event';
@@ -347,7 +378,7 @@ export default function EventDetailsClientContent() {
             break;
     }
 
-
+    const { icon, colorClass } = statusConfig[regStatus];
     
 
 
@@ -460,11 +491,10 @@ export default function EventDetailsClientContent() {
                         {/* Action Buttons (Modified) */}
                         <button
                             onClick={buttonAction}
-                            disabled={isButtonDisabled || !isUpcoming} // Disable if not upcoming as well
-                            className={`w-full py-2.5 sm:py-3 text-sm sm:text-base md:text-lg font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center
-                                ${isButtonDisabled || !isUpcoming ? 'bg-gray-500 cursor-not-allowed' : buttonClass}`}
-                        >
-                            {isButtonDisabled && regStatus !== 'registered' ? <AlertTriangle className='w-4 h-4 sm:w-5 sm:h-5 mr-2' /> : null}
+                            disabled={isButtonDisabled || regStatus === "Completed"}
+                            className={`w-full py-2.5 sm:py-3 text-sm sm:text-base md:text-lg font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center ${colorClass}`}
+                            >
+                            {icon}
                             {buttonText}
                         </button>
 

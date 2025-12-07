@@ -279,27 +279,54 @@ const App: React.FC = () => {
       // Hosted events
       const { data: hostedEventsData } = await supabase
         .from('events')
-        .select('*')
+        .select('id, title, start_date, banner_url, ticket_price')
         .eq('created_by', userId);
 
       if (hostedEventsData) {
-        const eventsWithRevenue = hostedEventsData.map((e: any) => ({
-          id: e.id,
-          title: e.title,
-          date: new Date(e.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          registered: e.registration_count || 0,
-          imageUrl: e.banner_url || 'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
-          ticketPrice: e.ticket_price || 0,
-        }));
+        const eventsWithRevenue = await Promise.all(
+          hostedEventsData.map(async (e: any) => {
+            // 1. Fetch registration count
+            const { count } = await supabase
+              .from('event_registrations')
+              .select('*', { count: 'exact', head: true })
+              .eq('event_id', e.id);
+
+            // 2. Convert ticket price to number
+            const price = Number(e.ticket_price) || 0;
+
+            const registered = count || 0;
+            console.log('Registered count for event', e.id, ':', registered);
+            console.log('Ticket price for event', e.id, ':', price);
+
+            return {
+              id: e.id,
+              title: e.title,
+              date: new Date(e.start_date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+              }),
+              registered,
+              ticketPrice: price,
+              revenue: registered * price, // 💥 FIX HERE
+              imageUrl:
+                e.banner_url ||
+                'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
+            };
+          })
+        );
 
         setHostedEvents(eventsWithRevenue);
 
+        // 3. FINAL REVENUE CALCULATION
         const totalRevenue = eventsWithRevenue.reduce(
-          (acc, e) => acc + (e.registered * (e.ticketPrice || 0)),
+          (acc, e) => acc + e.revenue,
           0
         );
+
         setRevenue(totalRevenue);
       }
+
+
 
       setLoading(false);
     };
@@ -310,10 +337,10 @@ const App: React.FC = () => {
   
 
   const statsData: StatsCardData[] = [
-    { icon: '📅', value: hostedEvents.length.toString(), label: 'Events Hosted', change: '+0 this month', trend: 'positive' },
-    { icon: '👥', value: registrations.length.toString(), label: 'Total Attendees', change: '+0 this week', trend: 'positive' },
-    { icon: '$', value: `$${revenue}`, label: 'Revenue', change: '+0% vs last month', trend: 'positive' },
-    { icon: '📈', value: 'N/A', label: 'Member', change: 'Organisation member', trend: 'positive' },
+    { icon: '📅', value: hostedEvents.length.toString(), label: 'Events Hosted', change: 'this year', trend: 'positive' },
+    { icon: '👥', value: registrations.length.toString(), label: 'Total Attendees', change: 'this year', trend: 'positive' },
+    { icon: '₹', value: `₹${revenue}`, label: 'Revenue', change: 'last month', trend: 'positive' },
+    { icon: '📈', value: '0', label: 'Member', change: 'Organisation member', trend: 'positive' },
   ];
 
   if (loading) {
@@ -384,6 +411,12 @@ const App: React.FC = () => {
           <section className="mb-6 sm:mb-8 md:mb-10 opacity-0" data-animate-on-visible="fade-left">
             <div className="flex justify-between items-center mb-3 sm:mb-4">
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Hosted Events</h2>
+              {/* create event button */}
+              <button
+                onClick={() => router.push('/form/create-event')}
+                className="px-2 sm:px-4 py-2 bg-cyan-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
+                + Create Event
+                </button>
             </div>
             {hostedEvents.length > 0 ? (
               <div className="space-y-4">

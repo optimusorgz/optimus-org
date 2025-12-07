@@ -21,7 +21,7 @@ interface EventCardProps {
 
 export function EventCard({ event, index = 0 }: EventCardProps) {
   const isFree = (event.ticket_price ?? 0) === 0;
-
+  const isEnded = new Date(event.end_date) < new Date();
   const dateObj = new Date(event.start_date);
   const formattedDate = dateObj.toLocaleDateString("en-US", {
     month: "short",
@@ -110,11 +110,26 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
             </div>
 
             {/* CTA BUTTON */}
-            <Button
-              className="w-full mt-3 sm:mt-4 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base font-semibold rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 transition"
-            >
-              Register Now
-            </Button>
+            {isEnded ? (
+              <div
+                className="w-full mt-3 sm:mt-4 py-2.5 sm:py-3 md:py-4 
+                          text-sm sm:text-base font-semibold rounded-xl
+                          bg-green-700 text-white-300 text-center 
+                          border border-gray-600 cursor-not-allowed"
+              >
+                Completed
+              </div>
+            ) : (
+              <Button
+                className="w-full mt-3 sm:mt-4 py-2.5 sm:py-3 md:py-4 
+                          text-sm sm:text-base font-semibold rounded-xl 
+                          bg-gradient-to-r from-blue-500 to-cyan-400 
+                          hover:from-blue-600 hover:to-cyan-500 transition"
+              >
+                Register Now
+              </Button>
+            )}
+
 
           </div>
 
