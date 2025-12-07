@@ -137,17 +137,17 @@ const ProfileDashboard = () => {
       </div>
 
       {/* STATS */}
-      {isorg && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10 w-full">
+    
+        <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10 w-full">
           <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center opacity-0" data-animate-on-visible="pop-in" style={{ animationDelay: '0.1s' }}>
             <BuildingIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mb-2" />
-            <p className="text-xs sm:text-sm text-gray-300 text-center">Events Participated</p>
+            <p className="text-xs sm:text-sm text-gray-300 text-center">Participated</p>
             <p className="text-2xl sm:text-3xl font-bold text-white">{eventcnt}</p>
           </div>
 
           <div className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center opacity-0" data-animate-on-visible="pop-in" style={{ animationDelay: '0.2s' }}>
             <TicketIcon className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mb-2" />
-            <p className="text-xs sm:text-sm text-gray-300 text-center">Events Hosted</p>
+            <p className="text-xs sm:text-sm text-gray-300 text-center">Hosted</p>
             <p className="text-2xl sm:text-3xl font-bold text-white">{hostcnt}</p>
           </div>
 
@@ -157,7 +157,7 @@ const ProfileDashboard = () => {
             <p className="text-2xl sm:text-3xl font-bold text-white">1</p>
           </div>
         </div>
-      )}
+    
 
       {/* EVENTS */}
       <div className="space-y-3 mt-4 relative z-10 w-full opacity-0" data-animate-on-visible="fade-left">

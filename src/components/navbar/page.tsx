@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
     const dashboardHref = userId ? `/dashboard/${userId}` : "/dashboard";
 
     const menuItems = [
-        { name: "profile", href: "/profile" },
+        { name: "Profile", href: "/profile" },
         { name: "Dashboard", href: dashboardHref },
         { name: "Settings", onClick: () => setIsSettingModalOpen(true) },
         { name: "Logout", onClick: handleLogout },
