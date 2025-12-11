@@ -305,6 +305,7 @@ const App: React.FC = () => {
             const { count } = await supabase
               .from('event_registrations')
               .select('*', { count: 'exact', head: true })
+              .eq('is_paid', 'PAID')
               .eq('event_id', e.id);
 
             // 2. Convert ticket price to number
@@ -331,7 +332,7 @@ const App: React.FC = () => {
           })
         );
 
-        setHostedEvents(eventsWithRevenue);
+        setHostedEvents(eventsWithRevenue );
 
         // 3. FINAL REVENUE CALCULATION
         const totalRevenue = eventsWithRevenue.reduce(
@@ -339,7 +340,7 @@ const App: React.FC = () => {
           0
         );
 
-        setRevenue(totalRevenue);
+        setRevenue(totalRevenue - totalRevenue * 0.05); // Assuming 10% platform fee
       }
 
 
