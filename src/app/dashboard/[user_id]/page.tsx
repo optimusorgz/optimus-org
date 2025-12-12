@@ -356,7 +356,7 @@ const App: React.FC = () => {
   const statsData: StatsCardData[] = [
     { icon: '📅', value: hostedEvents.length.toString(), label: 'Events Hosted', change: 'this year', trend: 'positive' },
     { icon: '👥', value: registrations.length.toString(), label: 'Total Attendees', change: 'this year', trend: 'positive' },
-    { icon: '₹', value: `₹${revenue}`, label: 'Revenue', change: 'last month', trend: 'positive' },
+   
     { icon: '📈', value: '0', label: 'Member', change: 'Organisation member', trend: 'positive' },
   ];
 
