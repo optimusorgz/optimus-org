@@ -15,6 +15,7 @@ import {
 
 import supabase from '@/api/client';
 
+
 // --- 1. TYPE DEFINITIONS ---
 interface Event {
   id: string;
@@ -133,20 +134,28 @@ export default function EventsPage() {
     eventDateFilter: '',
   });
 
-  const fetchEvents = useCallback(async () => {
-    setLoading(true);
+ const fetchEvents = useCallback(async () => {
     setError(null);
 
-    const { data, error } = await supabase.from('events').select('*').limit(100);
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .limit(100);
 
-    if (error) {
-      setError(error.message);
-      setAllEvents([]);
-    } else {
+      if (error) {
+        throw error;
+      }
+
       setAllEvents(data as Event[]);
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to load events');
+      setAllEvents([]);
+    } finally {
+      setLoading(false); // GUARANTEED stop
     }
-    setLoading(false);
   }, []);
+
 
   useEffect(() => {
     fetchEvents();
@@ -171,6 +180,14 @@ export default function EventsPage() {
 
   const eventCount = filteredEvents.length;
   const hasEvents = eventCount > 0;
+
+  if(loading){
+    return(
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">

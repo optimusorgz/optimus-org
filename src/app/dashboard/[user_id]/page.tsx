@@ -210,19 +210,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-      const userId = userData.user.id;
+      try {
 
-      // Hosted org
-      const { data: hostedOrgData } = await supabase
+        setLoading(true);
+        const { data: userData } = await supabase.auth.getUser();
+        if (!userData.user) return;
+        const userId = userData.user.id;
+        
+        // Hosted org
+        const { data: hostedOrgData } = await supabase
         .from('organizations')
         .select('*')
         .eq('owner_id', userId)
         .single();
-      if (hostedOrgData) {
-        setHostedOrganization({
+        if (hostedOrgData) {
+          setHostedOrganization({
           id: hostedOrgData.id,
           name: hostedOrgData.name,
           members: 0,
@@ -232,20 +234,20 @@ const App: React.FC = () => {
       }
       console.log('Hosted organization data:', hostedOrgData);
       
-
+      
       // Member orgs
       const { data: profileData } = await supabase
-        .from('profiles')
-        .select('organisation_id')
-        .eq('id', userId)
-        .single();
-
+      .from('profiles')
+      .select('organisation_id')
+      .eq('id', userId)
+      .single();
+      
       if (profileData?.organisation_id) {
         const { data: orgData } = await supabase
-          .from('organizations')
-          .select('id, name, avatar_url')
-          .eq('id', profileData.organisation_id);
-
+        .from('organizations')
+        .select('id, name, avatar_url')
+        .eq('id', profileData.organisation_id);
+        
         const memberOrgsData = orgData?.map((org: any) => ({
           id: org.id,
           name: org.name,
@@ -254,33 +256,33 @@ const App: React.FC = () => {
         })) || [];
         setMemberOrganizations(memberOrgsData);
       }
-
+      
       // Upcoming events
       const { data: eventsData } = await supabase
-        .from('event_registrations')
-        .select('event_id, events!inner(title, start_date, banner_url)')
-        .eq('user_id', userId);
-
+      .from('event_registrations')
+      .select('event_id, events!inner(title, start_date, banner_url)')
+      .eq('user_id', userId);
+      
       if (eventsData) {
         const today = new Date();
         const upcoming = eventsData
-          .filter((e: any) => new Date(e.events.start_date) >= today)
-          .map((e: any) => ({
-            id: e.event_id,
-            title: e.events.title,
-            date: new Date(e.events.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            registered: 0,
-            imageUrl: e.events.banner_url || 'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
-          }));
+        .filter((e: any) => new Date(e.events.start_date) >= today)
+        .map((e: any) => ({
+          id: e.event_id,
+          title: e.events.title,
+          date: new Date(e.events.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          registered: 0,
+          imageUrl: e.events.banner_url || 'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
+        }));
         setUpcomingEvents(upcoming);
       }
-
+      
       // Registrations
       const { data: regsData } = await supabase
-        .from('event_registrations')
-        .select('id, ticket_uid, status, events!inner(title)')
-        .eq('user_id', userId);
-
+      .from('event_registrations')
+      .select('id, ticket_uid, status, events!inner(title)')
+      .eq('user_id', userId);
+      
       if (regsData) {
         setRegistrations(
           regsData.map((r: any) => ({
@@ -291,13 +293,13 @@ const App: React.FC = () => {
           }))
         );
       }
-
+      
       // Hosted events
       const { data: hostedEventsData } = await supabase
-        .from('events')
-        .select('id, title, start_date, banner_url, ticket_price')
-        .eq('created_by', userId);
-
+      .from('events')
+      .select('id, title, start_date, banner_url, ticket_price')
+      .eq('created_by', userId);
+      
       if (hostedEventsData) {
         const eventsWithRevenue = await Promise.all(
           hostedEventsData.map(async (e: any) => {
@@ -307,14 +309,14 @@ const App: React.FC = () => {
               .select('*', { count: 'exact', head: true })
               .eq('is_paid', 'PAID')
               .eq('event_id', e.id);
-
-            // 2. Convert ticket price to number
-            const price = Number(e.ticket_price) || 0;
-
-            const registered = count || 0;
-            console.log('Registered count for event', e.id, ':', registered);
+              
+              // 2. Convert ticket price to number
+              const price = Number(e.ticket_price) || 0;
+              
+              const registered = count || 0;
+              console.log('Registered count for event', e.id, ':', registered);
             console.log('Ticket price for event', e.id, ':', price);
-
+            
             return {
               id: e.id,
               title: e.title,
@@ -326,26 +328,29 @@ const App: React.FC = () => {
               ticketPrice: price,
               revenue: registered * price, // 💥 FIX HERE
               imageUrl:
-                e.banner_url ||
-                'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
+              e.banner_url ||
+              'https://placehold.co/100x100/1e293b/FFFFFF?text=Event',
             };
           })
         );
 
         setHostedEvents(eventsWithRevenue );
-
+        
         // 3. FINAL REVENUE CALCULATION
         const totalRevenue = eventsWithRevenue.reduce(
           (acc, e) => acc + e.revenue,
           0
         );
-
+        
         setRevenue(totalRevenue - totalRevenue * 0.05); // Assuming 10% platform fee
       }
-
-
-
+      
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
       setLoading(false);
+    }
+    
     };
 
     fetchData();

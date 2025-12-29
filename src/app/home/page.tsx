@@ -335,79 +335,81 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter(); // initialize router
-
-
+    const effectRan = useRef(false);
 
 
     useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true); // start loading
+      if (effectRan.current) return; // ✅ Stop the second execution
+      effectRan.current = true;
 
-      // Fetch events
-      const { data: eventsData, error: eventsError } = await supabase
-        .from('events')
-        .select('*')
-        .gt('end_date', new Date().toISOString())
-        .order('start_date', { ascending: true });
+      const fetchData = async () => {
+        try {
+          setLoading(true); // start loading
 
-      if (eventsError) {
-        console.error('Error fetching events:', eventsError.message);
-      } else if (eventsData) {
-        const formattedEvents: Event[] = eventsData.map((e: any) => ({
-          id: e.id,
-          title: e.title,
-          description: e.description,
-          category: e.category,
-          location: e.location,
-          organizer_name: e.organizer_name,
-          start_date: e.start_date,
-          end_date: e.end_date,
-          ticket_price: e.ticket_price,
-          max_participants: e.max_participants,
-          banner_url: e.banner_url,
-        }));
-        setEvents(formattedEvents);
-      }
+          // Fetch events
+          const { data: eventsData, error: eventsError } = await supabase
+            .from('events')
+            .select('*')
+            .gt('end_date', new Date().toISOString())
+            .order('start_date', { ascending: true });
 
-      // Fetch partners
-      const { data: partnersData, error: partnersError } = await supabase
-        .from('organizations')
-        .select('*')
-        .order('created_at', { ascending: true });
+          if (eventsError) {
+            console.error('Error fetching events:', eventsError.message);
+          } else if (eventsData) {
+            const formattedEvents: Event[] = eventsData.map((e: any) => ({
+              id: e.id,
+              title: e.title,
+              description: e.description,
+              category: e.category,
+              location: e.location,
+              organizer_name: e.organizer_name,
+              start_date: e.start_date,
+              end_date: e.end_date,
+              ticket_price: e.ticket_price,
+              max_participants: e.max_participants,
+              banner_url: e.banner_url,
+            }));
+            setEvents(formattedEvents);
+          }
 
-      if (partnersError) {
-        console.error('Error fetching organizations:', partnersError.message);
-      } else if (partnersData) {
-        const formattedPartners: Partner[] = partnersData.map((org: any) => ({
-          id: org.id,
-          name: org.name,
-          avatar_url: org.avatar_url,
-          icon: org.avatar_url ? (
-            <img src={org.avatar_url} alt={org.name} className="w-10 h-10 rounded-full" />
-          ) : (
-            <div className="w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center">
-              {org.name[0]}
-            </div>
-          ),
-        }));
-        setPartners(formattedPartners);
-      }
-    } finally {
-      setLoading(false); // stop loading
+          // Fetch partners
+          const { data: partnersData, error: partnersError } = await supabase
+            .from('organizations')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+          if (partnersError) {
+            console.error('Error fetching organizations:', partnersError.message);
+          } else if (partnersData) {
+            const formattedPartners: Partner[] = partnersData.map((org: any) => ({
+              id: org.id,
+              name: org.name,
+              avatar_url: org.avatar_url,
+              icon: org.avatar_url ? (
+                <img src={org.avatar_url} alt={org.name} className="w-10 h-10 rounded-full" />
+              ) : (
+                <div className="w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center">
+                  {org.name[0]}
+                </div>
+              ),
+            }));
+            setPartners(formattedPartners);
+          }
+        } finally {
+          setLoading(false); // stop loading
+        }
+      };
+
+      fetchData();
+    }, []);
+
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-[#0a0f18]">
+          <Loader />
+        </div>
+      );
     }
-  };
-
-  fetchData();
-}, []);
-
-if (loading) {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0a0f18]">
-      <Loader />
-    </div>
-  );
-}
 
 
     // Function to handle horizontal scrolling of the event carousel
@@ -561,7 +563,7 @@ if (loading) {
               />
             ))
           ) : (
-            <p className="text-gray-400">Loading events...</p>
+            <p className="text-gray-400">No Upcoming Events</p>
           )}
 
             {/* Faked scrollbar utility for better mobile experience */}
