@@ -1,3 +1,4 @@
+
 // components/layout/Footer.tsx
 import React from 'react';
 import Link from 'next/link';
@@ -89,21 +90,7 @@ const Footer = () => {
 
       {/* Footer Bottom: Copyright & Legal Links */}
       {/* Note: border-gray-800 is a perfect fit for a divider on bg-gray-900 */}
-      <div className="mt-8 sm:mt-10 md:mt-12 flex justify-center items-center text-xs sm:text-sm text-gray-500 text-center py-2 sm:py-3">
-        <p className="flex items-center gap-2 flex-wrap justify-center">
-          Developed By: <span className="font-medium">Piyush Saini</span>
-           <a 
-              href="https://www.linkedin.com/in/piyushsaini2004/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              // Updated hover to theme's cyan accent color (text-cyan-500)
-              className="text-gray-400 hover:text-cyan-500 transition duration-200"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
-            </a>
-        </p>
-      </div>
+     
 
       <div className="border-t border-gray-800 pt-6 sm:pt-8 text-center md:flex md:justify-between md:items-center text-xs sm:text-sm text-gray-500">
         <p className="mb-4 md:mb-0">&copy; 2025 Optimus Student Organisation. All rights reserved.</p>
