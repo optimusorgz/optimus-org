@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import Loader from "@/components/ui/Loader"; // import your loader
+import { Skeleton } from "@/components/ui/skeleton"; // skeleton for loading
 
 // Components
 import EventEditForm from "@/components/dashboard/hostevent/EventEditForm";
@@ -115,9 +115,20 @@ const EventManagementPage: React.FC = () => {
 
   // ---------------- LOADING ----------------
   if (loading) {
+    // Skeleton matching manage-event layout: sidebar + main card.
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <Loader />
+      <div className="min-h-screen bg-gray-900 text-white p-1 mt-10 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+        <div className="max-w-7xl mx-auto w-full">
+          <Skeleton className="h-8 w-40 mb-6 mt-6 sm:mt-8 md:mt-10" />
+          <div className="grid lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+            <div className="hidden lg:block">
+              <Skeleton className="h-64 w-full rounded-xl" />
+            </div>
+            <div className="lg:col-span-3">
+              <Skeleton className="h-72 w-full rounded-xl" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

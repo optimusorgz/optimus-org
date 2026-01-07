@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import supabase from '@/api/client';
 import ProfileSettingsForm from '@/components/form/profilesetting/ProfileSettingsForm';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import Loader from '@/components/ui/Loader';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import {
   CalendarIcon,
@@ -103,10 +103,63 @@ const ProfileDashboard = () => {
     fetchEvents();
   }, []);
 
-  if (!profile) return <div className="flex items-center justify-center min-h-screen bg-gray-900">
-  <Loader />
-</div>
-;
+  if (!profile) {
+    // Skeleton dashboard matching the profile layout: header card, stats grid, and events list.
+    return (
+      <div className="p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 md:pb-28 space-y-6 sm:space-y-8 relative mt-12 sm:mt-15 w-full max-w-[95%] sm:max-w-[90%] mx-auto overflow-x-hidden bg-gray-900">
+        {/* BG EFFECTS (kept to preserve layout) */}
+        <div className="absolute inset-0 z-0 opacity-10 overflow-hidden pointer-events-none">
+          <div className="glow-blur-1 w-[80vw] h-[80vw] sm:w-[50vw] sm:h-[50vw] bg-cyan-500 rounded-full mix-blend-lighten opacity-50 blur-[100px] absolute -top-[10%] -left-[10%]" />
+          <div className="glow-blur-2 w-[70vw] h-[70vw] sm:w-[60vw] sm:h-[60vw] bg-indigo-500 rounded-full mix-blend-lighten opacity-50 blur-[120px] absolute -bottom-[10%] -right-[10%]" />
+        </div>
+
+        {/* PROFILE HEADER SKELETON */}
+        <div className="border-1 p-4 sm:p-5 md:p-6 rounded-2xl flex flex-col items-center space-y-3 sm:space-y-4 bg-gradient-to-r from-cyan-900 to-indigo-1000 drop-shadow-lg relative z-10 w-full max-w-full">
+          <Skeleton className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-gray-800" />
+          <Skeleton className="h-6 w-40 sm:w-56" />
+          <Skeleton className="h-4 w-56 sm:w-72" />
+          <Skeleton className="h-9 w-full sm:w-40 rounded-lg" />
+        </div>
+
+        {/* STATS SKELETON */}
+        <div className="grid grid-cols-3 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10 w-full">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-gray-800/90 border border-gray-700 p-3 sm:p-4 rounded-xl shadow-lg flex flex-col justify-center items-center"
+            >
+              <Skeleton className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mb-2" />
+              <Skeleton className="h-3 w-16 mb-1" />
+              <Skeleton className="h-6 w-10" />
+            </div>
+          ))}
+        </div>
+
+        {/* EVENTS LIST SKELETON */}
+        <div className="space-y-3 mt-4 relative z-10 w-full">
+          <Skeleton className="h-5 w-40" />
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-gray-800 p-3 sm:p-4 rounded-xl flex items-center space-x-3 sm:space-x-4 w-full max-w-full"
+            >
+              <Skeleton className="w-16 h-16 rounded-lg flex-shrink-0" />
+              <div className="flex-1 min-w-0 space-y-2">
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-3 w-1/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ADMIN + LOGOUT BUTTONS SKELETON */}
+        <div className="space-y-3 sm:space-y-4 relative z-10 w-full">
+          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-full rounded-lg" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 md:p-8 pb-20 sm:pb-24 md:pb-28 space-y-6 sm:space-y-8 relative mt-12 sm:mt-15 w-full max-w-[95%] sm:max-w-[90%] mx-auto overflow-x-hidden">

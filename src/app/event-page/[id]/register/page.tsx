@@ -10,6 +10,7 @@ import Script from 'next/script';
 import { DynamicFormData } from '@/lib/types/event';
 import { preRegisterUser, finalizeRegistrationStatus } from '@/lib/dynamicForm';
 import { DynamicPreRegResult } from '@/lib/types/event';
+import { Skeleton } from '@/components/ui/skeleton';
 
 declare global {
   interface Window {
@@ -320,14 +321,19 @@ const RegisterPage = () => {
 
   // --- Render ---
   if (loading || isPaymentProcessing || registrationStatus === 'submitting_data') {
+    // Skeleton for registration card matching main form container.
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <Loader2 className="w-8 h-8 animate-spin text-cyan-500 mr-2" />
-        <p className="text-white">
-          {registrationStatus === 'submitting_data'
-            ? 'Finalizing registration...'
-            : isPaymentProcessing ? 'Initializing Payment Gateway...' : 'Loading event...'}
-        </p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 pt-20">
+        <div className="w-full max-w-2xl bg-gray-800/90 border border-gray-700 p-8 rounded-xl shadow-2xl space-y-4">
+          <Skeleton className="h-7 w-3/4" />
+          <Skeleton className="h-4 w-2/3" />
+          <div className="space-y-3 mt-4">
+            {[0, 1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-9 w-full rounded-md" />
+            ))}
+          </div>
+          <Skeleton className="h-11 w-full rounded-lg mt-4" />
+        </div>
       </div>
     );
   }

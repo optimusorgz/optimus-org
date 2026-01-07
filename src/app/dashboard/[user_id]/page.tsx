@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import supabase from '@/api/client'; // Supabase client
 import { useRouter } from 'next/navigation';
 import TicketModal from '@/components/dashboard/TicketModal';
-import Loader from '@/components/ui/Loader';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 
@@ -366,10 +366,54 @@ const App: React.FC = () => {
   ];
 
   if (loading) {
+    // Dashboard skeleton mirroring heading, stats row, and two-column layout.
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <Loader />
-    </div>
+      <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-6 lg:p-10 font-sans mt-10 sm:mt-12 md:mt-16 w-full overflow-x-hidden max-w-full">
+        <div className="space-y-3 mb-6">
+          <Skeleton className="h-8 w-56" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+
+        <section className="mb-6 sm:mb-8 md:mb-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="p-3 sm:p-4 md:p-6 rounded-xl bg-gray-800">
+              <Skeleton className="h-8 w-16 mb-2" />
+              <Skeleton className="h-4 w-24 mb-1" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          ))}
+        </section>
+
+        <div className="lg:grid lg:grid-cols-3 lg:gap-10">
+          <div className="lg:col-span-2 space-y-6">
+            <Skeleton className="h-6 w-40" />
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+            <Skeleton className="h-6 w-56 mt-6" />
+            {[0, 1].map((i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+            <Skeleton className="h-6 w-48 mt-6" />
+            {[0, 1].map((i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+          </div>
+
+          <div className="lg:col-span-1 space-y-4 mt-6 lg:mt-0">
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-40 rounded-lg" />
+            </div>
+            <Skeleton className="h-28 w-full rounded-xl" />
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-6 w-48 mt-4" />
+            {[0, 1].map((i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
     );
   }
 

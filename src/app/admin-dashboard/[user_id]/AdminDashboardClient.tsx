@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Calendar, Briefcase, FileText, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUser } from '@/context/UserContext';
-import Loader from '@/components/ui/Loader';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Correct paths for dynamic userID folder
 import EventsPage from '@/app/admin-dashboard/[user_id]/events/page';
@@ -65,8 +65,11 @@ export default function AdminDashboardClient() {
       {/* Active Tab Content */}
       <div className=" sm:p-4 md:p-6 bg-gray-900 rounded-xl shadow-lg min-h-[300px] sm:min-h-[400px] w-full max-w-full overflow-visible opacity-0" data-animate-on-visible="fade-in-scale">
         {loading ? (
-          <div className="flex items-center justify-center min-h-[200px]">
-            <Loader />
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-40" />
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-lg" />
+            ))}
           </div>
         ) : (
           <ActiveComponent />

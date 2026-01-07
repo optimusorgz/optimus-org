@@ -90,9 +90,11 @@ const Footer = () => {
 
       {/* Footer Bottom: Copyright & Legal Links */}
       {/* Note: border-gray-800 is a perfect fit for a divider on bg-gray-900 */}
+
+      
      
 
-      <div className="border-t border-gray-800 pt-6 sm:pt-8 text-center md:flex md:justify-between md:items-center text-xs sm:text-sm text-gray-500">
+      <div className="mt-5 border-t border-gray-800 pt-6 sm:pt-8 text-center md:flex md:justify-between md:items-center text-xs sm:text-sm text-gray-500">
         <p className="mb-4 md:mb-0">&copy; 2025 Optimus Student Organisation. All rights reserved.</p>
         <div className="flex flex-wrap justify-center md:justify-end gap-2 sm:gap-4">
           {/* Updated link hover to theme's primary text color for this section (text-white) */}

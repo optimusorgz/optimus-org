@@ -4,7 +4,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { EventCard } from '@/components/event/EventCard';
-import Loader from '@/components/ui/Loader';
+import { Skeleton } from '@/components/ui/skeleton';
 import { FilterBar } from "@/components/event/FilterBar";
 import { useRouter } from 'next/navigation';
 import {
@@ -181,12 +181,30 @@ export default function EventsPage() {
   const eventCount = filteredEvents.length;
   const hasEvents = eventCount > 0;
 
-  if(loading){
-    return(
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader />
+  if (loading) {
+    // Skeleton grid matching header, filter bar, and card layout.
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-2 sm:p-4 md:p-6 w-full overflow-x-hidden max-w-full">
+        <header className="text-center mt-16 sm:mt-20 max-w-3xl mx-auto px-4 w-full">
+          <Skeleton className="h-9 w-48 mx-auto mb-2" />
+          <Skeleton className="h-4 w-64 mx-auto" />
+        </header>
+        <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 md:px-6 mt-6 space-y-4">
+          <Skeleton className="h-16 w-full rounded-lg" />
+          <Skeleton className="h-4 w-40" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-4">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="bg-gray-800 rounded-xl p-3 sm:p-4 space-y-3">
+                <Skeleton className="h-36 w-full rounded-lg" />
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -199,11 +217,7 @@ export default function EventsPage() {
 
       <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 md:px-6">
 
-        {loading ? (
-          <div className="flex items-center justify-center min-h-screen">
-            <Loader />
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="text-center py-10 flex flex-col items-center bg-red-900/20 border border-red-800 rounded-lg p-6">
             <AlertTriangle className="w-10 h-10 text-red-500 mb-3" />
             <h2 className="text-xl font-semibold text-red-400">Error Fetching Events</h2>

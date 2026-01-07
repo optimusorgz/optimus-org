@@ -5,7 +5,7 @@
   import { motion } from "framer-motion";
   import Link from "next/link";
   import { Button } from '@/components/ui/button';
-  import Loader from '@/components/ui/Loader';
+  import { Skeleton } from '@/components/ui/skeleton';
   import { ArrowRight, Router } from 'lucide-react';
   import { useRouter } from 'next/navigation'; // add this at the top
 
@@ -404,9 +404,56 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
     }, []);
 
     if (loading) {
+      // Skeleton landing page roughly matching hero, marquee, and featured events layout.
       return (
-        <div className="flex items-center justify-center min-h-screen bg-[#0a0f18]">
-          <Loader />
+        <div className="min-h-screen font-sans w-full overflow-x-hidden max-w-full bg-[#0a0f18]">
+          {/* HERO SKELETON */}
+          <section className="relative min-h-[50vh] sm:min-h-[60vh] md:min-h-screen flex items-center justify-center pt-16 sm:pt-20 pb-8 sm:pb-10 md:pt-24 md:pb-32 text-center w-full max-w-full px-4">
+            <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 w-full pt-20 space-y-4">
+              <Skeleton className="h-10 sm:h-12 w-3/4 mx-auto" />
+              <Skeleton className="h-4 w-5/6 mx-auto" />
+              <Skeleton className="h-4 w-3/4 mx-auto" />
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4">
+                <Skeleton className="h-11 w-40 rounded-md" />
+                <Skeleton className="h-11 w-40 rounded-md" />
+              </div>
+            </div>
+          </section>
+
+          {/* LOGO MARQUEE SKELETON */}
+          <section className="py-6 sm:py-8 md:py-10 w-full max-w-[90%] sm:max-w-[85%] md:max-w-[80%] mx-auto my-8 sm:my-12 md:my-16 rounded-lg">
+            <Skeleton className="h-12 w-full rounded-lg" />
+          </section>
+
+          {/* FEATURED EVENTS SKELETON */}
+          <section className="py-8 sm:py-12 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-6 sm:mb-8 gap-4">
+              <div className="w-full sm:w-auto space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-7 w-64 sm:w-80" />
+              </div>
+              <div className="hidden sm:flex space-x-2">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <Skeleton className="h-10 w-10 rounded-full" />
+              </div>
+            </div>
+            <div className="flex space-x-4 sm:space-x-6 overflow-x-hidden pb-4">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="bg-[#181d29] rounded-xl shadow-2xl overflow-hidden flex-shrink-0 w-full max-w-xs border border-[#1f2430]"
+                >
+                  <Skeleton className="h-40 w-full" />
+                  <div className="p-3 sm:p-4 md:p-5 space-y-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-9 w-full rounded-lg" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       );
     }
