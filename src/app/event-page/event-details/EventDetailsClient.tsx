@@ -317,9 +317,11 @@ export default function EventDetailsClientContent() {
 
         // Check login (simplified, as status check already assumed logged in or not)
         if (!currentUserId) {
-        toast.error('Please log in first to register for this event.', { duration: 2500 });
-        // Optionally redirect to login here: router.push('/login');
-        return;
+            toast.error('Please log in', {
+                duration: 1000,
+                className: 'cyan-text-400',
+            });
+            return;
         }
 
         let registrationUrl = `/event-page/${event.id}/register`;

@@ -217,7 +217,7 @@ const RegisterPage = () => {
   } else {
     console.error("Razorpay SDK not loaded.");
     setIsPaymentProcessing(false);
-    setFetchError("Payment gateway is not ready. Please try again.");
+    setFetchError("Please try again.");
   }
 }, [razorpayOrderId, eventData, userEmail, userPhone, paymentAmount]);
 
@@ -417,7 +417,7 @@ const displayPrice = Number(formDataRef.current.ticketPrice ?? paymentAmount);
               )}
             </button>
           )}
-          {!razorpayOrderId && <p className='text-red-400 mt-4'>Error: Failed to get Razorpay Order ID. Please refresh.</p>}
+          {!razorpayOrderId && <p className='text-red-400 mt-4'>Failed. Please refresh.</p>}
         </div>
       </div>
     );
