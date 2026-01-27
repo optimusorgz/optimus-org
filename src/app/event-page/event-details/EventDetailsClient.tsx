@@ -387,7 +387,7 @@ export default function EventDetailsClientContent() {
     // --- Render Main Page ---
     return (
         <div className="min-h-screen bg-gray-900 text-white font-sans w-full overflow-x-hidden max-w-full">
-            <Toaster position="top-right" />
+            
             
             {/* Ticket Modal */}
             {regStatus === 'registered' && (
