@@ -191,7 +191,13 @@ const EventManagementPage: React.FC = () => {
               return (
                 <button
                   key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
+                  onClick={() => {
+                    if (tab.key === "scanner") {
+                      router.push(`/scanner/${selectedEventId}`);
+                    } else {
+                      setActiveTab(tab.key);
+                    }
+                  }}
                   className={`
                     flex items-center px-3 sm:px-4 py-2 rounded-xl whitespace-nowrap border-2 text-xs sm:text-sm
                     ${getAccentColorClass(tab.color)}

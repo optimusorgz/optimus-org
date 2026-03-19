@@ -1,53 +1,58 @@
 import { NextResponse } from "next/server";
-import supabaseAdmin from "@/api/client";
+import supabaseAdmin from "@/api/admin";
 
-export async function POST(req) {
-  const { ticket_uid, event_id, token } = await req.json();
+export async function POST(req: Request) {  let body;
 
-  // 🔐 1. Validate scanner access
-  const { data: access } = await supabaseAdmin
-    .from("scanner_access")
-    .select("*")
-    .eq("token", token)
-    .single();
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ message: "Invalid JSON" }, { status: 400 });
+  }
 
-  if (!access || new Date(access.expires_at) < new Date()) {
+  const { ticket_uid, event_id } = body;
+
+  console.log("📥 Incoming:", body);
+
+  if (!ticket_uid || !event_id) {
     return NextResponse.json(
-      { message: "Access Denied / Link Expired" },
-      { status: 403 }
+      { message: "Missing fields" },
+      { status: 400 }
     );
   }
 
-  // 🎫 2. Find registration
   const { data, error } = await supabaseAdmin
     .from("event_registrations")
     .select("*")
-    .eq("ticket_uid", ticket_uid)
     .eq("event_id", event_id)
     .single();
 
-  if (!data) {
+  if (!data && error) {
     return NextResponse.json(
       { message: "Invalid Ticket" },
       { status: 404 }
     );
   }
 
-  // ⚠️ 3. Already checked
   if (data.check_in === "checked_in") {
     return NextResponse.json({
       message: "Already Checked In",
     });
   }
 
-  // ✅ 4. Update
-  await supabaseAdmin
+  const { error: updateError } = await supabaseAdmin
     .from("event_registrations")
     .update({
       check_in: "checked_in",
       check_in_time: new Date().toISOString(),
     })
     .eq("id", data.id);
+
+  if (updateError) {
+    return NextResponse.json(
+      { message: "Update failed" },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({
     message: `Check-in successful for ${

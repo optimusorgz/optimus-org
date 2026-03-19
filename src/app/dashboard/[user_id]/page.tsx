@@ -4,6 +4,7 @@ import supabase from '@/api/client'; // Supabase client
 import { useRouter } from 'next/navigation';
 import TicketModal from '@/components/dashboard/TicketModal';
 import { Skeleton } from '@/components/ui/skeleton';
+import { set } from 'date-fns';
 
 
 
@@ -21,6 +22,7 @@ interface StatsCardData {
 
 interface EventData {
   id: string;
+  ticketUid?: string;
   title: string;
   date: string;
   registered: number;
@@ -38,6 +40,8 @@ interface OrganizationData {
 
 interface RegistrationData {
   id: string;
+  ticketUid: string;
+  eventId: string;
   eventTitle: string;
   ticketType: string;
   status: 'confirmed' | 'pending';
@@ -178,6 +182,7 @@ const App: React.FC = () => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [revenue, setRevenue] = useState(0);
@@ -186,19 +191,10 @@ const App: React.FC = () => {
 
 
   // Move this outside useEffect
-  const openEventModal = (eventId: string) => {
-    setSelectedEventId(eventId);
-    setActiveFeature('overview');
-  };
-
-  const handleCloseModal = () => {
-    setSelectedEventId(null);
-    setActiveFeature(null);
-  };
-
   const handleEventClick = (eventData: EventData) => {
-  setSelectedEvent(eventData);
-  setIsModalOpen(true);
+    setSelectedEvent(eventData);
+    setSelectedTicket(eventData.ticketUid || null); // 🔥 DIRECT
+    setIsModalOpen(true);
   };
 
   const handleClick = () => {
@@ -260,7 +256,7 @@ const App: React.FC = () => {
       // Upcoming events
       const { data: eventsData } = await supabase
       .from('event_registrations')
-      .select('event_id, events!inner(title, start_date, banner_url)')
+      .select('event_id, ticket_uid, events!inner(title, start_date, banner_url)')
       .eq('user_id', userId);
       
       if (eventsData) {
@@ -269,6 +265,7 @@ const App: React.FC = () => {
         .filter((e: any) => new Date(e.events.start_date) >= today)
         .map((e: any) => ({
           id: e.event_id,
+          ticketUid: e.ticket_uid,
           title: e.events.title,
           date: new Date(e.events.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           registered: 0,
@@ -287,6 +284,8 @@ const App: React.FC = () => {
         setRegistrations(
           regsData.map((r: any) => ({
             id: r.id,
+            ticketUid: r.ticket_uid,
+            eventId: r.event_id,
             eventTitle: r.events.title,
             ticketType: 'General',
             status: r.status === 'paid' ? 'confirmed' : 'pending',
@@ -572,15 +571,16 @@ const App: React.FC = () => {
 
 
       </div>
-      {selectedEvent && (
+      {selectedEvent && selectedTicket && (
         <TicketModal
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedEvent(null);
+            setSelectedTicket(null);
           }}
-          ticketId={selectedEvent.id}  // pass the ID as ticketId
-          eventId={selectedEvent.id}   // pass the ID as eventId
+          ticketId={selectedTicket}   // ✅ CORRECT
+          eventId={selectedEvent.id}  // ✅ CORRECT
         />
       )}
     </div>

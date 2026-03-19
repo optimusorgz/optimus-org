@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useParams, useSearchParams } from "next/navigation";
 import { CheckCircle, XCircle } from "lucide-react";
+import supabase from "@/api/client";
 
 import AccessModal from "@/components/scanner/accessModel";
 
@@ -19,6 +20,7 @@ import {
   CheckCircle2,
   XCircle as XCircleIcon,
 } from "lucide-react";
+import { set } from "date-fns";
 
 export default function EventScannerPage() {
   const { event_id } = useParams() as { event_id: string };
@@ -34,10 +36,21 @@ export default function EventScannerPage() {
   const [accessLink, setAccessLink] = useState("");
   const [loadingCamera, setLoadingCamera] = useState(false);
 
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [columns, setColumns] = useState<string[]>([]);
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
 
   // ---------------- CAMERA CONTROL ----------------
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+
+  useEffect(() => {
+    if(event_id){
+      fetchCheckedInUsers();
+    }
+  }, [event_id]);
 
   useEffect(() => {
   return () => {
@@ -56,6 +69,7 @@ export default function EventScannerPage() {
         html5QrCodeRef.current = null;
       })();
     }
+    
   };
 }, []);
 
@@ -131,77 +145,122 @@ export default function EventScannerPage() {
   setScanning(false);
 };
 
+const fetchCheckedInUsers = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("event_registrations")
+      .select("form_data")
+      .eq("event_id", event_id)
+      .eq("check_in", "checked_in");
 
+    if (error) {
+      console.error("Fetch error:", error);
+      return;
+    }
+
+    const rows = data.map((u) => u.form_data || {});
+
+    // 🔥 Extract all unique keys (columns)
+    const allKeys = new Set<string>();
+
+    rows.forEach((row) => {
+      Object.keys(row).forEach((key) => allKeys.add(key));
+    });
+
+    setColumns(Array.from(allKeys)); // dynamic headers
+    setCheckedList(rows); // raw JSON rows
+  } catch (err) {
+    console.error("Fetch failed:", err);
+  }
+};
 
   function handleScanError(err: any) {
     console.warn("QR Scan Error:", err);
   }
 
+  const handleOk = async () => {
+  setShowResultModal(false);
+  setScanning(false);
+
+  if (!html5QrCodeRef.current) {
+    html5QrCodeRef.current = new Html5Qrcode("qr-reader");
+  }
+
+  try {
+    await html5QrCodeRef.current.start(
+      { facingMode: "environment" },
+      {
+        fps: 15,
+        qrbox: 250,
+      },
+      (decodedText) => handleTicketScan(decodedText),
+      (err) => console.log(err)
+    );
+  } catch (err) {
+    console.error("Restart error:", err);
+  }
+
+
+  // restart scanner
+  await startScanner();
+};
+
   // ---------------- CHECK-IN ----------------
   const handleTicketScan = async (ticketUid: string) => {
+    if (isProcessing) return; // 🚫 prevent multiple scans
+
+    setIsProcessing(true);
+
     setTicket(ticketUid);
     setStatus("");
     setMessage("Checking...");
 
     try {
-      const res = await fetch("/api/checkin", {
-        method: "POST",
-        body: JSON.stringify({
-          ticket_uid: ticketUid,
-          event_id,
-          token,
-        }),
-      });
+      await html5QrCodeRef.current?.stop();
 
-      const data = await res.json();
+      const { data, error } = await supabase
+        .from('event_registrations')
+        .select('*')
+        .eq('ticket_uid', ticketUid)
+        .single();
+      
+      console.log("📥 CHECK-IN RESPONSE:", { data, error });
 
-      if (res.ok) {
-        setStatus("success");
-
-        setCheckedList((prev) => [
-          {
-            name: data.name || "Participant",
-            time: new Date().toLocaleTimeString(),
-            ticket: ticketUid,
-          },
-          ...prev,
-        ]);
-      } else {
+      if (error || !data) {
         setStatus("error");
-      }
+        setMessage("Invalid ticket");
+      } else if (data.check_in === "checked_in") {
+        setStatus("error");
+        setMessage("Already checked in");
+      } else {
+        // Mark as checked in
+        const { error: updateError } = await supabase
+          .from('event_registrations')
+          .update({
+            check_in: "checked_in",
+            check_in_time: new Date().toISOString(),
+          })
+          .eq('id', data.id);
+        }
+        setStatus("success");
+        setMessage("Succesfully Checked In");
 
-      setMessage(data.message);
-    } catch {
+        await fetchCheckedInUsers();
+    } catch (err) {
+      console.error("❌ FETCH ERROR:", err);
       setStatus("error");
       setMessage("Server error");
     }
 
-    // 🔥 allow next scan
-    setTimeout(() => {
-      setScanning(false);
-    }, 1500);
+    
+    setShowResultModal(true);
+    setIsProcessing(false);
   };
 
   // ---------------- GENERATE ACCESS ----------------
   const generateAccess = () => {
-  const fullLink = `${window.location.origin}/scanner/${event_id}`;
-
-  setAccessLink(fullLink);
   setShowModal(true);
 };
-
-  const copyLink = () => {
-    navigator.clipboard.writeText(accessLink);
-    alert("Copied!");
-  };
-
-  const shareLink = async () => {
-    if (navigator.share) {
-      await navigator.share({ url: accessLink });
-    } else {
-      alert("Sharing not supported");
-    }
-  };
 
   // ---------------- DOWNLOAD CSV ----------------
   const downloadCSV = () => {
@@ -279,12 +338,12 @@ export default function EventScannerPage() {
 
               {/* SCANNER VIEWPORT */}
               <div className="relative group">
-                <div className="relative w-[300px] h-[300px]">
+                <div className="relative w-[300px] h-[300px] center m-auto ">
                   {/* EMPTY container for scanner ONLY */}
                   <div
                     id="qr-reader"
-                    // className="w-full aspect-square bg-slate-950 rounded-2xl border border-slate-800"
-                    className="w-full h-full"
+                    className="w-full aspect-square bg-slate-950 rounded-2xl border border-slate-800"
+                    
                     // style={{ width: "300px", height: "300px" }}
                   />
 
@@ -298,18 +357,7 @@ export default function EventScannerPage() {
                   )}
                 </div>
                 
-                {/* SCANNER OVERLAY */}
-                {cameraOn && !scanning && (
-                  <div className="absolute inset-0 pointer-events-none p-8">
-                    <div className="w-full h-full border-2 border-blue-500/30 rounded-2xl relative">
-                      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-blue-500 rounded-tl-lg" />
-                      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-blue-500 rounded-tr-lg" />
-                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-blue-500 rounded-bl-lg" />
-                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-blue-500 rounded-br-lg" />
-                      <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-blue-500/50 animate-[scan_2s_ease-in-out_infinite]" />
-                    </div>
-                  </div>
-                )}
+                
 
                 {/* STATUS OVERLAY */}
                 {scanning && (
@@ -380,29 +428,22 @@ export default function EventScannerPage() {
                 {checkedList.length > 0 ? (
                   <table className="w-full text-sm text-left border-collapse">
                     <thead className="sticky top-0 bg-slate-900/90 backdrop-blur text-slate-500 font-medium uppercase text-[10px] tracking-wider">
-                      <tr>
-                        <th className="px-6 py-4 border-b border-slate-800">Participant</th>
-                        <th className="px-6 py-4 border-b border-slate-800">Timestamp</th>
-                        <th className="px-6 py-4 border-b border-slate-800">Identity</th>
-                      </tr>
+                       <tr>
+                          {columns.map((col, index) => (
+                            <th key={index} className="px-6 py-4 border-b border-slate-800">
+                              {col}
+                            </th>
+                          ))}
+                        </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/50">
-                      {checkedList.map((entry, i) => (
-                        <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
-                                <UserCheck size={14} />
-                              </div>
-                              <span className="font-medium text-slate-200">{entry.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-slate-400 font-mono text-xs">
-                            {entry.time}
-                          </td>
-                          <td className="px-6 py-4 font-mono text-slate-500 text-[10px]">
-                            {entry.ticket.substring(0, 12)}...
-                          </td>
+                    <tbody>
+                      {checkedList.map((row, i) => (
+                        <tr key={i} className="hover:bg-white/[0.02]">
+                          {columns.map((col, j) => (
+                            <td key={j} className="px-6 py-4 text-slate-300 text-sm">
+                              {row[col] ?? "-"}
+                            </td>
+                          ))}
                         </tr>
                       ))}
                     </tbody>
@@ -425,6 +466,33 @@ export default function EventScannerPage() {
         onClose={() => setShowModal(false)}
         link={accessLink}
       />
+      {showResultModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-[300px] text-center shadow-xl">
+            
+            {status === "success" ? (
+              <CheckCircle2 className="w-14 h-14 text-emerald-500 mx-auto mb-3" />
+            ) : (
+              <XCircle className="w-14 h-14 text-red-500 mx-auto mb-3" />
+            )}
+
+            <p className={`text-lg font-semibold mb-2 ${
+              status === "success" ? "text-emerald-400" : "text-red-400"
+            }`}>
+              {status === "success" ? "Success" : "Error"}
+            </p>
+
+            <p className="text-sm text-slate-300 mb-5">{message}</p>
+
+            <button
+              onClick={handleOk}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-medium"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
