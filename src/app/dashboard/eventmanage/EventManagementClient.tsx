@@ -3,11 +3,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton"; // skeleton for loading
+import { useRouter } from "next/navigation";
 
 // Components
 import EventEditForm from "@/components/dashboard/hostevent/EventEditForm";
 import EventRegistrationsView from "@/components/dashboard/hostevent/EventRegistrationsView";
 import EventFormEditor from "@/components/dashboard/hostevent/EventFormBuilder";
+
 
 // ---------------- ICONS ----------------
 const EditIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -35,12 +37,13 @@ const ViewIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 // ---------------- TABS ----------------
-type TabKey = "edit" | "form" | "registrations";
+type TabKey = "edit" | "form" | "registrations" | "scanner";
 
 const tabs = [
   { key: "registrations", title: "View Registrations", icon: ViewIcon, color: "cyan" },
   { key: "edit", title: "Edit Event Details", icon: EditIcon, color: "cyan" },
   { key: "form", title: "Customize Registration Form", icon: FormIcon, color: "cyan" },
+  { key: "scanner", title: "Scan Tickets", icon: ViewIcon, color: "cyan" }
 ] as const;
 
 // ---------------- MOCK EVENTS ----------------
@@ -63,6 +66,8 @@ const EventManagementPage: React.FC = () => {
 
   const searchParams = useSearchParams();
   const eventIdFromUrl = searchParams.get("id");
+
+  const router = useRouter();
 
   useEffect(() => {
     if (eventIdFromUrl) {
@@ -98,9 +103,18 @@ const EventManagementPage: React.FC = () => {
   // Tab Button Component
   const TabButton: React.FC<{ tab: typeof tabs[number] }> = ({ tab }) => {
     const Icon = tab.icon;
+
+    const handleClick = () => {
+      if (tab.key === "scanner") {
+        router.push(`/scanner/${selectedEventId}`);
+      } else {
+        setActiveTab(tab.key);
+      }
+    };
+
     return (
       <button
-        onClick={() => setActiveTab(tab.key)}
+        onClick={handleClick}
         className={`
           flex items-center p-3 rounded-xl border-2 w-full transition
           ${getAccentColorClass(tab.color)}
@@ -112,6 +126,7 @@ const EventManagementPage: React.FC = () => {
       </button>
     );
   };
+
 
   // ---------------- LOADING ----------------
   if (loading) {
