@@ -130,6 +130,40 @@ const RegisterPage = () => {
     return data?.form_data as DynamicFormData ?? null;
   };
 
+  // remove the unique select option form the form data
+  const removeSelectedOption = async (
+  eventId: string,
+  fieldName: string,
+  selectedValue: string
+) => {
+  const { data, error } = await supabase
+    .from('event_form_fields')
+    .select('id, options')
+    .eq('event_id', eventId)
+    .eq('field_name', fieldName)
+    .single();
+
+  if (error || !data) {
+    console.error('Error fetching field:', error);
+    return;
+  }
+
+  const currentOptions = data.options?.values || [];
+
+  const updatedOptions = currentOptions.filter(
+    (opt: string) => opt !== selectedValue
+  );
+
+  const { error: updateError } = await supabase
+    .from('event_form_fields')
+    .update({ options: { values: updatedOptions } })
+    .eq('id', data.id);
+
+  if (updateError) {
+    console.error('Error removing option:', updateError);
+  }
+};
+
   // --- Finalize Registration ---
   const finalizeRegistration = async (ticketUidToUse: string | null, paymentResponse: any) => {
     if (!eventId || !userId || !eventData || !ticketUidToUse) {
@@ -227,6 +261,25 @@ const RegisterPage = () => {
   if (!eventData || !eventId || !userId) return;
 
   formDataRef.current = formData;
+
+  // 🔥 Handle unique_select removal
+  for (const key in formData) {
+    const selectedValue = formData[key];
+
+    if (!selectedValue) continue;
+
+    // find field type
+    const { data: field } = await supabase
+      .from('event_form_fields')
+      .select('field_type')
+      .eq('event_id', eventId)
+      .eq('field_name', key)
+      .single();
+
+    if (field?.field_type === 'unique_select') {
+      await removeSelectedOption(eventId, key, selectedValue as string);
+    }
+  }
 
   // --- Determine payment method and amount ---
   let amountToPay = 0;

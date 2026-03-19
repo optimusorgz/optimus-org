@@ -127,6 +127,16 @@ const DynamicEventForm: React.FC<DynamicEventFormProps> = ({ eventId, userId, on
           ))}
         </select>
       );
+      case 'unique_select':
+      const uniqueSelectOptions = Array.isArray(field.options?.values) ? field.options.values : [];
+      return (
+        <select value={value as string || ''} {...commonProps}>
+          <option value="">Select...</option>
+          {uniqueSelectOptions.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      );
 
       case 'checkbox':
   const checkboxOptions = Array.isArray(field.options?.values) ? field.options.values : [];

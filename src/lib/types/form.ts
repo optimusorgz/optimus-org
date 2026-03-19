@@ -2,7 +2,7 @@
 export interface FormField {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'textarea' | 'select' | 'datetime-local' | 'checkbox';
+  type: 'text' | 'number' | 'textarea' | 'select' | 'datetime-local' | 'checkbox' | 'radio' | 'unique_radio' | 'payment';
   required: boolean;
   options?: string[]; // Only for 'select' type
 }

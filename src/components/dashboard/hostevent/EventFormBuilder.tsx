@@ -76,7 +76,7 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
       field.options = { values: value.split(',').map((s: string) => s.trim()) };
     } else if (key === 'field_type') {
       field.field_type = value;
-      if (['select', 'checkbox', 'payment'].includes(value)) {
+      if (['select', 'checkbox', 'payment', 'unique_select'].includes(value)) {
         field.options = field.options || { values: ['Option 1'] };
       } else {
         field.options = { values: [] };
@@ -155,10 +155,11 @@ const EventFormBuilder: React.FC<EventFormBuilderProps> = ({ eventId, onClose })
             <option value="textarea">Textarea</option>
             <option value="select">Dropdown</option>
             <option value="checkbox">Checkbox</option>
+            <option value="unique_select">Unique Dropdown</option>
             <option value="payment">Payment</option>
           </select>
 
-          {['select', 'checkbox', 'payment'].includes(field.field_type) && (
+          {['select', 'checkbox', 'payment', 'unique_select'].includes(field.field_type) && (
             <textarea
               value={(field.options?.values || []).join(', ')}
               onChange={(e) => updateField(index, 'options', e.target.value)}

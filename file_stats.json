@@ -1,0 +1,538 @@
+﻿[
+    {
+        "Path":  "api\\client.js",
+        "Lines":  10
+    },
+    {
+        "Path":  "app\\favicon.ico",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\globals.css",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\layout.tsx",
+        "Lines":  44
+    },
+    {
+        "Path":  "app\\page.tsx",
+        "Lines":  35
+    },
+    {
+        "Path":  "app\\admin-dashboard\\layout.tsx",
+        "Lines":  87
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\AdminDashboardClient.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\events\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\organisation\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\profiles\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\admin-dashboard\\[user_id]\\recruitment\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\api\\create-order\\route.ts",
+        "Lines":  32
+    },
+    {
+        "Path":  "app\\api\\send-email\\send-registration-email.ts",
+        "Lines":  91
+    },
+    {
+        "Path":  "app\\auth\\callback\\page.tsx",
+        "Lines":  37
+    },
+    {
+        "Path":  "app\\checked_in\\[event_id]\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\dashboard\\layout.tsx",
+        "Lines":  13
+    },
+    {
+        "Path":  "app\\dashboard\\eventmanage\\EventManagementClient.tsx",
+        "Lines":  189
+    },
+    {
+        "Path":  "app\\dashboard\\eventmanage\\page.tsx",
+        "Lines":  11
+    },
+    {
+        "Path":  "app\\dashboard\\[user_id]\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\event-page\\page.tsx",
+        "Lines":  223
+    },
+    {
+        "Path":  "app\\event-page\\event-details\\EventDetailsClient.tsx",
+        "Lines":  596
+    },
+    {
+        "Path":  "app\\event-page\\event-details\\page.tsx",
+        "Lines":  37
+    },
+    {
+        "Path":  "app\\event-page\\[id]\\builder\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\event-page\\[id]\\register\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\form\\create-event\\page.tsx",
+        "Lines":  430
+    },
+    {
+        "Path":  "app\\form\\joinus\\page.tsx",
+        "Lines":  397
+    },
+    {
+        "Path":  "app\\form\\organisation-edit\\[id]\\page.tsx",
+        "Lines":  0
+    },
+    {
+        "Path":  "app\\form\\organisation-register\\page.tsx",
+        "Lines":  31
+    },
+    {
+        "Path":  "app\\home\\page.tsx",
+        "Lines":  629
+    },
+    {
+        "Path":  "app\\organisations\\page.tsx",
+        "Lines":  200
+    },
+    {
+        "Path":  "app\\payment\\page.tsx",
+        "Lines":  65
+    },
+    {
+        "Path":  "app\\posts\\page.tsx",
+        "Lines":  91
+    },
+    {
+        "Path":  "app\\profile\\page.tsx",
+        "Lines":  234
+    },
+    {
+        "Path":  "app\\reset-password\\page.tsx",
+        "Lines":  122
+    },
+    {
+        "Path":  "components\\AnimationProvider.tsx",
+        "Lines":  77
+    },
+    {
+        "Path":  "components\\admin-dashboard\\CRUDForm.tsx",
+        "Lines":  137
+    },
+    {
+        "Path":  "components\\admin-dashboard\\DataTable.tsx",
+        "Lines":  72
+    },
+    {
+        "Path":  "components\\admin-dashboard\\ExportButton.tsx",
+        "Lines":  79
+    },
+    {
+        "Path":  "components\\admin-dashboard\\OrganizationForm.tsx",
+        "Lines":  111
+    },
+    {
+        "Path":  "components\\admin-dashboard\\ProfileForm.tsx",
+        "Lines":  159
+    },
+    {
+        "Path":  "components\\admin-dashboard\\RecruitmentForm.tsx",
+        "Lines":  167
+    },
+    {
+        "Path":  "components\\admin-dashboard\\RegistrationModal.tsx",
+        "Lines":  147
+    },
+    {
+        "Path":  "components\\admin-dashboard\\sidebar.tsx",
+        "Lines":  57
+    },
+    {
+        "Path":  "components\\auth\\Auth.tsx",
+        "Lines":  49
+    },
+    {
+        "Path":  "components\\auth\\ForgotPassword.tsx",
+        "Lines":  66
+    },
+    {
+        "Path":  "components\\auth\\Login.tsx",
+        "Lines":  142
+    },
+    {
+        "Path":  "components\\auth\\Signup.tsx",
+        "Lines":  151
+    },
+    {
+        "Path":  "components\\context\\authprovider.tsx",
+        "Lines":  45
+    },
+    {
+        "Path":  "components\\dashboard\\EventStatsGrid.tsx",
+        "Lines":  31
+    },
+    {
+        "Path":  "components\\dashboard\\HostedEventsList.tsx",
+        "Lines":  65
+    },
+    {
+        "Path":  "components\\dashboard\\HostedPostsList.tsx",
+        "Lines":  76
+    },
+    {
+        "Path":  "components\\dashboard\\OrganizationBox.tsx",
+        "Lines":  134
+    },
+    {
+        "Path":  "components\\dashboard\\ParticipatedEventsList.tsx",
+        "Lines":  87
+    },
+    {
+        "Path":  "components\\dashboard\\QRCodeWrapper.tsx",
+        "Lines":  16
+    },
+    {
+        "Path":  "components\\dashboard\\TicketModal.tsx",
+        "Lines":  130
+    },
+    {
+        "Path":  "components\\dashboard\\UpcomingEventBox.tsx",
+        "Lines":  67
+    },
+    {
+        "Path":  "components\\dashboard\\hostevent\\EventEditForm.tsx",
+        "Lines":  411
+    },
+    {
+        "Path":  "components\\dashboard\\hostevent\\EventFormBuilder.tsx",
+        "Lines":  190
+    },
+    {
+        "Path":  "components\\dashboard\\hostevent\\EventRegistrationsView.tsx",
+        "Lines":  284
+    },
+    {
+        "Path":  "components\\event\\EventCard.tsx",
+        "Lines":  123
+    },
+    {
+        "Path":  "components\\event\\FilterBar.tsx",
+        "Lines":  83
+    },
+    {
+        "Path":  "components\\footer\\footer.tsx",
+        "Lines":  101
+    },
+    {
+        "Path":  "components\\form\\DynamicEventForm.tsx",
+        "Lines":  249
+    },
+    {
+        "Path":  "components\\form\\DynamicFormBuilder.tsx",
+        "Lines":  188
+    },
+    {
+        "Path":  "components\\form\\OrganizationForm.tsx",
+        "Lines":  190
+    },
+    {
+        "Path":  "components\\form\\profilesetting\\ProfileSettingsForm.tsx",
+        "Lines":  250
+    },
+    {
+        "Path":  "components\\navbar\\bottomNavbar.tsx",
+        "Lines":  104
+    },
+    {
+        "Path":  "components\\navbar\\page.tsx",
+        "Lines":  258
+    },
+    {
+        "Path":  "components\\posts\\PostCard.tsx",
+        "Lines":  155
+    },
+    {
+        "Path":  "components\\posts\\PostEditForm.tsx",
+        "Lines":  149
+    },
+    {
+        "Path":  "components\\posts\\PostForm.tsx",
+        "Lines":  111
+    },
+    {
+        "Path":  "components\\ticket\\TicketScanner.tsx",
+        "Lines":  134
+    },
+    {
+        "Path":  "components\\ui\\accordion.tsx",
+        "Lines":  49
+    },
+    {
+        "Path":  "components\\ui\\alert-dialog.tsx",
+        "Lines":  126
+    },
+    {
+        "Path":  "components\\ui\\alert.tsx",
+        "Lines":  53
+    },
+    {
+        "Path":  "components\\ui\\aspect-ratio.tsx",
+        "Lines":  3
+    },
+    {
+        "Path":  "components\\ui\\avatar.tsx",
+        "Lines":  43
+    },
+    {
+        "Path":  "components\\ui\\badge.tsx",
+        "Lines":  31
+    },
+    {
+        "Path":  "components\\ui\\breadcrumb.tsx",
+        "Lines":  105
+    },
+    {
+        "Path":  "components\\ui\\button.tsx",
+        "Lines":  55
+    },
+    {
+        "Path":  "components\\ui\\calendar.tsx",
+        "Lines":  206
+    },
+    {
+        "Path":  "components\\ui\\card.tsx",
+        "Lines":  83
+    },
+    {
+        "Path":  "components\\ui\\carousel.tsx",
+        "Lines":  231
+    },
+    {
+        "Path":  "components\\ui\\chart.tsx",
+        "Lines":  321
+    },
+    {
+        "Path":  "components\\ui\\checkbox.tsx",
+        "Lines":  25
+    },
+    {
+        "Path":  "components\\ui\\CircleLoader.tsx",
+        "Lines":  14
+    },
+    {
+        "Path":  "components\\ui\\collapsible.tsx",
+        "Lines":  5
+    },
+    {
+        "Path":  "components\\ui\\command.tsx",
+        "Lines":  136
+    },
+    {
+        "Path":  "components\\ui\\context-menu.tsx",
+        "Lines":  181
+    },
+    {
+        "Path":  "components\\ui\\dialog.tsx",
+        "Lines":  130
+    },
+    {
+        "Path":  "components\\ui\\drawer.tsx",
+        "Lines":  104
+    },
+    {
+        "Path":  "components\\ui\\dropdown-menu.tsx",
+        "Lines":  181
+    },
+    {
+        "Path":  "components\\ui\\form.tsx",
+        "Lines":  152
+    },
+    {
+        "Path":  "components\\ui\\hover-card.tsx",
+        "Lines":  22
+    },
+    {
+        "Path":  "components\\ui\\input-otp.tsx",
+        "Lines":  62
+    },
+    {
+        "Path":  "components\\ui\\input.tsx",
+        "Lines":  19
+    },
+    {
+        "Path":  "components\\ui\\label.tsx",
+        "Lines":  20
+    },
+    {
+        "Path":  "components\\ui\\Loader.tsx",
+        "Lines":  90
+    },
+    {
+        "Path":  "components\\ui\\menubar.tsx",
+        "Lines":  216
+    },
+    {
+        "Path":  "components\\ui\\Modal.tsx",
+        "Lines":  26
+    },
+    {
+        "Path":  "components\\ui\\navigation-menu.tsx",
+        "Lines":  117
+    },
+    {
+        "Path":  "components\\ui\\pagination.tsx",
+        "Lines":  117
+    },
+    {
+        "Path":  "components\\ui\\popover.tsx",
+        "Lines":  24
+    },
+    {
+        "Path":  "components\\ui\\progress.tsx",
+        "Lines":  23
+    },
+    {
+        "Path":  "components\\ui\\radio-group.tsx",
+        "Lines":  38
+    },
+    {
+        "Path":  "components\\ui\\resizable.tsx",
+        "Lines":  38
+    },
+    {
+        "Path":  "components\\ui\\select.tsx",
+        "Lines":  145
+    },
+    {
+        "Path":  "components\\ui\\separator.tsx",
+        "Lines":  26
+    },
+    {
+        "Path":  "components\\ui\\sheet.tsx",
+        "Lines":  116
+    },
+    {
+        "Path":  "components\\ui\\skeleton.tsx",
+        "Lines":  11
+    },
+    {
+        "Path":  "components\\ui\\switch.tsx",
+        "Lines":  24
+    },
+    {
+        "Path":  "components\\ui\\table.tsx",
+        "Lines":  107
+    },
+    {
+        "Path":  "components\\ui\\tabs.tsx",
+        "Lines":  47
+    },
+    {
+        "Path":  "components\\ui\\textarea.tsx",
+        "Lines":  20
+    },
+    {
+        "Path":  "components\\ui\\toast.tsx",
+        "Lines":  115
+    },
+    {
+        "Path":  "components\\ui\\toggle-group.tsx",
+        "Lines":  51
+    },
+    {
+        "Path":  "components\\ui\\toggle.tsx",
+        "Lines":  38
+    },
+    {
+        "Path":  "context\\UserContext.tsx",
+        "Lines":  13
+    },
+    {
+        "Path":  "hooks\\use-toast.ts",
+        "Lines":  0
+    },
+    {
+        "Path":  "hooks\\useAnimateOnVisible.tsx",
+        "Lines":  84
+    },
+    {
+        "Path":  "hooks\\useAuth.tsx",
+        "Lines":  10
+    },
+    {
+        "Path":  "lib\\dynamicForm.ts",
+        "Lines":  127
+    },
+    {
+        "Path":  "lib\\email.ts",
+        "Lines":  13
+    },
+    {
+        "Path":  "lib\\formBuilder.ts",
+        "Lines":  25
+    },
+    {
+        "Path":  "lib\\lockUniqueRadio.ts",
+        "Lines":  27
+    },
+    {
+        "Path":  "lib\\types.ts",
+        "Lines":  18
+    },
+    {
+        "Path":  "lib\\utils.ts",
+        "Lines":  5
+    },
+    {
+        "Path":  "lib\\types\\datatable.ts",
+        "Lines":  58
+    },
+    {
+        "Path":  "lib\\types\\event.ts",
+        "Lines":  24
+    },
+    {
+        "Path":  "lib\\types\\form.ts",
+        "Lines":  18
+    },
+    {
+        "Path":  "lib\\types\\react-qr-code.d.ts",
+        "Lines":  13
+    },
+    {
+        "Path":  "lib\\types\\recruitment.ts",
+        "Lines":  16
+    },
+    {
+        "Path":  "lib\\types\\supabase.ts",
+        "Lines":  125
+    }
+]

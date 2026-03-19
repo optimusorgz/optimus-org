@@ -1,10 +1,11 @@
-// lib/types/event.ts
+// lib/types/event.
+
 
 export interface FormField {
     id: string;
     event_id: string;
     field_name: string;
-    field_type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'payment';
+    field_type: 'text' | 'email' | 'number' | 'select' | 'checkbox' | 'payment' | 'unique_select';
     is_required: boolean;
     options: {
         values: string[];

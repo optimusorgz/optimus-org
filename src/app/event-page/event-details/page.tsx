@@ -1,6 +1,4 @@
 // src/app/event-page/event-details/page.tsx
-
-// 🛑 DO NOT put "use client" here. This must remain a Server Component.
 import { Suspense } from 'react';
 import EventDetailsClientContent from './EventDetailsClient';
 import { Skeleton } from '@/components/ui/skeleton';

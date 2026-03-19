@@ -40,7 +40,7 @@ const DynamicFormBuilder: React.FC<DynamicFormBuilderProps> = ({ eventId, onSave
 
     // Changing field type
     if (key === 'field_type') {
-      if (value === 'select' || value === 'checkbox' || value === 'payment') {
+      if (value === 'select' || value === 'checkbox' || value === 'payment' || value === 'unique_select') {
         newFields[index] = {
           ...newFields[index],
           field_type: value,
@@ -141,12 +141,14 @@ const DynamicFormBuilder: React.FC<DynamicFormBuilderProps> = ({ eventId, onSave
               <option value="number">Number Input</option>
               <option value="select">Dropdown (Select)</option>
               <option value="checkbox">Checkboxes</option>
+              <option value="unique_select">Unique Select</option>
               <option value="payment">Payment (Radio)</option>
             </select>
           </div>
 
           {/* OPTIONS (Select, Checkbox, Payment) */}
           {(field.field_type === 'select' ||
+            field.field_type === 'unique_select' ||
             field.field_type === 'checkbox' ||
             field.field_type === 'payment') && (
             <div>
