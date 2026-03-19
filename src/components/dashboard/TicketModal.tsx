@@ -99,12 +99,20 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticketId, eventId, isOpen, on
             <div className="flex justify-between w-full mt-2 text-xs text-gray-400">
               <div>
                 <p className="uppercase text-white">Date</p>
-                <p>{eventDetails.start_date ? new Date(eventDetails.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: '2-digit' }) : ''}</p>
+                <p>{eventDetails.start_date ? new Date(eventDetails.start_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: '2-digit', timeZone: 'UTC' }) : ''}</p>
               </div>
               <div>
                 <p className="uppercase text-white">Time</p>
-                <p>{eventDetails.start_date ? new Date(eventDetails.start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : ''}</p>
-              </div>
+    <p>{(() => {
+                  if (!eventDetails.start_date) return '';
+                  const d = new Date(eventDetails.start_date);
+                  let hours = d.getUTCHours();
+                  const minutes = d.getUTCMinutes().toString().padStart(2, '0');
+                  const ampm = hours >= 12 ? 'PM' : 'AM';
+                  hours = hours % 12;
+                  hours = hours ? hours : 12;
+                  return `${hours}:${minutes} ${ampm}`;
+                })()}</p>              </div>
             </div>
 
 
