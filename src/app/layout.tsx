@@ -1,21 +1,17 @@
-// app/layout.tsx (or equivalent file)
 'use client';
+
 import "./globals.css";
 import { AuthProvider } from "@/components/context/authprovider";
-// import Navbar from "@/components/navbar/page"; // <-- Remove the direct import
 import React from 'react';
 import { Toaster } from 'sonner';
-import BottomNavbar from "@/components/navbar/bottomNavbar";
 import Footer from "@/components/footer/footer";
-import dynamic from 'next/dynamic'; // <-- Import dynamic
+import dynamic from 'next/dynamic';
 import { AnimationProvider } from '@/components/AnimationProvider';
+import { usePathname } from "next/navigation"; // ✅ IMPORTANT
 
-// 1. Dynamically import the Navbar with SSR disabled
 const DynamicNavbar = dynamic(() => import('@/components/navbar/page'), {
-  // IMPORTANT: This prevents the component from being rendered on the server
-  ssr: false, 
-  // Optional: Display something simple while the Navbar loads client-side
-  loading: () => <div style={{ height: '64px', backgroundColor: '#1f2937' }}></div>, 
+  ssr: false,
+  loading: () => <div style={{ height: '64px', backgroundColor: '#1f2937' }}></div>,
 });
 
 interface RootLayoutProps {
@@ -23,23 +19,34 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const pathname = usePathname(); // ✅ get current route
+
+  // ✅ check if auth page
+  const isAuthPage = pathname.startsWith("/auth");
+
   return (
     <html lang="en" className="dark">
-      {/* ... head elements ... */}
       <body className="bg-gray-900 text-white font-sans overflow-x-hidden max-w-full">
         <AuthProvider> 
           <AnimationProvider>
-            {/* 2. Use the dynamic import */}
+
             <div className="w-full overflow-x-hidden max-w-full">
-              <DynamicNavbar />
+              
+              {/* ✅ Hide Navbar on auth */}
+              {!isAuthPage && <DynamicNavbar />}
+
               <main className="w-full overflow-x-hidden max-w-full">
                 {children}
               </main>
-              <BottomNavbar />
-              <Footer />
+
+              {/* ✅ Hide Footer on auth */}
+              {!isAuthPage && <Footer />}
+              
             </div>
+
           </AnimationProvider>
         </AuthProvider>
+
         <Toaster position="top-right" richColors />
       </body>
     </html>

@@ -1,44 +1,41 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import supabase from '@/api/client';
-import { Loader2 } from 'lucide-react';
-import { toast, Toaster } from 'react-hot-toast';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import client from "@/api/client";
+import { Loader2 } from "lucide-react";
 
-export default function AuthCallbackPage() {
-    const router = useRouter();
+export default function CallbackPage() {
+  const router = useRouter();
 
-    useEffect(() => {
-        const handleAuth = async () => {
-            // Get the current session after redirect
-            const { data: { session }, error } = await supabase.auth.getSession();
+  useEffect(() => {
+    const handleAuth = async () => {
+      const { data, error } = await client.auth.getSession();
 
-            if (error) {
-                console.error('Error getting session:', error);
-                toast.error('Login failed. Please try again.');
-                router.push('/404'); // or redirect to login page
-                return;
-            }
+      if (error) {
+        console.error(error);
+        router.push("/auth");
+      } else {
+        router.push("/event-page");
+      }
+    };
 
-            if (session) {
-                // User is logged in
-                toast.success('✅ Successfully logged in!');
-                router.push('/event-page'); // redirect to desired page
-            } else {
-                // No session (user not logged in)
-                router.push('/404'); // show 404
-            }
-        }
+    handleAuth();
+  }, []);
 
-        handleAuth();
-    }, [router]);
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0F0F12]">
+      <div className="flex flex-col items-center gap-4">
 
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
-            <Loader2 className="w-10 h-10 animate-spin text-cyan-500 mb-4" />
-            <p className="text-xl">Logging you in...</p>
-            <Toaster position="top-right" />
-        </div>
-    );
+        {/* Loader */}
+        <Loader2 className="w-10 h-10 text-cyan-400 animate-spin" />
+
+        {/* Optional text */}
+        <p className="text-sm text-slate-400">
+          Logging you in...
+        </p>
+
+      </div>
+    </div>
+  );
 }

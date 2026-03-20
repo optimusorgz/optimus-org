@@ -8,8 +8,14 @@ import { Label } from "../ui/label";
 import { toast } from 'sonner';
 import client from "@/api/client";
 import { AuthComponentProps } from './Auth';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Chrome } from 'lucide-react' // For eye icons
 import ForgotPassword from './ForgotPassword';
+
+const CARD_CLASSES = "w-full border-gray-800 bg-gray-950/50 backdrop-blur-md shadow-2xl overflow-hidden h-[90%]";
+const PRIMARY_BUTTON = "w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition-all duration-200 active:scale-[0.98] py-6";
+const GOOGLE_BUTTON = "w-full flex items-center justify-center gap-2 border-gray-700 bg-gray-900 hover:bg-gray-800 text-gray-100 font-medium transition-all duration-200 py-6";
+const INPUT_CLASSES = "bg-gray-900/50 border-gray-700 focus:border-cyan-500 focus:ring-cyan-500/20 transition-all pl-10 h-11 text-white";
+
 
 const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => { 
   const [email, setEmail] = useState('');
@@ -77,78 +83,84 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
   }
 
   return (
-    <Card className="w-full max-w-full bg-transparent border-t border-b border-gray-700 overflow-x-hidden" >
-      {/* Google Login Button */}
-      <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-2">
-        <Button
-          type="button"
-          className="w-full flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
-          onClick={handleGoogleLogin}
-        >
-          Continue with Google
-        </Button>
-      </div>
-
-      <CardHeader className="px-4 sm:px-6">
-        <CardTitle className="text-cyan-400 border-b border-gray-700 pb-2 text-lg sm:text-xl">Login</CardTitle>
-        <CardDescription className="text-gray-300 text-sm sm:text-base">Sign in to your account</CardDescription>
+    <Card className={CARD_CLASSES}>
+      <CardHeader className="space-y-1 pt-2">
+        <CardTitle className="text-2xl font-bold tracking-tight text-white text-center">Welcome back</CardTitle>
+        <CardDescription className="text-gray-400 text-center">
+          Sign in to your account to continue
+        </CardDescription>
       </CardHeader>
 
-      <form onSubmit={handleLogin}>
-        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="Enter your email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
-            />
-          </div>
+      <CardContent className="grid gap-4">
+        <Button variant="outline" className={GOOGLE_BUTTON} onClick={handleGoogleLogin}>
+          <Chrome size={18} className="text-cyan-400" />
+          Continue with Google
+        </Button>
 
-          {/* Password field with eye toggle */}
-          <div className="space-y-2 relative">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="pr-10"
-            />
-            <button
-              type="button"
-              className="absolute right-2 top-9 text-gray-400"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-800" />
           </div>
-        </CardContent>
-
-        <div className="px-4 sm:px-6">
-          <p
-            onClick={() => setShowForgot(true)}
-            className="text-xs sm:text-sm text-white-600 hover:underline cursor-pointer text-right"
-          >
-            Forgot password?
-          </p>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-[#030712] px-2 text-gray-500 font-medium">Or use email</span>
+          </div>
         </div>
 
-        <CardFooter className="px-4 sm:px-6 py-3 sm:py-4">
-          <Button 
-            type="submit" 
-            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 sm:py-3 rounded-md text-sm sm:text-base"
-            disabled={loading}
-          >
-            {loading ? 'Logging In...' : 'Sign In'}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-gray-300 ml-1">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 text-gray-500" size={18} />
+              <Input 
+                id="email" type="email" placeholder="name@example.com" 
+                className={INPUT_CLASSES}
+                value={email} onChange={(e) => setEmail(e.target.value)} required 
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-gray-300 ml-1">Password</Label>
+              <button
+                type="button"
+                onClick={() => setShowForgot(true)}
+                className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors mr-1"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <div className="relative">
+              <Lock className="absolute left-3 top-3 text-gray-500" size={18} />
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                className={INPUT_CLASSES}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-gray-500 hover:text-gray-300 transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          <Button type="submit" className={`${PRIMARY_BUTTON} mt-2`} disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
           </Button>
-        </CardFooter>
-      </form>
+        </form>
+      </CardContent>
+      <CardFooter className="pb-8">
+        <p className="w-full text-center text-sm text-gray-500">
+          By clicking continue, you agree to our Terms of Service.
+        </p>
+      </CardFooter>
     </Card>
   );
 };
