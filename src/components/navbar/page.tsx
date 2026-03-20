@@ -13,9 +13,10 @@ import {
   ChevronRight,
   Home,
   Calendar,
-  Users
+  Users,
+  Building2
 } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import supabase from "@/api/client";
 import AuthContent from "@/components/auth/Auth";
 import ProfileSettingsForm from "@/components/form/profilesetting/ProfileSettingsForm";
@@ -157,6 +158,7 @@ const Navbar = () => {
     const mainNavLinks = [
         { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
         { name: "Events", href: "/event-page", icon: <Calendar className="w-5 h-5" /> },
+        { name: "Organisations", href: "/organisations", icon: <Building2 className="w-5 h-5" /> },
         { name: "Join Us", href: "/form/joinus", icon: <Users className="w-5 h-5" /> },
     ];
 
@@ -382,11 +384,15 @@ const Navbar = () => {
             {/* Settings Modal */}
             {userId && (
                 <Dialog open={isSettingModalOpen} onOpenChange={setIsSettingModalOpen}>
-                    <DialogContent className="sm:max-w-md p-0 bg-transparent border-none z-[100] overflow-scroll">
+                    <DialogContent className="max-w-4xl sm:w-full p-0 border-none z-[100] h-content bg-transparent">
+                        <DialogTitle className="h-full">
+                            
+
                         <ProfileSettingsForm
                             userId={userId}
                             onUpdateComplete={() => setIsSettingModalOpen(false)}
-                        />
+                            />
+                        </DialogTitle>
                     </DialogContent>
                 </Dialog>
             )}

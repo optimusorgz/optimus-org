@@ -8,6 +8,10 @@ import { Input } from '@/components/ui/input'; // Your Input component (e.g., sh
 import { Label } from '@/components/ui/label'; // Your Label component (e.g., shadcn/ui)
 import Image from 'next/image';
 
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+
+import { User, Camera, Mail, Phone, Save, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'; // Icons from lucide-react
+
 // --- Type Definitions ---
 interface ProfileUpdateData {
     name: string | null;
@@ -181,97 +185,161 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = ({ userId, onUpd
     };
     
     // --- Render Logic ---
-    if (isLoading) {
-        return <div className="p-6 text-center text-gray-300">Loading profile...</div>;
+   if (isLoading) {
+    return (
+        <div className="flex items-center justify-center p-10">
+        <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+        </div>
+    );
     }
     
     return (
-        <div className="p-6 bg-gray-800/90 border border-gray-700 rounded-xl  overflow-y-auto">
-            <h2 className="text-2xl font-bold text-cyan-400 border-b border-gray-700 pb-2">Profile Settings</h2>
-            
-            {/* Display Messages */}
-            {error && <div className="bg-red-900/50 border border-red-600 text-red-400 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
-            {success && <div className="bg-cyan-900/50 border border-cyan-600 text-cyan-400 px-4 py-3 rounded relative mb-4" role="alert">{success}</div>}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden my-auto md:overflow-visible ">
+            {/* Header Section */}
+            <div className="px-8 py-6 bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-800">
+                <h2 className="text-xl font-bold text-white tracking-tight">Profile Settings</h2>
                 
-                {/* Email Field (Non-Editable) */}
-                <div>
-                    <Label htmlFor="email" className="text-gray-300">Email Address (Not Editable)</Label>
-                    <Input 
-                        id="email" 
-                        type="email" 
-                        value={email}
-                        readOnly 
-                        disabled 
-                        className="mt-1 bg-gray-800 border-gray-700 text-gray-400"
-                    />
-                </div>
+            </div>
 
-                {/* Name Field */}
-                <div>
-                    <Label htmlFor="name" className="text-gray-300">Full Name</Label>
-                    <Input 
-                        id="name" 
-                        type="text" 
-                        value={profileData.name || ''} 
-                        onChange={handleChange} 
-                        className="mt-1"
-                    />
-                </div>
-                
-                {/* Phone Number Field */}
-                <div>
-                    <Label htmlFor="phone_number" className="text-gray-300">Phone Number</Label>
-                    <Input 
-                        id="phone_number" // Matches the key in profileData state
-                        type="tel" // Use type="tel" for phone numbers
-                        value={profileData.phone_number || ''} 
-                        onChange={handleChange} 
-                        className="mt-1"
-                        placeholder="e.g., +1 555 123 4567"
-                    />
-                </div>
+            <div className="flex flex-col md:flex-row">
+                {/* Left Sidebar: Avatar focus */}
+                <div className="w-full md:w-1/3 p-5 flex flex-col-2 md:flex-col items-center border-b md:border-b-0 md:border-r border-gray-800 bg-gray-900/50">
+                    <div className="relative group">
+                        <div className="w-22 h-22 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-gray-800 group-hover:border-cyan-500 transition-colors duration-300 relative bg-gray-800">
+                            {profileData.avatar_url ? (
+                                <Image
+                                    src={profileData.avatar_url}
+                                    alt="Current Avatar"
+                                    className="object-cover"
+                                    fill
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <User className="w-12 h-12 text-gray-600" />
+                                </div>
+                            )}
+                            
+                            <label 
+                                htmlFor="avatar_upload"
+                                className={`absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer ${isUploading ? 'opacity-100' : ''}`}
+                            >
+                                {isUploading ? (
+                                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                                ) : (
+                                    <>
+                                        <Camera className="w-6 h-6 text-white mb-1" />
+                                        <span className="text-[10px] text-white font-medium uppercase">Change</span>
+                                    </>
+                                )}
+                            </label>
+                        </div>
+                        <input 
+                            id="avatar_upload" 
+                            type="file" 
+                            accept="image/*"
+                            onChange={handleAvatarUpload}
+                            disabled={isUploading || isSubmitting}
+                            className="hidden"
+                        />
+                    </div>
 
-                {/* Avatar Upload Field */}
-                <div>
-                    <Label className="text-gray-300 block mb-2">Profile Picture</Label>
+                    <div className="mt-4 text-center">
+                        <h3 className="text-white font-medium text-lg">{profileData.name || 'Your Name'}</h3>
+                        <p className="text-xs text-gray-500 truncate max-w-[180px]">{email || 'Not connected'}</p>
+                    </div>
+
                     
-                    {profileData.avatar_url && (
-                        <div className="mb-4">
-                            <Image
-                                src={profileData.avatar_url}
-                                alt="Current Avatar"
-                                className="rounded-full object-cover border-2 border-cyan-500"
-                                width={96}
-                                height={96}
-                            />
+                </div>
+
+                {/* Right Content: Form Fields */}
+                <div className="flex-1 p-8">
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-900/20 border border-red-500/50 text-red-400 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2">
+                            <AlertCircle className="w-5 h-5 shrink-0" />
+                            <p className="text-sm font-medium">{error}</p>
+                        </div>
+                    )}
+                    {success && (
+                        <div className="mb-6 p-4 bg-cyan-900/20 border border-cyan-500/50 text-cyan-400 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2">
+                            <CheckCircle2 className="w-5 h-5 shrink-0" />
+                            <p className="text-sm font-medium">{success}</p>
                         </div>
                     )}
 
-                    <Input 
-                        id="avatar_upload" 
-                        type="file" 
-                        accept="image/*"
-                        onChange={handleAvatarUpload}
-                        disabled={isUploading || isSubmitting}
-                        className="mt-1 block w-full text-sm text-gray-300 border border-gray-700 rounded-lg cursor-pointer bg-gray-800"
-                    />
-                    {isUploading && <p className="text-sm text-cyan-400 mt-1">Uploading...</p>}
-                    <p className="text-xs text-gray-400 mt-1">
-                        Upload a new file. This will automatically update your profile picture.
-                    </p>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-gray-500 ml-1">
+                                Email Address
+                            </Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                <Input 
+                                    id="email" 
+                                    type="email" 
+                                    value={email}
+                                    readOnly 
+                                    disabled 
+                                    className="pl-10 bg-gray-950 border-gray-800 text-gray-500 cursor-not-allowed focus-visible:ring-0"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-gray-400 ml-1">
+                                Full Name
+                            </Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cyan-500" />
+                                <Input 
+                                    id="name" 
+                                    type="text" 
+                                    value={profileData.name || ''} 
+                                    onChange={handleChange} 
+                                    placeholder="Enter your full name"
+                                    className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-600 focus:border-cyan-500 focus:ring-cyan-500 transition-all"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                            <Label htmlFor="phone_number" className="text-xs font-semibold uppercase tracking-wider text-gray-400 ml-1">
+                                Phone Number
+                            </Label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-cyan-500" />
+                                <Input 
+                                    id="phone_number" 
+                                    type="tel" 
+                                    value={profileData.phone_number || ''} 
+                                    onChange={handleChange} 
+                                    placeholder="+1 (555) 000-0000"
+                                    className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-600 focus:border-cyan-500 focus:ring-cyan-500 transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-gray-800">
+                            <Button 
+                                type="submit" 
+                                disabled={isSubmitting || isUploading}
+                                className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all duration-200 shadow-lg shadow-cyan-900/20 flex items-center justify-center space-x-2"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <span>Saving Changes...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-5 h-5" />
+                                        <span>Update Name & Phone</span>
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </form>
                 </div>
-                
-                {/* Submit Button (Handles Name and Phone number change) */}
-                <Button 
-                    type="submit" 
-                    disabled={isSubmitting || isUploading}
-                    className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 transition duration-150"
-                >
-                    {isSubmitting ? 'Saving Profile...' : 'Update Name & Phone'}
-                </Button>
-            </form>
+            </div>
         </div>
     );
 };

@@ -1,7 +1,7 @@
 // /src/app/dashboard/layout.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import Sidebar from '@/components/admin-dashboard/sidebar';
+
 import { Menu } from 'lucide-react';
 import createClient from '@/api/client'; // Assuming this is your CLIENT-SIDE Supabase client utility
 import { useRouter } from 'next/navigation';
@@ -84,7 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // The component is wrapped in UserProvider only if the user is authorized and userId is set
         <UserProvider value={{ userId }}>
             <div className="flex min-h-screen bg-gray-900 w-full overflow-x-hidden max-w-full">
-                <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} userId={userId} />
+                
                 <div className="flex-1 flex flex-col overflow-hidden min-w-0 w-full">
                     <header className="flex items-center p-3 sm:p-4 bg-gray-800 border-b border-gray-700 shadow-md md:hidden w-full">
                         <button onClick={toggleSidebar} className="text-gray-300 mr-3 sm:mr-4 flex-shrink-0">

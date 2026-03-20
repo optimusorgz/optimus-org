@@ -351,6 +351,7 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
             .from('events')
             .select('*')
             .gt('end_date', new Date().toISOString())
+            .eq('status', 'approved')
             .order('start_date', { ascending: true });
 
           if (eventsError) {
