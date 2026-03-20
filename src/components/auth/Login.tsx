@@ -11,11 +11,29 @@ import { AuthComponentProps } from './Auth';
 import { Eye, EyeOff, Mail, Lock, User, Chrome } from 'lucide-react' // For eye icons
 import ForgotPassword from './ForgotPassword';
 
-const CARD_CLASSES = "w-full border-gray-800 bg-gray-950/50 backdrop-blur-md shadow-2xl overflow-hidden h-[90%]";
-const PRIMARY_BUTTON = "w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition-all duration-200 active:scale-[0.98] py-6";
-const GOOGLE_BUTTON = "w-full flex items-center justify-center gap-2 border-gray-700 bg-gray-900 hover:bg-gray-800 text-gray-100 font-medium transition-all duration-200 py-6";
-const INPUT_CLASSES = "bg-gray-900/50 border-gray-700 focus:border-cyan-500 focus:ring-cyan-500/20 transition-all pl-10 h-11 text-white";
+const CARD_CLASSES = `
+w-full border-gray-800 bg-gray-950/50 backdrop-blur-md shadow-2xl overflow-hidden
+h-auto sm:h-[90%]
+`;
 
+const PRIMARY_BUTTON = `
+w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold 
+transition-all duration-200 active:scale-[0.98] 
+py-3 sm:py-6
+`;
+
+const GOOGLE_BUTTON = `
+w-full flex items-center justify-center gap-2 
+border-gray-700 bg-gray-900 hover:bg-gray-800 
+text-gray-100 font-medium transition-all duration-200 
+py-3 sm:py-6
+`;
+
+const INPUT_CLASSES = `
+bg-gray-900/50 border-gray-700 focus:border-cyan-500 
+focus:ring-cyan-500/20 transition-all pl-10 
+h-10 sm:h-11 text-white
+`;
 
 const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => { 
   const [email, setEmail] = useState('');
@@ -84,11 +102,9 @@ const Login: React.FC<AuthComponentProps> = ({ onSuccess }) => {
 
   return (
     <Card className={CARD_CLASSES}>
-      <CardHeader className="space-y-1 pt-2">
+      <CardHeader className="space-y-1 pt-1">
         <CardTitle className="text-2xl font-bold tracking-tight text-white text-center">Welcome back</CardTitle>
-        <CardDescription className="text-gray-400 text-center">
-          Sign in to your account to continue
-        </CardDescription>
+        
       </CardHeader>
 
       <CardContent className="grid gap-4">

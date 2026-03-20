@@ -57,7 +57,7 @@ const Navbar = () => {
                 const uid = session.user.id;
                 setIsLoggedIn(true);
                 setUserId(uid);
-                const { role, avatar } = await fetchUserProfile(uid);
+                const { role, avatar, name } = await fetchUserProfile(uid);
                 setUserRole(role);
                 setAvatarUrl(avatar);
                 setName(name); // Assuming name is stored in user_metadata
@@ -72,7 +72,7 @@ const Navbar = () => {
                     const uid = session.user.id;
                     setIsLoggedIn(true);
                     setUserId(uid);
-                    const { role, avatar } = await fetchUserProfile(uid);
+                    const { role, avatar, name } = await fetchUserProfile(uid);
                     setUserRole(role);
                     setAvatarUrl(avatar);
                     setName(name); 
@@ -123,7 +123,7 @@ const Navbar = () => {
         setIsLoggedIn(true);
         setUserId(user.id);
 
-        const { role, avatar } = await fetchUserProfile(user.id);
+        const { role, avatar, name } = await fetchUserProfile(user.id);
         setUserRole(role);
         setAvatarUrl(avatar);
         setName(name);
@@ -225,11 +225,7 @@ const Navbar = () => {
                                     onClick={() => setIsSidebarOpen(true)}
                                     className="p-1 rounded-full border-2 border-transparent hover:border-cyan-500/50 transition-all"
                                 >
-                                    {/* <img 
-                                        src={avatarUrl} 
-                                        alt="Profile" 
-                                        className="w-10 h-10 rounded-full object-cover bg-gray-800" 
-                                    /> */}
+                                    
                                 </button>
                                 
                                 {/* Professional Toggle Button (The "Three Lines") */}
@@ -264,7 +260,7 @@ const Navbar = () => {
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 h-full w-[300px] sm:w-[380px] bg-gray-900 border-l border-white/10 z-[120] shadow-2xl flex flex-col"
+                            className="fixed top-0 right-0 h-full w-[270px] sm:w-[380px] bg-gray-900 border-l border-white/10 z-[120] shadow-2xl flex flex-col"
                         >
                             {/* Sidebar Header */}
                             {!isLoggedIn ? (
@@ -307,15 +303,15 @@ const Navbar = () => {
                             )}
 
                             {/* Sidebar Content */}
-                            <div className="flex-1 overflow-y-auto py-8 px-4 space-y-8">
+                            <div className="flex-1 overflow-y-auto py-4 px-4 space-y-4">
                                 {/* Mobile-only links (Home, Events etc) */}
-                                <div className="md:hidden space-y-2">
-                                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-[2px] mb-4">Navigation</p>
+                                <div className="md:hidden space-y-1">
+                                    <p className="px-2 text-[12px] font-bold text-gray-400 uppercase tracking-[2px] mb-2">Navigation</p>
                                     {mainNavLinks.map((item) => (
                                         <Link 
                                             key={item.name}
                                             href={item.href}
-                                            className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 group transition-all"
+                                            className="flex items-center justify-between p-1 rounded-xl hover:bg-white/5 group transition-all"
                                             onClick={() => setIsSidebarOpen(false)}
                                         >
                                             <div className="flex items-center space-x-4">
@@ -330,13 +326,13 @@ const Navbar = () => {
                                 </div>
 
                                 {/* Account Links */}
-                                <div className="space-y-2">
-                                    <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-[2px] mb-4">Account & Dashboard</p>
+                                <div className="space-y-1">
+                                    <p className="px-2 text-[12px] font-bold text-gray-400 uppercase tracking-[2px] mb-2">Account & Dashboard</p>
                                     {sidebarItems.map((item) => (
                                         <Link 
                                             key={item.name}
                                             href={item.href}
-                                            className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 group transition-all underline-none"
+                                            className="flex items-center justify-between p-1 rounded-xl hover:bg-white/5 group transition-all underline-none"
                                             onClick={() => setIsSidebarOpen(false)}
                                         >
                                             <div className="flex items-center space-x-4">
@@ -354,7 +350,7 @@ const Navbar = () => {
                                             setIsSidebarOpen(false);
                                             setIsSettingModalOpen(true);
                                         }}
-                                        className="w-full flex items-center justify-between p-4 rounded-xl hover:bg-white/5 group transition-all"
+                                        className="w-full flex items-center justify-between p-1 mt-4 rounded-xl hover:bg-white/5 group transition-all"
                                     >
                                         <div className="flex items-center space-x-4">
                                             <div className="p-2 rounded-lg bg-gray-800 text-gray-400 group-hover:text-cyan-400 transition-colors">
