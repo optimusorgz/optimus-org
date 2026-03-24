@@ -48,27 +48,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   if (loading) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-[#05070d] flex flex-col items-center justify-center min-h-screen overflow-hidden">
+      <body className="bg-[#05070d] flex items-center justify-center min-h-screen overflow-hidden px-4">
 
         {/* 🔥 Background Glow */}
-        <div className="absolute w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full"></div>
+        <div className="absolute w-[80vw] h-[80vw] md:w-[400px] md:h-[400px] bg-cyan-500/10 blur-[120px] rounded-full"></div>
 
-        {/* 🎮 Main Loader */}
-        <div className="relative z-10 flex flex-col items-center">
+        {/* 🎮 Loader Container */}
+        <div className="relative z-10 flex flex-col items-center w-full max-w-sm md:max-w-md">
 
           <div>
-            <img src="/optimuslogo.png" alt="optimus" />
+            <img src="./optimuslogo.png" alt="Optimus Logo" className="w-16 h-18 md:w-24 md:h-26 mb-2 animate-pulse" />
           </div>
 
-          {/* 🔥 Logo
-          <div className="text-cyan-400 text-5xl font-extrabold tracking-widest mb-10 animate-pulse">
+          {/* 🔥 Logo */}
+          {/* <div className="text-cyan-400 text-3xl md:text-5xl font-extrabold tracking-widest mb-8 md:mb-10 animate-pulse text-center">
             OPTIMUS
           </div> */}
 
-          {/* ⚡ Progress Container */}
-          <div className="w-[320px] h-[6px] bg-gray-800 rounded-full overflow-hidden border border-cyan-500/20">
+          {/* ⚡ Progress Bar */}
+          <div className="md:w-[90%] w-[70%] h-[5px] md:h-[6px] bg-gray-800 rounded-full overflow-hidden border border-cyan-500/20">
 
-            {/* ⚡ Animated Progress */}
             <motion.div
               className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_15px_#22d3ee]"
               animate={{ width: `${progress}%` }}
@@ -77,24 +76,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           </div>
 
-          {/* 🔢 Percentage (NO animation now) */}
-          <div className="mt-4 text-cyan-300 text-sm tracking-widest font-mono">
+          {/* 🔢 Percentage */}
+          <div className="mt-4 text-cyan-300 text-xs md:text-sm tracking-widest font-mono text-center">
             LOADING... {progress}%
           </div>
 
-          {/* 🧠 Gaming UI Text */}
-          <div className="mt-2 text-gray-500 text-xs tracking-wider">
+          {/* 🧠 Subtext */}
+          <div className="mt-2 text-gray-500 text-[10px] md:text-xs tracking-wider text-center">
             INITIALIZING SYSTEM
           </div>
 
         </div>
 
-        {/* ⚡ Scanline Effect */}
+        {/* ⚡ Scanlines */}
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_95%,rgba(0,255,255,0.05)_100%)] bg-[length:100%_4px]"></div>
 
       </body>
     </html>
   );
+
 
   }
 
