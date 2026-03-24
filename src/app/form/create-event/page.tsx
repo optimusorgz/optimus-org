@@ -27,9 +27,12 @@ interface EventFormData {
     status: string;
     ticket_price: number | null;
     max_participants: number | null;
-    banner_url: string; // Not used in form data, but kept for type safety if needed elsewhere
+     
+    banner_url: string; 
     contact_email: string;
     contact_phone: string;
+
+    is_team: boolean; // New field to indicate if it's a team event or solo event
 }
 
 const initialFormData: EventFormData = {
@@ -42,6 +45,7 @@ const initialFormData: EventFormData = {
     end_date: '',
     status: 'Pending',
     ticket_price: null,
+    is_team: false,
     max_participants: null,
     banner_url: '',
     contact_email: '',
@@ -434,6 +438,29 @@ export default function CreateEventPage() {
                                 disabled={isFormBlocked}
                             />
                         </div>
+                        {/* Team or solo event in data base save in boolean true or false not solo or team */}
+                        <div>
+                            <label htmlFor="is_team_event" className="block text-sm font-medium text-white">Is this a team event?</label>
+                            <select
+                                id="is_team"
+                                name="is_team"
+                                required
+                                value={formData.is_team ? "true" : "false"}
+                                onChange={(e) =>
+                                    setFormData(prev => ({
+                                    ...prev,
+                                    is_team: e.target.value === "true", // ✅ convert to boolean
+                                    }))
+                                }
+                                disabled={isFormBlocked}
+                                className="mt-1 block w-full bg-gray-800 border border-white rounded-md shadow-sm py-2 px-3 text-white focus:ring-cyan-500 focus:border-cyan-500"
+                                >
+                                <option value="false">Solo Event</option>
+                                <option value="true">Team Event</option>
+                                </select>
+                        </div>
+                        
+
 
                         {/* Contact Email */}
                         <div>

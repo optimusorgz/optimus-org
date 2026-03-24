@@ -16,12 +16,6 @@
 
   // --- 1. TYPE DEFINITIONS ---
 
-  interface Stat {
-    value: string;
-    label: string;
-    icon?: React.ReactNode;
-  }
-
   interface Event {
     id: string;             
     title: string;
@@ -285,11 +279,7 @@ const LogoMarquee: React.FC<LogoMarqueeProps> = ({ partners }) => {
 
     return (
       <section className="py-6 sm:py-8 md:py-10 border-gray-800 overflow-hidden w-full max-w-[90%] sm:max-w-[85%] md:max-w-[80%] mx-auto my-8 sm:my-12 md:my-16 rounded-lg">
-        {/* <div className="text-center mb-6">
-          <h3 className="text-lg font-semibold text-gray-300">
-            Trusted by leading organizations 
-          </h3>
-        </div> */}
+        
 
         <div className="w-full overflow-hidden border-t border-b">
           <div className="flex whitespace-nowrap animate-marquee">
